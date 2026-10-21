@@ -1,0 +1,3 @@
+import { defineConfig } from "@playwright/test";
+import path from "node:path";
+export default defineConfig({testDir:"tests",testMatch:"e2e.spec.ts",fullyParallel:false,workers:1,timeout:60000,use:{baseURL:"http://127.0.0.1:3001",viewport:{width:1440,height:1000},launchOptions:{executablePath:"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",args:["--use-angle=swiftshader","--enable-webgl"]},trace:"retain-on-failure"},webServer:{command:"node tests/setup-e2e.mjs && npm run start -- --port 3001",url:"http://127.0.0.1:3001/api/state",reuseExistingServer:false,env:{DATABASE_URL:`file:${path.resolve(".data/e2e-test.db")}`,AI_API_KEY:"",AI_SETTINGS_KEY_FILE:path.resolve(".data/e2e-provider.key"),STORAGE_DIR:path.resolve(".data/e2e-attachments")},timeout:60000}});

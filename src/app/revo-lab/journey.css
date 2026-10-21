@@ -1,0 +1,222 @@
+.revo-flow-screen {
+  --flow-ink: #29372c;
+  --flow-muted: #747d67;
+  --flow-line: #d9ded0;
+  height: 100dvh;
+  min-height: 0;
+  width: 100%;
+  padding: 30px 4.3vw 24px;
+  overflow: hidden;
+  background: #f6f6f0;
+  color: var(--flow-ink);
+  font-family: "DM Sans", sans-serif;
+  display: grid;
+  gap: 24px;
+}
+.revo-flow-screen a:focus-visible, .revo-flow-screen button:focus-visible, .revo-flow-screen [tabindex]:focus-visible { outline: 3px solid #a37d0a; outline-offset: 4px; }
+.revo-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.revo-flow-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-width: 0; min-height: 40px; }
+.revo-flow-step { font-size: 8px; letter-spacing: 1.8px; color: #7a836b; margin-left: auto; }
+.revo-flow-header nav { margin-left: 20px; }
+.revo-flow-back { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; font-size: 11px; color: #626f57; white-space: nowrap; }
+.revo-flow-back:hover { color: #243c2b; }
+.revo-flow-eyebrow { font-size: 8px; line-height: 1.7; letter-spacing: 1.6px; font-weight: 500; color: #737e63; }
+.revo-flow-footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 8px; line-height: 1.6; color: #7a836c; letter-spacing: .45px; }
+.revo-flow-entrance { animation: revo-screen-enter .28s ease-out both; }
+@keyframes revo-screen-enter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+.revo-era-screen { grid-template-rows: auto auto minmax(0, 1fr) auto; }
+.revo-era-intro { display: flex; justify-content: space-between; gap: 40px; align-items: flex-end; margin: 8px 0 2px; }
+.revo-era-intro h1 { font-size: clamp(34px, 3.4vw, 64px); font-weight: 400; line-height: 1.1; letter-spacing: -.05em; margin-top: 14px; }
+.revo-era-intro h1 > span { font-weight: 600; }
+.revo-era-intro > p { font-size: 12px; line-height: 1.9; color: #748067; max-width: 305px; padding-bottom: 5px; }
+.revo-era-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(370px, 1fr); gap: 17px; min-height: 0; overflow: auto; padding: 5px; margin: -5px; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #c3cbb4 transparent; }
+.revo-era-card { min-width: 0; display: flex; flex-direction: column; padding: clamp(18px, 1.75vw, 33px); border: 1px solid #d8dece; border-radius: 5px; background: #f0f1e8; position: relative; }
+.revo-era-card.is-playable { background: #e9eddf; border-color: #5d7150; box-shadow: inset 0 3px #586d4b; }
+.revo-era-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.revo-era-card-top > div { display: flex; flex-direction: column; gap: 9px; }
+.revo-era-label { font-size: 9px; font-weight: 600; letter-spacing: 1.35px; }
+.revo-era-availability { display: flex; align-items: center; gap: 5px; font-size: 7px; letter-spacing: .8px; color: #81896f; }
+.revo-era-availability i { width: 5px; height: 5px; border-radius: 50%; background: #7c8a51; }
+.revo-era-number { font-family: "Manrope", sans-serif; font-size: clamp(43px, 4vw, 74px); font-weight: 400; line-height: 1; letter-spacing: -.07em; color: #b5bea4; }
+.is-playable .revo-era-number { color: #77855d; }
+.revo-era-card h2 { font-size: clamp(19px, 1.7vw, 31px); line-height: 1.17; font-weight: 600; letter-spacing: -.7px; margin-top: 20px; min-height: 2.35em; max-width: 230px; }
+.revo-era-art { position: relative; min-height: 100px; flex: 1; margin: 13px -12px 10px; display: grid; place-items: center; overflow: hidden; }
+.is-playable .revo-era-art { background: #ebe9e3; border-radius: 3px; }
+.revo-era-art img { object-fit: contain; }
+.revo-era-illustration { display: block; width: 100%; height: 100%; max-height: 290px; }
+.revo-era-description { font-size: 12px; color: #707d62; line-height: 1.7; min-height: 3.4em; padding-top: 2px; }
+.revo-era-card-bottom { padding-top: 17px; }
+.revo-era-enter, .revo-era-locked { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 45px; padding: 0 15px; width: 100%; border-radius: 3px; font-size: 11px; font-weight: 500; }
+.revo-era-enter { background: #ffe234; border: 1px solid #e2cd38; color: #2d3827; }
+.revo-era-enter:hover { background: #f1d62d; }
+.revo-era-locked:disabled { opacity: 1; color: #818b72; background: #e8ebdf; border: 1px solid #d9dfcd; justify-content: center; font-size: 10px; cursor: not-allowed; }
+.revo-era-scroll-hint { display: none; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .revo-era-card.is-playable { transition: transform .2s, box-shadow .2s; }
+  .revo-era-card.is-playable:hover { transform: translateY(-3px); box-shadow: inset 0 3px #586d4b, 0 7px 18px #33462c0c; }
+}
+
+.revo-briefing-screen { grid-template-rows: auto minmax(0, 1fr) auto; }
+.revo-briefing-body { display: grid; grid-template-columns: minmax(0, 47%) minmax(0, 1fr); gap: 4vw; min-height: 0; }
+.revo-briefing-copy { min-width: 0; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+.revo-briefing-reading { min-height: 0; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #bfc8ae transparent; padding: 5px 12px 5px 5px; margin: -5px 0 -5px -5px; }
+.revo-briefing-reading h1 { font-size: clamp(60px, 6.1vw, 112px); line-height: .99; letter-spacing: -.065em; font-weight: 600; margin: 17px 0 12px; }
+.revo-briefing-reading h1 > span { color: #a6a45d; }
+.revo-briefing-subtitle { font-family: "Manrope", sans-serif; font-size: 20px; color: #7d886a; letter-spacing: -.5px; }
+.revo-briefing-intro { font-size: 12px; line-height: 1.8; max-width: 390px; color: #727e64; margin-top: 13px; }
+.revo-briefing-objectives { margin: 23px 0; }
+.revo-briefing-objectives h2 { display: flex; align-items: center; gap: 9px; font-family: "DM Sans", sans-serif; font-size: 9px; font-weight: 500; letter-spacing: 1.2px; }
+.revo-briefing-objectives ol { display: grid; gap: 9px; list-style: none; padding: 0; margin: 13px 0 0; }
+.revo-briefing-objectives li { display: flex; gap: 12px; align-items: baseline; font-size: 12px; line-height: 1.6; color: #67745a; }
+.revo-briefing-objectives li > span { font-size: 9px; color: #a1aa8c; flex-shrink: 0; }
+.revo-briefing-mission { display: flex; gap: 13px; padding: 16px 19px; background: #e9eddf; border-left: 3px solid #d8c34c; }
+.revo-briefing-flag { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%; background: #e1e6d2; color: #76815c; }
+.revo-briefing-mission h2 { font-family: "DM Sans", sans-serif; font-size: 8px; font-weight: 500; letter-spacing: 1.3px; margin: 1px 0 7px; }
+.revo-briefing-mission p { font-size: 12px; line-height: 1.65; color: #5f6e50; }
+.revo-briefing-mission div > span { display: flex; align-items: center; gap: 9px; font-size: 7px; letter-spacing: .9px; color: #7c8767; margin-top: 9px; }
+.revo-briefing-mission i { width: 3px; height: 3px; border-radius: 50%; background: #99a281; }
+.revo-briefing-actions { display: flex; align-items: center; gap: 24px; padding: 5px; margin: 18px -5px 0; flex-shrink: 0; }
+.revo-briefing-actions .revo-menu-start { min-height: 50px; width: 220px; font-size: 12px; }
+.revo-briefing-actions .revo-flow-back { font-size: 10px; }
+.revo-briefing-session-note { margin-top: 8px; font-size: 8px; line-height: 1.7; color: #7d886d; flex-shrink: 0; }
+.revo-briefing-visual { position: relative; min-height: 0; min-width: 0; display: flex; flex-direction: column; background: #ebe9e3; padding: 27px 30px; margin: 0; border-radius: 3px; overflow: hidden; }
+.revo-briefing-visual-label { display: flex; justify-content: space-between; color: #7c846d; font-size: 8px; letter-spacing: 1.4px; }
+.revo-briefing-factory { position: relative; flex: 1; min-height: 0; margin: 0 -30px; }
+.revo-briefing-factory img { object-fit: contain; }
+.revo-briefing-visual figcaption { position: relative; z-index: 1; border-top: 1px solid #d1d5c6; padding-top: 22px; }
+.revo-briefing-visual figcaption > span { font-size: 7px; letter-spacing: 1.5px; color: #7c866c; }
+.revo-briefing-visual figcaption strong { display: block; font-family: "Manrope", sans-serif; font-size: clamp(20px, 2.2vw, 37px); font-weight: 400; line-height: 1.3; letter-spacing: -.8px; margin: 11px 0; }
+.revo-briefing-visual figcaption p { font-size: 10px; line-height: 1.8; color: #7c866f; }
+.revo-briefing-visual-index { position: absolute; bottom: 20px; right: 27px; font-family: "Manrope", sans-serif; font-size: 110px; line-height: 1; letter-spacing: -.08em; color: #d8dccf; pointer-events: none; }
+.revo-unavailable { align-content: center; justify-items: center; text-align: center; gap: 20px; }
+.revo-unavailable h1 { font-size: clamp(28px, 4vw, 60px); letter-spacing: -1.5px; }
+.revo-unavailable > p:not(.revo-flow-eyebrow) { font-size: 12px; color: #758467; }
+.revo-unavailable .revo-menu-start { width: auto; min-width: 240px; }
+
+@media (max-height: 800px) and (min-width: 1001px) {
+  .revo-flow-screen { padding-top: 23px; padding-bottom: 19px; gap: 19px; }
+  .revo-era-intro { margin-top: 0; }
+  .revo-era-intro h1 { font-size: 39px; margin-top: 10px; }
+  .revo-era-card { padding: 19px; }
+  .revo-era-card h2 { margin-top: 15px; font-size: 21px; }
+  .revo-era-card-top .revo-era-number { font-size: 47px; }
+  .revo-era-description { font-size: 11px; }
+  .revo-era-card-bottom { padding-top: 12px; }
+  .revo-briefing-reading h1 { font-size: 65px; margin: 12px 0 8px; }
+  .revo-briefing-subtitle { font-size: 17px; }
+  .revo-briefing-intro { font-size: 11px; margin-top: 10px; }
+  .revo-briefing-objectives { margin: 17px 0; }
+  .revo-briefing-objectives ol { gap: 7px; margin-top: 10px; }
+  .revo-briefing-objectives li { font-size: 11px; }
+  .revo-briefing-mission { padding: 12px 14px; }
+  .revo-briefing-mission p { font-size: 11px; }
+  .revo-briefing-actions { margin-top: 14px; }
+  .revo-briefing-actions .revo-menu-start { min-height: 46px; width: 195px; }
+  .revo-briefing-visual figcaption { padding-top: 16px; }
+}
+@media (max-width: 1000px) {
+  .revo-flow-screen { padding: 24px 30px 20px; gap: 20px; }
+  .revo-era-intro { align-items: flex-start; gap: 20px; }
+  .revo-era-intro h1 { font-size: 34px; }
+  .revo-era-intro > p { max-width: 220px; font-size: 11px; margin-top: 30px; }
+  .revo-era-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(350px, 1fr); }
+  .revo-era-card h2 { font-size: 23px; }
+  .revo-era-art { min-height: 100px; }
+  .revo-flow-school { display: none; }
+  .revo-era-scroll-hint { display: flex; align-items: center; gap: 6px; font-size: 8px; letter-spacing: 0; }
+  .revo-briefing-body { gap: 24px; grid-template-columns: minmax(0, 52%) minmax(0, 1fr); }
+  .revo-briefing-reading h1 { font-size: 58px; }
+  .revo-briefing-actions { flex-wrap: wrap; gap: 4px 15px; }
+  .revo-briefing-visual { padding: 22px; }
+  .revo-briefing-factory { margin: 0 -22px; }
+  .revo-briefing-visual figcaption strong { font-size: 24px; }
+}
+@media (max-width: 760px) {
+  .revo-flow-screen { padding: 18px 22px 16px; gap: 16px; }
+  .revo-flow-header { gap: 12px; min-height: 35px; }
+  .revo-flow-header .revo-menu-brand { gap: 7px; }
+  .revo-flow-header .revo-menu-brand > span { width: 28px; height: 28px; }
+  .revo-flow-header .revo-menu-brand svg { width: 19px; }
+  .revo-flow-header .revo-menu-brand strong { font-size: 23px; }
+  .revo-flow-header nav { margin-left: auto; }
+  .revo-flow-header .revo-flow-step { font-size: 7px; letter-spacing: 1px; }
+  .revo-era-screen .revo-flow-step { display: none; }
+  .revo-flow-back { font-size: 10px; }
+  .revo-flow-eyebrow { font-size: 7px; letter-spacing: 1px; }
+  .revo-era-intro { display: block; margin: 0; }
+  .revo-era-intro h1 { font-size: clamp(27px, 4.5vw, 34px); margin-top: 10px; }
+  .revo-era-intro > p { max-width: 450px; margin-top: 12px; padding: 0; font-size: 11px; line-height: 1.7; }
+  .revo-flow-footer { font-size: 7px; letter-spacing: .1px; gap: 8px; }
+  .revo-era-screen .revo-flow-footer > span:first-child { display: none; }
+  .revo-briefing-body { display: flex; flex-direction: column; gap: 15px; }
+  .revo-briefing-copy { flex: 1; }
+  .revo-briefing-visual { order: -1; flex-shrink: 0; height: clamp(110px, 21dvh, 180px); padding: 13px 16px; }
+  .revo-briefing-factory { position: absolute; inset: 0; margin: 0; }
+  .revo-briefing-visual-label { position: relative; z-index: 1; font-size: 7px; }
+  .revo-briefing-visual figcaption, .revo-briefing-visual-index { display: none; }
+  .revo-briefing-reading h1 { font-size: 45px; line-height: 1; margin: 12px 0 10px; }
+  .revo-briefing-subtitle { font-size: 17px; }
+  .revo-briefing-intro { font-size: 11px; margin-top: 10px; }
+  .revo-briefing-objectives { margin: 20px 0; }
+  .revo-briefing-objectives ol { gap: 9px; }
+  .revo-briefing-objectives li { font-size: 11px; }
+  .revo-briefing-mission { padding: 13px; gap: 10px; }
+  .revo-briefing-mission p { font-size: 11px; }
+  .revo-briefing-actions { flex-wrap: nowrap; gap: 12px; margin-top: 13px; }
+  .revo-briefing-actions .revo-menu-start { width: 170px; min-height: 47px; padding: 0 14px; font-size: 11px; gap: 16px; }
+  .revo-briefing-actions .revo-flow-back { font-size: 9px; gap: 6px; }
+  .revo-briefing-session-note { font-size: 8px; margin-top: 5px; }
+  .revo-briefing-footer { font-size: 7px; line-height: 1.7; }
+}
+@media (max-width: 600px) {
+  .revo-era-grid { grid-template-columns: 1fr; grid-auto-rows: minmax(245px, auto); gap: 12px; }
+  .revo-era-card { display: grid; grid-template-columns: 115px minmax(0, 1fr); grid-template-rows: auto auto 1fr auto; column-gap: 13px; row-gap: 10px; padding: 16px; }
+  .revo-era-card-top { grid-column: 1 / -1; }
+  .revo-era-card-top > div { flex-direction: row; align-items: center; gap: 12px; }
+  .revo-era-card h2 { grid-column: 2; margin: 0; min-height: 0; font-size: 18px; line-height: 1.2; letter-spacing: -.45px; }
+  .revo-era-number { font-size: 35px; }
+  .revo-era-label { font-size: 9px; }
+  .revo-era-availability { font-size: 6px; letter-spacing: .3px; }
+  .revo-era-art { grid-column: 1; grid-row: 2 / 5; margin: 0; min-height: 130px; }
+  .revo-era-art img { object-fit: contain; transform: scale(1.4); }
+  .revo-era-illustration { transform: scale(1.2); }
+  .revo-era-description { grid-column: 2; font-size: 11px; min-height: 0; padding: 0; line-height: 1.6; align-self: center; }
+  .revo-era-card-bottom { grid-column: 2; padding: 0; }
+  .revo-era-enter, .revo-era-locked:disabled { font-size: 9px; min-height: 44px; padding: 0 10px; }
+  .revo-era-locked:disabled { gap: 5px; }
+}
+@media (max-width: 360px) {
+  .revo-flow-screen { padding-left: 17px; padding-right: 17px; }
+  .revo-era-card { grid-template-columns: 85px minmax(0, 1fr); padding: 13px; }
+  .revo-era-card h2 { font-size: 17px; }
+  .revo-era-card-top > div { gap: 8px; }
+  .revo-briefing-actions { gap: 8px; }
+  .revo-briefing-actions .revo-menu-start { width: 146px; font-size: 10px; padding: 0 10px; gap: 7px; }
+  .revo-briefing-actions .revo-flow-back { font-size: 8px; gap: 4px; }
+}
+@media (max-height: 500px) {
+  .revo-flow-screen { padding-top: 12px; padding-bottom: 12px; gap: 10px; }
+  .revo-era-intro h1 { font-size: 27px; }
+  .revo-era-intro .revo-flow-eyebrow { display: none; }
+  .revo-era-intro > p { margin-top: 6px; }
+  .revo-briefing-visual { display: none; }
+  .revo-briefing-body { display: flex; }
+  .revo-briefing-copy { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .revo-flow-screen *, .revo-flow-screen *::before, .revo-flow-screen *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media (min-width: 761px) and (max-height: 500px) {
+  .revo-era-intro { align-items: center; margin: 0; }
+  .revo-era-intro h1 { margin-top: 0; }
+  .revo-era-intro > p { margin-top: 0; font-size: 10px; }
+  .revo-era-grid { grid-template-columns: 1fr; grid-auto-rows: minmax(170px, auto); }
+  .revo-era-card { display: grid; grid-template-columns: 90px 160px minmax(0, 1fr) 160px; grid-template-rows: auto 1fr; gap: 10px 14px; padding: 14px; }
+  .revo-era-card-top { grid-column: 1; grid-row: 1 / 3; flex-direction: column; justify-content: center; align-items: flex-start; gap: 15px; }
+  .revo-era-number { font-size: 40px; }
+  .revo-era-card h2 { grid-column: 3 / 5; margin: 8px 0 0; font-size: 20px; max-width: none; min-height: 0; }
+  .revo-era-art { grid-column: 2; grid-row: 1 / 3; margin: 0; min-height: 100px; }
+  .revo-era-description { grid-column: 3; grid-row: 2; min-height: 0; align-self: center; font-size: 11px; }
+  .revo-era-card-bottom { grid-column: 4; grid-row: 2; align-self: center; padding: 0; }
+}
