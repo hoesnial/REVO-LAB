@@ -1,0 +1,80 @@
+.revo-hud .revo-stages { gap: 14px; }
+.revo-hud .revo-stages button { white-space: nowrap; }
+.revo-assembly-panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100%; color: #edf0df; background: #28362d; }
+.revo-assembly-mission { flex: none; padding: 20px 22px 15px; border-bottom: 1px solid #52604a; }
+.revo-assembly-mission .revo-kicker { display: flex; align-items: center; gap: 6px; color: #e6d46f; }
+.revo-assembly-mission h2 { font-size: 18px; line-height: 1.3; margin: 8px 0; }
+.revo-assembly-mission p { color: #c1cdb5; font-size: 11px; line-height: 1.55; }
+.revo-assembly-counts { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 13px 0 7px; font-size: 10px; }
+.revo-assembly-counts strong { color: #ffe234; }
+.revo-assembly-counts span { color: #b9c6ac; font-size: 9px; }
+.revo-assembly-scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-color: #8c9c73 #28362d; padding: 16px 22px; }
+.revo-assembly-fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.revo-assembly-fieldset:disabled { opacity: .55; }
+.revo-assembly-panel summary { cursor: pointer; font-size: 11px; font-weight: 700; padding: 6px 0 10px; }
+.revo-assembly-panel summary span { float: right; font-size: 9px; font-weight: 400; color: #c3cdb7; }
+.revo-assembly-parts { display: grid; gap: 5px; margin-bottom: 14px; }
+.revo-assembly-parts > button { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 6px 10px; border: 1px solid #59694d; border-radius: 4px; background: #344436; color: #f0f1e5; text-align: left; font-size: 11px; }
+.revo-assembly-parts > button > span { display: grid; place-items: center; width: 24px; height: 24px; background: #536449; color: #e6deb1; border-radius: 50%; font-size: 9px; }
+.revo-assembly-parts > button small { margin-left: auto; font-size: 9px; color: #c0cba8; }
+.revo-assembly-parts > button[aria-pressed="true"] { border-color: #ffe234; color: #ffe234; }
+.revo-assembly-parts > button:disabled { opacity: .5; cursor: default; }
+.revo-assembly-knowledge { margin-bottom: 14px; padding: 12px; background: #eef0dd; color: #374a35; border-left: 3px solid #e1c53b; border-radius: 3px; }
+.revo-assembly-knowledge h3 { margin-bottom: 7px; font-size: 13px; }
+.revo-assembly-knowledge p { font-size: 11px; line-height: 1.5; margin-top: 5px; }
+.revo-assembly-targets { margin-bottom: 18px; }
+.revo-assembly-targets label { display: block; color: #c5ceb9; font-size: 10px; margin-bottom: 5px; }
+.revo-assembly-targets select { width: 100%; min-height: 42px; border: 1px solid #6b7b59; border-radius: 4px; padding: 8px; background: #f5f4e5; color: #293d2e; font-size: 11px; }
+.revo-assembly-targets > button { width: 100%; margin-top: 8px; justify-content: space-between; min-height: 40px; font-size: 11px; }
+.revo-assembly-panel button:disabled { cursor: default; }
+.revo-assembly-targets > button:disabled { opacity: .4; }
+.revo-assembly-check { padding-top: 14px; border-top: 1px solid #59694d; }
+.revo-assembly-check .revo-kicker { color: #d7cd7b; font-size: 8px; }
+.revo-assembly-check h3 { font-size: 13px; line-height: 1.45; margin: 8px 0 12px; }
+.revo-assembly-check > button { width: 100%; text-align: left; padding: 10px; min-height: 44px; margin-bottom: 6px; border: 1px solid #657554; border-radius: 4px; font-size: 11px; line-height: 1.5; }
+.revo-assembly-check > button:hover { background: #46573e; }
+.revo-assembly-check > p, .revo-assembly-review p, .revo-assembly-success p { font-size: 11px; line-height: 1.55; color: #d4ddc6; }
+.revo-assembly-answer { padding: 10px; background: #4c4931; border-left: 3px solid #f2d759; }
+.revo-assembly-review { margin-top: 12px; }
+.revo-assembly-review p { margin-bottom: 8px; }
+.revo-assembly-review svg { display: inline; color: #ffe234; }
+.revo-assembly-retry { display: flex; align-items: center; gap: 7px; min-height: 38px; margin-top: 14px; color: #d2dcc1; font-size: 10px; }
+.revo-assembly-success > svg { color: #ffe234; margin: 6px 0 12px; }
+.revo-assembly-success > button { width: 100%; justify-content: space-between; margin: 15px 0 9px; }
+.revo-assembly-success small { display: block; color: #c9d2bb; font-size: 10px; line-height: 1.5; }
+.revo-assembly-markers { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.revo-assembly-socket, .revo-assembly-tray-label { position: absolute; top: 0; left: 0; visibility: hidden; }
+.revo-assembly-socket { pointer-events: auto; display: grid; place-items: center; width: 31px; height: 31px; border: 1px dashed #516b48; border-radius: 50%; background: #f6f3d9; color: #37482e; font-size: 10px; box-shadow: 0 0 0 3px #f5f2dd66; }
+.revo-assembly-socket[aria-pressed="true"] { background: #ffe234; border-style: solid; }
+.revo-assembly-socket:disabled { background: #365d42; color: #f3f0ce; opacity: .8; }
+.revo-assembly-tray-label { pointer-events: none; color: #34452f; font-size: 8px; font-weight: 700; text-align: center; white-space: nowrap; padding: 3px 6px; background: #faf7e1d9; border-radius: 3px; }
+.revo-assembly-flow { flex: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 5px; padding: 10px 16px; min-height: 50px; background: #f6f5e9; border-top: 1px solid #d6dec8; color: #4c6242; font-size: 10px; }
+.revo-assembly-flow > strong { color: #2a482e; font-size: 9px; }
+.revo-assembly-flow > span { display: flex; align-items: center; gap: 5px; }
+.revo-assembly-caption { position: absolute; bottom: 62px; left: 18px; max-width: min(420px, calc(100% - 180px)); padding: 5px 8px; color: #566148; background: #faf7e4d9; font-size: 9px; pointer-events: none; }
+.revo-hud .revo-assembly-grid .revo-scene-bottom { bottom: 65px; }
+.revo-hud .revo-assembly-grid .revo-orbit-hint { display: none; }
+.revo-hud .revo-assembly-grid .revo-camera-tools { margin-left: auto; }
+.revo-assembly-paused { position: absolute; z-index: 8; inset: 0; display: grid; place-content: center; gap: 10px; text-align: center; background: #e9e6d8cc; color: #344a33; backdrop-filter: blur(3px); }
+.revo-assembly-paused button { min-height: 42px; padding: 10px 18px; background: #ffe234; border-radius: 4px; }
+.revo-app select:focus-visible { outline: 3px solid #d09a0c; outline-offset: 3px; }
+@media (max-width: 1250px) and (min-width: 851px) { .revo-hud .revo-lab-tools .revo-session-label { display: none; } }
+@media (max-width: 850px) { .revo-hud .revo-stages { gap: 6px; } .revo-hud .revo-stages button { font-size: 9px; gap: 5px; } }
+@media (max-width: 720px) {
+  .revo-hud .revo-lab-grid.revo-assembly-grid { grid-template-rows: minmax(0, 1fr) clamp(210px, 35dvh, 300px); }
+  .revo-assembly-mission { padding: 9px 13px; }
+  .revo-assembly-mission h2 { font-size: 13px; margin: 4px 0; }
+  .revo-assembly-mission > p { display: none; }
+  .revo-assembly-counts { margin-top: 6px; }
+  .revo-assembly-scroll { padding: 7px 13px 12px; }
+  .revo-assembly-flow { min-height: 35px; padding: 5px 8px; gap: 3px; font-size: 8px; }
+  .revo-assembly-flow > strong { width: 100%; text-align: center; font-size: 7px; }
+  .revo-hud .revo-assembly-grid .revo-scene-bottom { bottom: 46px; }
+  .revo-assembly-socket { width: 27px; height: 27px; }
+  .revo-assembly-caption { left: 8px; bottom: 47px; max-width: calc(100% - 160px); font-size: 7px; }
+  .revo-assembly-tray-label { font-size: 6px; padding: 2px 3px; }
+}
+@media (max-width: 410px) { .revo-hud .revo-stages button { gap: 3px; font-size: 8px; } .revo-hud .revo-stages { gap: 2px; } }
+@media (max-height: 600px) { .revo-assembly-mission > p { display: none; } .revo-assembly-mission { padding: 8px 13px; } .revo-assembly-mission h2 { font-size: 13px; margin: 4px 0; } .revo-assembly-scroll { padding: 8px 13px; } }
+
+@media (max-width: 410px) and (max-height: 600px) { .revo-hud .revo-lab-grid.revo-assembly-grid { grid-template-rows: minmax(0, 1fr) 180px; } }

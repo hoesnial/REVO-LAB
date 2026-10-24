@@ -67,6 +67,6 @@ test("Founder can configure a custom provider, select models, test, and run a re
     const crossOrigin=await page.request.post("/api/ai/provider",{headers:{origin:"https://untrusted.invalid"},data:{action:"remove"}});expect(crossOrigin.status()).toBe(403);
     await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.body.scrollWidth<=innerWidth)).toBe(true);
     page.once("dialog",dialog=>dialog.accept());await panel.getByRole("button",{name:"Remove saved provider"}).click();await expect(panel.getByText("Not configured",{exact:true})).toBeVisible();
-    await page.goto("/ai/chief");await expect(page.getByText("Add an AI provider and model to send your first task.")).toBeVisible();await expect(page.getByRole("button",{name:"Send",exact:true})).toBeDisabled();
+    await page.goto("/ai/chief");await expect(page.getByRole("main").getByText("Add an AI provider and model to send your first task.")).toBeVisible();await expect(page.getByRole("main").getByRole("button",{name:"Send",exact:true})).toBeDisabled();
   } finally { await new Promise<void>((resolve,reject)=>server.close(error=>error ? reject(error) : resolve())); }
 });

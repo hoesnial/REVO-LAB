@@ -1,6 +1,8 @@
+import { finishAssembly } from "./helpers/revo-assembly";
 import { expect, test as base, type Page } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
+import sharp from "sharp";
 
 const screenshots = path.resolve("test-results/revo/screenshots");
 
@@ -26,10 +28,12 @@ async function openLab(page: Page) {
 }
 
 async function resetLab(page: Page) {
-  await page.getByRole("button", { name: "Mulai ulang", exact: true }).click();
-  const dialog = page.getByRole("dialog", { name: "Mulai ulang laboratorium" });
+  const completedScreen = page.getByRole("heading", { name: "LEVEL COMPLETED", exact: true });
+  if (await completedScreen.isVisible().catch(() => false)) await page.getByRole("button", { name: "Ulangi Level", exact: true }).click();
+  else await page.getByRole("button", { name: "Ulangi seluruh level", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: /Ulangi .*Industry 1\.0/ });
   await expect(dialog).toBeVisible();
-  await dialog.getByRole("button", { name: "Mulai ulang", exact: true }).click();
+  await dialog.getByRole("button", { name: "Ulangi Level", exact: true }).click();
   await expect(dialog).toHaveCount(0);
   await expect(page.getByTestId("production")).toHaveText("0");
   await expect(page.getByRole("meter", { name: "Bahan bakar", exact: true })).toHaveAttribute("aria-valuenow", "35");
@@ -57,7 +61,76 @@ async function machineSnapshot(page: Page) {
   }));
 }
 
-test("exploration counts unique inspections and unlocks Experiment only after all five", async ({ page }) => {
+async function imageDifference(left: Buffer, right: Buffer) {
+  const [first, second] = await Promise.all([
+    sharp(left).removeAlpha().raw().toBuffer({ resolveWithObject: true }),
+    sharp(right).removeAlpha().raw().toBuffer({ resolveWithObject: true }),
+  ]);
+  if (first.info.width !== second.info.width || first.info.height !== second.info.height) return 1;
+  let total = 0;
+  for (let index = 0; index < first.data.length; index += 1) total += Math.abs(first.data[index] - second.data[index]);
+  return total / (first.data.length * 255);
+}
+
+test("the 3D transmission hotspot explains the real drive path and belts follow the paused engine", async ({ page }) => {
+  await openLab(page);
+  await mkdir(screenshots, { recursive: true });
+  const canvas = page.locator(".revo-scene canvas");
+  await canvas.screenshot({ path: path.join(screenshots, "power-transmission-default.png") });
+
+  const hotspot = page.getByRole("button", { name: "Informasi Transmisi Tenaga", exact: true });
+  await expect(hotspot).toBeVisible();
+  await hotspot.focus();
+  await page.keyboard.press("Enter");
+  const info = page.getByRole("dialog", { name: "Transmisi Tenaga", exact: true });
+  await expect(info.getByLabel("Aliran energi: uap, piston, engkol, roda gila, sabuk, poros transmisi, roda gigi siku, mesin tenun")).toBeVisible();
+  await expect(info).toContainText("sabuk, dan poros transmisi untuk menggerakkan mesin tenun");
+  await info.screenshot({ path: path.join(screenshots, "power-transmission-learning.png") });
+  await info.getByRole("button", { name: "Kembali ke mesin", exact: true }).click();
+
+  await inspectFiveComponents(page);
+  await finishAssembly(page);
+  await page.getByRole("button", { name: "Nyalakan mesin", exact: true }).click();
+  await expect.poll(async () => Number(await page.getByRole("meter", { name: "Kecepatan", exact: true }).getAttribute("aria-valuenow"))).toBeGreaterThan(8);
+  await page.waitForTimeout(500);
+  const moving = await canvas.screenshot();
+  await page.waitForTimeout(900);
+  expect((await canvas.screenshot()).equals(moving)).toBe(false);
+  await canvas.screenshot({ path: path.join(screenshots, "power-transmission-moving.png") });
+
+  const bounds = await canvas.boundingBox();
+  if (!bounds) throw new Error("Transmission canvas has no bounding box");
+  await page.mouse.move(bounds.x + bounds.width * 0.76, bounds.y + bounds.height * 0.7);
+  await page.mouse.down();
+  await page.mouse.move(bounds.x + bounds.width * 0.43, bounds.y + bounds.height * 0.68, { steps: 14 });
+  await page.mouse.up();
+  await page.waitForTimeout(400);
+  await canvas.screenshot({ path: path.join(screenshots, "power-transmission-side.png") });
+
+  await page.getByRole("button", { name: "Jeda simulasi", exact: true }).click();
+  const paused = await canvas.screenshot();
+  await page.waitForTimeout(900);
+  expect((await canvas.screenshot()).equals(paused)).toBe(true);
+  await expect(page.getByRole("button", { name: "Lanjutkan simulasi", exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "Lanjutkan simulasi", exact: true }).click();
+  await page.getByRole("button", { name: "Reset kamera", exact: true }).click();
+  await page.waitForTimeout(900);
+  await page.getByRole("button", { name: "Hentikan mesin", exact: true }).click();
+  const stoppedBounds = await canvas.boundingBox();
+  if (!stoppedBounds) throw new Error("Transmission canvas disappeared after stopping the engine");
+  const machinery = { x: stoppedBounds.x + stoppedBounds.width * 0.38, y: stoppedBounds.y + stoppedBounds.height * 0.2, width: stoppedBounds.width * 0.52, height: stoppedBounds.height * 0.5 };
+  await page.waitForTimeout(4200);
+  const settled = await page.screenshot({ clip: machinery });
+  await page.screenshot({ clip: machinery, path: path.join(screenshots, "power-transmission-coast-a.png") });
+  await page.waitForTimeout(900);
+  const rest = await page.screenshot({ clip: machinery });
+  await page.screenshot({ clip: machinery, path: path.join(screenshots, "power-transmission-coast-b.png") });
+  expect(await imageDifference(rest, settled)).toBeLessThan(0.002);
+  await page.screenshot({ clip: machinery, path: path.join(screenshots, "power-transmission-stopped.png") });
+});
+
+test("exploration counts unique inspections and unlocks Assembly after all five and Experiment after assembly", async ({ page }) => {
   await openLab(page);
   const experiment = page.getByRole("tab", { name: /Eksperimen/ });
   const reflection = page.getByRole("tab", { name: /Refleksi/ });
@@ -84,10 +157,11 @@ test("exploration counts unique inspections and unlocks Experiment only after al
   }
   await expect(page.getByText("5/5 komponen dijelajahi")).toBeVisible();
   await expect(page.locator(".revo-learning-note")).toContainText("Seluruh komponen");
-  await expect(experiment).toBeEnabled();
+  await expect(page.getByRole("tab", { name: /Perakitan/ })).toBeEnabled();
+  await expect(experiment).toBeDisabled();
   await expect(reflection).toBeDisabled();
   await expect(start).toBeDisabled();
-  await page.getByRole("button", { name: "Lanjut ke eksperimen", exact: true }).click();
+  await finishAssembly(page);
   await expect(experiment).toHaveAttribute("aria-selected", "true");
   await expect(start).toBeEnabled();
   await expect(reflection).toBeDisabled();
@@ -96,7 +170,7 @@ test("exploration counts unique inspections and unlocks Experiment only after al
 test("manual pause, guidance and stage changes freeze the machine until Experiment resumes", async ({ page }) => {
   await openLab(page);
   await inspectFiveComponents(page);
-  await page.getByRole("button", { name: "Lanjut ke eksperimen", exact: true }).click();
+  await finishAssembly(page);
   await page.getByRole("button", { name: "Nyalakan mesin", exact: true }).click();
   await expect.poll(async () => Number(await page.getByTestId("production").textContent()), { timeout: 30_000 }).toBeGreaterThan(1);
 
@@ -146,7 +220,7 @@ test("desktop: explore five components, control the camera, run a real safe miss
       await expect(page.locator(".revo-component-role")).toContainText("PERAN DALAM MESIN");
     }
     await expect(page.getByText("5/5 komponen dijelajahi")).toBeVisible();
-    await page.getByRole("button", { name: "Lanjut ke eksperimen", exact: true }).click();
+    await finishAssembly(page);
     await expect(page.getByRole("tab", { name: /Eksperimen/ })).toHaveAttribute("aria-selected", "true");
   });
 
@@ -250,7 +324,7 @@ test("desktop: explore five components, control the camera, run a real safe miss
 test("resource controls, depleted fuel, and excessive pressure produce honest safety feedback", async ({ page }) => {
   await openLab(page);
   await inspectFiveComponents(page);
-  await page.getByRole("button", { name: "Lanjut ke eksperimen", exact: true }).click();
+  await finishAssembly(page);
   const fuel = page.getByRole("meter", { name: "Bahan bakar", exact: true });
   const water = page.getByRole("meter", { name: "Persediaan air", exact: true });
   await page.getByRole("button", { name: "Tambah bahan bakar", exact: true }).click();
@@ -271,6 +345,12 @@ test("resource controls, depleted fuel, and excessive pressure produce honest sa
   await page.getByRole("button", { name: "Nyalakan mesin", exact: true }).click();
   await expect(page.locator(".revo-engine-status")).toContainText("Tekanan tinggi", { timeout: 60_000 });
   await expect(page.getByText("Batas aman terlewati — ulangi misi")).toBeVisible();
+  await page.getByRole("button", { name: "Tambah air", exact: true }).click();
+  await expect(page.locator(".revo-live-feedback")).toContainText("Pengisian tidak aman");
+  await expect(page.getByRole("progressbar", { name: "Pengisian air", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Tambah bahan bakar", exact: true }).click();
+  await expect(page.locator(".revo-live-feedback")).toContainText("Pengisian tidak aman");
+  await expect(page.getByRole("progressbar", { name: "Pengisian bahan bakar", exact: true })).toHaveCount(0);
   await expect(page.locator(".revo-engine-status")).toContainText("Berhenti darurat", { timeout: 45_000 });
   expect(await pressure(page)).toBeGreaterThanOrEqual(90);
   await expect(page.locator(".revo-live-feedback")).toContainText("Mesin berhenti darurat");
@@ -314,7 +394,7 @@ test("mobile: the 390px layout, component inspection, and machine controls remai
   for (const name of ["Roda gila", "Piston", "Pipa uap", "Mesin tekstil"]) {
     await keyboardComponents.getByRole("button", { name: new RegExp(name) }).click();
   }
-  await page.getByRole("button", { name: "Lanjut ke eksperimen", exact: true }).click();
+  await finishAssembly(page);
   await page.getByRole("button", { name: "Tambah air", exact: true }).click();
   await expect(page.getByRole("meter", { name: "Persediaan air", exact: true })).toHaveAttribute("aria-valuenow", "80");
   await page.getByRole("button", { name: "Nyalakan mesin", exact: true }).click();
@@ -332,7 +412,7 @@ test("fullscreen HUD keeps the scene and learning controls reachable at four vie
   await expect(canvas).toBeVisible();
   await expect(lab.getByRole("progressbar", { name: "Produksi kain" })).toBeVisible();
   await inspectFiveComponents(page);
-  await page.getByRole("button", { name: "Lanjut ke eksperimen", exact: true }).click();
+  await finishAssembly(page);
 
   for (const viewport of [
     { name: "desktop", width: 1440, height: 900 },
@@ -367,7 +447,8 @@ test("fullscreen HUD keeps the scene and learning controls reachable at four vie
       const tools = lab.locator(".revo-workspace-actions");
       await expect(tools).toContainText("ERA 01");
       await expect(tools.getByRole("button", { name: "Aktifkan suara", exact: true })).toBeVisible();
-      await expect(tools.getByRole("button", { name: "Mulai ulang", exact: true })).toBeVisible();
+      await expect(tools.getByRole("button", { name: "Reset mesin", exact: true })).toBeVisible();
+      await expect(tools.getByRole("button", { name: "Ulangi seluruh level", exact: true })).toBeVisible();
       await expect(tools.getByRole("button", { name: "Jeda simulasi", exact: true })).toBeVisible();
       await page.getByRole("button", { name: "Nyalakan mesin", exact: true }).click();
       await expect(page.getByRole("button", { name: "Hentikan mesin", exact: true })).toBeVisible();
@@ -380,13 +461,15 @@ test("fullscreen HUD keeps the scene and learning controls reachable at four vie
   await page.setViewportSize({ width: 390, height: 844 });
   await lab.locator(".revo-workspace-actions").getByRole("button", { name: "Aktifkan suara", exact: true }).click();
   await expect(lab.getByRole("button", { name: "Matikan suara", exact: true })).toHaveAttribute("aria-pressed", "true");
-  await lab.getByRole("button", { name: "Mulai ulang", exact: true }).click();
-  const reset = page.getByRole("dialog", { name: "Mulai ulang laboratorium" });
+  await lab.getByRole("button", { name: "Ulangi seluruh level", exact: true }).click();
+  const reset = page.getByRole("dialog", { name: "Ulangi seluruh Industry 1.0", exact: true });
   await expect(reset).toBeVisible();
-  await reset.getByRole("button", { name: "Lanjutkan percobaan", exact: true }).click();
+  await reset.getByRole("button", { name: "Pertahankan progres", exact: true }).click();
 
   await page.getByRole("tab", { name: /Eksplorasi/ }).click();
   await page.getByRole("tab", { name: /Eksplorasi/ }).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("tab", { name: /Perakitan/ })).toHaveAttribute("aria-selected", "true");
   await page.keyboard.press("ArrowRight");
   await expect(page.getByRole("tab", { name: /Eksperimen/ })).toHaveAttribute("aria-selected", "true");
   await page.getByLabel("Pilih komponen mesin", { exact: true }).getByRole("button", { name: /Ketel uap/ }).click();

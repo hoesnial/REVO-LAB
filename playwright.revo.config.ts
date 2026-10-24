@@ -7,7 +7,7 @@ const localChrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrom
 // database, touch Studio's test fixtures, or connect to an existing browser.
 export default defineConfig({
   testDir: "./tests",
-  testMatch: ["revo.e2e.spec.ts", "revo-menu.e2e.spec.ts", "revo-journey.e2e.spec.ts"],
+  testMatch: ["revo.e2e.spec.ts", "revo-menu.e2e.spec.ts", "revo-journey.e2e.spec.ts", "revo-assembly.e2e.spec.ts", "revo-filling.e2e.spec.ts", "revo-progress.e2e.spec.ts", "revo-polish.e2e.spec.ts"],
   fullyParallel: false,
   workers: 1,
   timeout: 180_000,

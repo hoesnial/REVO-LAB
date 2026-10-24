@@ -14,6 +14,15 @@
   background: #e9eadf;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .revo-hud-header { animation: revo-hud-arrive .24s ease-out both; }
+  .revo-hud-workspace { animation: revo-hud-arrive .28s .025s ease-out both; }
+  @keyframes revo-hud-arrive {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
 .revo-hud .revo-hud-header {
   flex: none;
   height: 72px;
@@ -63,6 +72,7 @@
 .revo-hud .revo-stages button:disabled { cursor: not-allowed; opacity: .58; }
 .revo-hud .revo-lab-tools { display: flex; flex: 1; min-width: 0; justify-content: flex-end; gap: 20px; margin-left: auto; padding: 0; border: 0; }
 .revo-hud .revo-lab-tools .revo-session-label { display: flex; width: auto; color: #6f7e5e; font-size: 8px; font-weight: 700; letter-spacing: 1px; }
+.revo-hud .revo-save-status { color: #82916d; font-size: 7px; font-weight: 600; letter-spacing: .7px; white-space: nowrap; }
 .revo-hud .revo-workspace-actions { display: flex; width: auto; flex: none; gap: 8px; }
 .revo-hud .revo-workspace-actions .revo-era-chip { display: flex; margin: 0; padding: 7px 10px; background: #fffef7; font-size: 9px; }
 .revo-hud .revo-workspace-actions .revo-icon-button { width: 35px; height: 35px; background: #e9eddf; }
@@ -365,3 +375,6 @@
 @media (prefers-reduced-motion: reduce) {
   .revo-hud-history > summary > svg:last-child { transition: none; }
 }
+
+@media(max-width:720px){.revo-hud .revo-save-status{display:none}}
+@media(max-width:390px){.revo-hud .revo-workspace-actions .revo-reset>span{display:none}.revo-hud .revo-workspace-actions{gap:5px}}

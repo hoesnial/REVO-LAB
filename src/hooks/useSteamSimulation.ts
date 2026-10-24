@@ -2,20 +2,14 @@
 
 import { useCallback, useEffect, useReducer } from "react";
 import { SIMULATION } from "@/lib/simulation/simulationConstants";
-import { applySteamAction, initialSteamState, stepSteam, type SteamAction, type SteamState } from "@/lib/simulation/steamEngine";
-
-type SimulationUpdate = SteamAction | { type: "tick"; steps: number };
-
-function reducer(state: SteamState, action: SimulationUpdate): SteamState {
-  if (action.type !== "tick") return applySteamAction(state, action);
-  let next = state;
-  for (let i = 0; i < action.steps; i += 1) next = stepSteam(next, SIMULATION.fixedStep);
-  return next;
-}
+import type { SteamAction } from "@/lib/simulation/steamEngine";
+import { initialLabSimulation, labSimulationReducer } from "@/lib/revo/resourceFilling";
 
 export function useSteamSimulation(active = true) {
-  const [state, update] = useReducer(reducer, undefined, initialSteamState);
+  const [model, update] = useReducer(labSimulationReducer, undefined, initialLabSimulation);
   const dispatch = useCallback((action: SteamAction) => update(action), []);
+  const restoreMissionComplete = useCallback(() => update({ type: "restore-complete" }), []);
+  const cancelFilling = useCallback(() => update({ type: "cancel-fill" }), []);
 
   useEffect(() => {
     if (!active) return;
@@ -55,5 +49,5 @@ export function useSteamSimulation(active = true) {
     };
   }, [active]);
 
-  return { state, dispatch };
+  return { state: model.steam, filling: model.filling, dispatch, restoreMissionComplete, cancelFilling };
 }

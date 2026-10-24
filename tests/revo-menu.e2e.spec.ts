@@ -1,3 +1,4 @@
+import { finishAssembly } from "./helpers/revo-assembly";
 import { test as base, expect, type Page } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
@@ -90,7 +91,7 @@ test("journey navigation pauses the machine and preserves exploration, resources
     await componentList.getByRole("button", { name: new RegExp(name) }).click();
   }
   await expect(page.getByText("5/5 komponen dijelajahi")).toBeVisible();
-  await page.getByRole("button", { name: "Lanjut ke eksperimen", exact: true }).click();
+  await finishAssembly(page);
   await page.getByRole("button", { name: "Tambah air", exact: true }).click();
   await page.getByRole("button", { name: "Aktifkan suara", exact: true }).click();
   await page.getByRole("button", { name: "Nyalakan mesin", exact: true }).click();

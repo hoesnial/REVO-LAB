@@ -27,6 +27,7 @@ export type SteamAction =
   | { type: "start" }
   | { type: "stop" }
   | { type: "vent" }
+  | { type: "machine-reset" }
   | { type: "reset" };
 
 export function initialSteamState(): SteamState {
@@ -150,6 +151,17 @@ export function stepSteam(state: SteamState, dt: number): SteamState {
 }
 
 export function applySteamAction(state: SteamState, action: SteamAction): SteamState {
+  if (action.type === "machine-reset") {
+    const reset = initialSteamState();
+    return feedback({
+      ...reset,
+      production: state.production,
+      elapsed: state.elapsed,
+      peakPressure: state.peakPressure,
+      unsafeCount: state.unsafeCount,
+      missionComplete: state.missionComplete,
+    }, "machine-reset", "Kondisi operasi mesin direset. Progres dan riwayat keselamatan misi tetap tersimpan.");
+  }
   if (action.type === "reset") {
     return feedback({ ...initialSteamState(), event: state.event }, "reset",
       "Simulasi direset. Coba hasilkan 100 unit dengan tekanan tidak lebih dari 75.");
@@ -173,7 +185,7 @@ export function applySteamAction(state: SteamState, action: SteamAction): SteamS
     case "add-fuel":
       if (state.fuel >= 100) return feedback(state, "blocked", "Persediaan bahan bakar sudah penuh. Tidak ada bahan bakar yang ditambahkan.");
       return feedback({ ...state, fuel: clamp(state.fuel + C.fuelAddition) }, "fuel-added",
-        "Bahan bakar ditambahkan. Panas akan meningkat saat mesin menyala; awasi tekanan.");
+        "Bahan bakar ditambahkan. Batu bara memanaskan air untuk menghasilkan uap saat pembakaran aktif; awasi tekanan.");
     case "reduce-fuel":
       if (state.fuel <= 0) return feedback(state, "blocked", "Persediaan bahan bakar sudah kosong. Tidak ada pasokan yang dapat dikurangi.");
       return feedback({ ...state, fuel: clamp(state.fuel - C.fuelReduction) }, "fuel-reduced",
@@ -187,7 +199,7 @@ export function applySteamAction(state: SteamState, action: SteamAction): SteamS
         heat: Math.max(C.ambientHeat, state.heat - (added / C.waterAddition) * C.refillCooling),
       };
       next.safety = safetyFor(next, state.safety === "danger");
-      return feedback(next, "water-added", "Air ditambahkan ke ketel. Dalam model sederhana ini, air baru juga sedikit menurunkan panas.");
+      return feedback(next, "water-added", "Air ditambahkan ke ketel melalui pompa pengisi dan katup satu arah. Air dipanaskan menjadi uap; dalam model sederhana ini, air baru juga sedikit menurunkan panas.");
     }
     case "vent": {
       const next = {

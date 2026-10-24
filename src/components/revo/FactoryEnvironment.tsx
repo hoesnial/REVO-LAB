@@ -56,7 +56,7 @@ function BrickWall() {
   </group>;
 }
 
-export function FactoryEnvironment() {
+export function FactoryEnvironment({ onCoalSelect }: { onCoalSelect?: () => void }) {
   return <group>
     <Block position={[0, -0.2, 0]} size={[10.9, 0.4, 6.7]} color="#91816a" metalness={0} />
     <Block position={[0, -0.02, 0]} size={[11, 0.1, 6.8]} color="#b9ad92" metalness={0} />
@@ -70,8 +70,7 @@ export function FactoryEnvironment() {
     </group>)}
     <Block position={[0, 3.65, -2.39]} size={[9.6, 0.22, 0.18]} color={METAL} />
     <Block position={[0, 3.79, -2.39]} size={[9.7, 0.055, 0.31]} color="#50564e" />
-    <Cylinder position={[0.8, 2.82, -1.6]} radius={0.053} length={7.2} rotation={[0, 0, Math.PI / 2]} color="#726951" />
-    {[-1.8, 3.8].map((x) => <group key={x}>
+    {[-1.8, 4.3].map((x) => <group key={x}>
       <Rod start={[x, 3.66, -2.4]} end={[x, 2.83, -1.6]} radius={0.025} />
       <Cylinder position={[x, 2.82, -1.6]} radius={0.13} length={0.16} rotation={[0, 0, Math.PI / 2]} />
     </group>)}
@@ -87,7 +86,7 @@ export function FactoryEnvironment() {
     <Crate position={[4.45, 0.08, 1.75]} scale={0.95} />
     <Crate position={[4.2, 0.08, -1.95]} scale={0.85} />
     <Crate position={[4.15, 0.6, -1.95]} scale={0.72} />
-    <group position={[-4.2, 0.15, 1.5]}>
+    <group position={[-4.2, 0.15, 1.5]} onClick={event => { if (onCoalSelect && event.delta <= 4) { event.stopPropagation(); onCoalSelect(); } }}>
       <Block position={[0, 0.09, 0]} size={[1.05, 0.18, 0.88]} color={WOOD} metalness={0} />
       {[-0.51, 0.51].map((x) => <Block key={x} position={[x, 0.26, 0]} size={[0.08, 0.34, 0.93]} color={WOOD} metalness={0} />)}
       {Array.from({ length: 15 }, (_, i) => <mesh key={i} position={[-0.32 + (i % 4) * 0.22, 0.24 + Math.floor(i / 8) * 0.11, -0.27 + Math.floor(i / 4) * 0.18]} rotation={[i * 0.7, i * 1.8, i * 0.3]} castShadow>

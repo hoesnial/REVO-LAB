@@ -1,45 +1,49 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef } from "react";
 import { ArrowRight, Check, RotateCcw, Trophy, X } from "lucide-react";
 import { quizQuestions } from "@/lib/revo/content";
+import { scoreReflection, type ReflectionProgress } from "@/lib/revo/progress";
 
 interface QuizPanelProps {
+  progress: ReflectionProgress;
+  onProgress: (progress: ReflectionProgress) => void;
   onComplete: (score: number) => void;
   onClose: () => void;
 }
 
-export function QuizPanel({ onComplete, onClose }: QuizPanelProps) {
+export function QuizPanel({ progress, onProgress, onComplete, onClose }: QuizPanelProps) {
   const id = useId();
-  const [step, setStep] = useState(0);
-  const [selected, setSelected] = useState<number | null>(null);
-  const [answered, setAnswered] = useState(false);
-  const [score, setScore] = useState(0);
-  const [finished, setFinished] = useState(false);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const actionLocked = useRef(false);
+  const step = Math.min(progress.answers.length, quizQuestions.length - 1);
+  const selected = progress.draftAnswer;
+  const answered = progress.checked;
+  const score = progress.resultAnswers ? scoreReflection(progress.resultAnswers) : 0;
+  const finished = progress.resultAnswers !== null && !progress.retaking;
   const question = quizQuestions[step];
   const correct = selected === question.answer;
+
+  useEffect(() => { actionLocked.current = false; }, [progress.answers, progress.checked, progress.draftAnswer, progress.resultAnswers, progress.retaking]);
 
   const focusTitle = () => requestAnimationFrame(() => titleRef.current?.focus());
 
   const advance = () => {
+    if (!answered || selected === null || actionLocked.current) return;
+    actionLocked.current = true;
+    const answers = [...progress.answers, selected];
     if (step === quizQuestions.length - 1) {
-      setFinished(true);
-      onComplete(score);
+      onProgress({ ...progress, answers, draftAnswer: null, checked: false, resultAnswers: answers, retaking: false });
+      onComplete(scoreReflection(answers));
     } else {
-      setStep(step + 1);
-      setSelected(null);
-      setAnswered(false);
+      onProgress({ ...progress, answers, draftAnswer: null, checked: false });
     }
     focusTitle();
   };
 
   const retry = () => {
-    setStep(0);
-    setSelected(null);
-    setAnswered(false);
-    setScore(0);
-    setFinished(false);
+    actionLocked.current = true;
+    onProgress({ ...progress, answers: [], draftAnswer: null, checked: false, retaking: true });
     focusTitle();
   };
 
@@ -83,9 +87,9 @@ export function QuizPanel({ onComplete, onClose }: QuizPanelProps) {
       ) : (
         <form onSubmit={(event) => {
           event.preventDefault();
-          if (selected === null || answered) return;
-          if (correct) setScore((current) => current + 1);
-          setAnswered(true);
+          if (selected === null || answered || actionLocked.current) return;
+          actionLocked.current = true;
+          onProgress({ ...progress, checked: true });
         }}>
           <div className="revo-quiz-progress">
             <span>Pertanyaan {step + 1} dari {quizQuestions.length}</span>
@@ -99,7 +103,7 @@ export function QuizPanel({ onComplete, onClose }: QuizPanelProps) {
               const state = answered ? index === question.answer ? "is-correct" : selected === index ? "is-incorrect" : "" : selected === index ? "is-selected" : "";
               return (
                 <label className={`revo-quiz-option ${state}`} key={`${step}-${index}`}>
-                  <input type="radio" name={`${id}-answer`} value={index} checked={selected === index} onChange={() => setSelected(index)} />
+                  <input type="radio" name={`${id}-answer`} value={index} checked={selected === index} onChange={() => onProgress({ ...progress, draftAnswer: index, checked: false })} />
                   <span className="revo-quiz-letter" aria-hidden="true">{String.fromCharCode(65 + index)}</span>
                   <span>{option}</span>
                   {answered && index === question.answer && <Check size={18} aria-label="Jawaban benar" />}

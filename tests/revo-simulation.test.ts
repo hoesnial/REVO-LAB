@@ -170,6 +170,30 @@ describe("REVO steam engine learning model", () => {
     expect(reset.event.id).toBeGreaterThan(failed.event.id);
   });
 
+  it("resets current machine conditions without erasing mission production or its safety history", () => {
+    const working = { ...run(start(), 24), unsafeCount: 1, production: 37, peakPressure: 78 };
+    const reset = applySteamAction(working, { type: "machine-reset" });
+    expect(reset.running).toBe(false);
+    expect(reset.speed).toBe(0);
+    expect(reset.pressure).toBe(C.initial.pressure);
+    expect(reset.fuel).toBe(C.initial.fuel);
+    expect(reset.water).toBe(C.initial.water);
+    expect(reset.production).toBe(37);
+    expect(reset.elapsed).toBe(working.elapsed);
+    expect(reset.unsafeCount).toBe(1);
+    expect(reset.peakPressure).toBe(78);
+    expect(reset.missionComplete).toBe(false);
+    expect(reset.event.type).toBe("machine-reset");
+  });
+
+  it("does not undo a completed mission when only machine conditions reset", () => {
+    const complete = { ...initialSteamState(), production: 100, missionComplete: true, elapsed: 72 };
+    const reset = applySteamAction(complete, { type: "machine-reset" });
+    expect(reset.missionComplete).toBe(true);
+    expect(reset.production).toBe(100);
+    expect(reset.running).toBe(false);
+  });
+
   it("reports full and empty resource controls without claiming a change", () => {
     const full = { ...initialSteamState(), water: 100, fuel: 100, heat: 50 };
     const fuel = applySteamAction(full, { type: "add-fuel" });

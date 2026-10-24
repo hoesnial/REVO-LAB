@@ -12,7 +12,7 @@ export const ERAS = [
 export type EraId = typeof ERAS[number]["id"];
 
 export const STEAM_LEARNING_OBJECTIVES = [
-  "Mengenal komponen utama mesin uap.",
+  "Mengenal dan menghubungkan komponen utama mesin uap.",
   "Memahami mekanisasi dalam perkembangan industri.",
   "Mengoperasikan simulasi mesin uap.",
   "Menjelaskan dampak perkembangan teknologi terhadap produksi dan masyarakat.",

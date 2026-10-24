@@ -1,0 +1,25 @@
+.revo-resource-markers { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.revo-resource-markers > button { position: absolute; left: 0; top: 0; visibility: hidden; pointer-events: auto; width: 34px; height: 34px; border: 1px solid #5c7464; border-radius: 50%; background: #e7ecdd; color: #314d40; font: 700 12px var(--font-sans, sans-serif); box-shadow: 0 0 0 4px #f8f4dc70; cursor: pointer; }
+.revo-resource-markers > button[aria-pressed="true"] { background: #ffe234; }
+.revo-resource-markers > button:disabled { cursor: default; opacity: .65; }
+.revo-resource-context { position: absolute; z-index: 4; left: 18px; bottom: 92px; width: min(320px, calc(100% - 36px)); padding: 16px; border: 1px solid #b5bea5; background: #faf8ed; color: #304c3c; box-shadow: 0 8px 24px #293a2e1a; }
+.revo-resource-context > strong { display: block; padding-right: 22px; font-size: 10px; letter-spacing: .12em; }
+.revo-resource-context p { margin: 10px 0; font-size: 11px; line-height: 1.6; }
+.revo-resource-context small { display: block; margin-top: 8px; font-size: 9px; line-height: 1.5; color: #67755b; }
+.revo-resource-close { position: absolute; right: 5px; top: 5px; width: 30px; height: 30px; border: 0; background: transparent; color: #465e48; cursor: pointer; font-size: 22px; }
+.revo-fill-action { width: 100%; min-height: 38px; border: 1px solid #c8ac26; background: #ffe234; color: #304c3c; font-size: 11px; cursor: pointer; }
+.revo-fill-action:disabled { opacity: .55; cursor: default; }
+.revo-filling-status { padding: 8px 0; color: #e4e4cb; font-size: 10px; }
+.revo-filling-status > span { display: flex; justify-content: space-between; gap: 8px; }
+.revo-filling-status > i { display: block; height: 3px; margin-top: 5px; background: #58674f; }
+.revo-filling-status > i > span { display: block; height: 100%; background: #ffe234; }
+@media (max-width: 700px) {
+  .revo-resource-context { left: 8px; bottom: 52px; width: min(270px, calc(100% - 16px)); padding: 10px; }
+  .revo-resource-context p { font-size: 10px; line-height: 1.4; margin: 7px 0; }
+  .revo-resource-context small { display: none; }
+}
+@media (max-height: 500px) {
+  .revo-resource-context { left: 8px; bottom: 48px; padding: 9px; width: min(250px, calc(100% - 16px)); }
+  .revo-resource-context p, .revo-resource-context small { display: none; }
+  .revo-resource-context strong { margin-bottom: 6px; }
+}

@@ -14,7 +14,10 @@
   font-family: "DM Sans", sans-serif;
 }
 .revo-menu a:focus-visible, .revo-menu button:focus-visible { outline: 3px solid #a37d0a; outline-offset: 5px; }
+.revo-menu h1:focus-visible { outline: 2px solid #a37d0a; outline-offset: 5px; border-radius: 2px; }
 .revo-menu-left { display: flex; flex-direction: column; min-width: 0; padding: 38px clamp(28px, 4.3vw, 82px) 90px; }
+.revo-menu-left, .revo-menu-visual { animation: revo-screen-enter .3s ease-out both; }
+.revo-menu-visual { animation-delay: .035s; }
 .revo-menu-brand { display: flex; align-items: center; gap: 10px; }
 .revo-menu-brand > span { display: grid; place-items: center; width: 35px; height: 35px; border-radius: 50%; background: #ffe234; transform: rotate(-12deg); }
 .revo-menu-brand strong { font-family: "Manrope", sans-serif; font-size: 27px; font-weight: 700; letter-spacing: -1.4px; }
@@ -32,6 +35,10 @@
 .revo-menu-start:hover { background: #f3d629; box-shadow: 0 5px 0 #303a2010; }
 .revo-menu-start:hover svg { transform: translateX(3px); }
 .revo-menu-start svg { transition: transform .2s; }
+.revo-menu-continue { display: flex; align-items: center; justify-content: space-between; gap: 24px; width: min(100%, 255px); min-height: 46px; padding: 0 18px; border: 1px solid #cbd5ba; border-radius: 4px; background: #f1f3e8; color: #59674c; font-size: 11px; font-weight: 600; }
+.revo-menu-continue:hover { background: #e7ebda; }
+.revo-menu-continue:hover svg { transform: translateX(3px); }
+.revo-menu-continue svg { transition: transform .2s; }
 .revo-menu-help { display: inline-flex; align-items: center; gap: 9px; padding: 4px 0; font-size: 11px; color: #606a56; }
 .revo-menu-help:hover { color: #26332a; }
 .revo-menu .revo-dialog { margin: auto; }
@@ -91,7 +98,7 @@
   .revo-menu-title { font-size: clamp(27px, 7.7vw, 42px); }
   .revo-menu-title br { display: none; }
   .revo-menu-description { font-size: 11px; line-height: 1.7; margin-top: 16px; }
-  .revo-menu-actions { flex-direction: row; gap: 20px; align-items: center; margin-top: 20px; }
+  .revo-menu-actions { flex-direction: row; flex-wrap: wrap; gap: 12px 14px; align-items: center; margin-top: 20px; }
   .revo-menu-start { width: 185px; min-height: 47px; padding: 0 16px; font-size: 11px; gap: 15px; }
   .revo-menu-help { font-size: 10px; white-space: nowrap; }
   .revo-menu-help svg { width: 14px; }
