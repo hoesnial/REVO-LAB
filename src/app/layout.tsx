@@ -7,5 +7,15 @@ import "@fontsource/manrope/500.css";
 import "@fontsource/manrope/600.css";
 import "@fontsource/manrope/700.css";
 import "./globals.css";
-export const metadata:Metadata = {title:"HoesCodes Studio · Your personal AI studio",description:"A little space for big things. Build, learn, ship, and grow with your personal AI team."};
-export default function RootLayout({children}:{children:React.ReactNode}) {return <html lang="en" suppressHydrationWarning><body>{children}</body></html>;}
+export const metadata: Metadata = {
+  title: "REVO — Jelajah Revolusi Industri",
+  description: "Jelajahi sejarah. Hidupkan teknologi. Rasakan perubahannya.",
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="id">
+      <body>{children}</body>
+    </html>
+  );
+}

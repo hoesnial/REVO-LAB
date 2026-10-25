@@ -3,8 +3,7 @@ import { existsSync } from "node:fs";
 
 const localChrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
-// Intentionally reuse an already-running server. This suite does not create a
-// database, touch Studio's test fixtures, or connect to an existing browser.
+// Reuse an already-running REVO server; browser tests need no database.
 export default defineConfig({
   testDir: "./tests",
   testMatch: ["revo.e2e.spec.ts", "revo-menu.e2e.spec.ts", "revo-journey.e2e.spec.ts", "revo-assembly.e2e.spec.ts", "revo-filling.e2e.spec.ts", "revo-progress.e2e.spec.ts", "revo-polish.e2e.spec.ts"],
