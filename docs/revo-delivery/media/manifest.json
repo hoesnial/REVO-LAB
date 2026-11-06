@@ -1,0 +1,118 @@
+{
+  "reviewDate": "2026-11-01",
+  "sourceRevision": "a4c135d1d300cae5ee737ea7afcd48ba1137a8c6",
+  "repository": "https://github.com/hoesnial/REVO-LAB",
+  "purpose": "Artefak demonstrasi REVO-008; bukan data siswa atau bukti efektivitas belajar.",
+  "generator": "tests/revo-polish.e2e.spec.ts: captures REVO-007 screens and a short interactive demo recording",
+  "command": "REVO_BASE_URL=http://127.0.0.1:3002 npm run test:e2e -- tests/revo-polish.e2e.spec.ts --grep 'captures REVO-007'",
+  "environment": {
+    "node": "24.21.0",
+    "npm": "11.19.0",
+    "next": "16.4.3",
+    "browser": "Google Chrome 156.0.8078.74",
+    "graphics": "SwiftShader per playwright.revo.config.ts",
+    "desktopViewport": [
+      1440,
+      900
+    ],
+    "mobileViewport": [
+      390,
+      844
+    ]
+  },
+  "testResult": {
+    "selectedScenarios": 1,
+    "passed": 1,
+    "totalSeconds": 40.5,
+    "scenarioSeconds": 28.4,
+    "fullSuiteRerun": false
+  },
+  "provenance": [
+    "Menu diambil dari konteks browser baru.",
+    "Fixture assembly: eksplorasi selesai; boiler, pipe, flywheel terpasang; cek steam selesai; preferensi suara aktif.",
+    "Interaksi berikutnya memasang tekstil pada target salah lalu benar, memasang piston dan menyelesaikan cek rotation/factory.",
+    "Eksperimen benar-benar dinyalakan; screenshot diambil setelah produksi mulai, bukan setelah produksi 100 unit.",
+    "Fixture hasil terpisah: experimentComplete=true dan jawaban refleksi [1,0,2], skor 3/3; bukan bukti misi selesai secara langsung.",
+    "Perekaman viewport browser tidak merekam suara siswa atau narasi pengajar."
+  ],
+  "verification": {
+    "videoBrowserLoaded": true,
+    "videoBrowserSeekSeconds": 10,
+    "videoBrowserReadyState": 4,
+    "containerCreationTimeUTC": "2026-11-01T15:08:36.517Z",
+    "screenshotsVisuallyReviewed": [
+      "assembly-feedback-correct-snap.png",
+      "gameplay-hud-mobile.png",
+      "level-completed-desktop.png"
+    ],
+    "pngHeaderDimensionsChecked": true
+  },
+  "files": [
+    {
+      "path": "assembly-feedback-correct-snap.png",
+      "bytes": 281875,
+      "sha256": "e1e13dfae4e9dc912c43b6782105accb38884740fdedb2808934717ba26bcb18",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "assembly-feedback-wrong-target.png",
+      "bytes": 290811,
+      "sha256": "aee4f47ae6c40653af2c98c4487980ff0ea358ed3adc03b98a788a07f9f0139d",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "gameplay-hud-desktop.png",
+      "bytes": 327762,
+      "sha256": "8dafa238a75519f808f66683085eae5f47a4116f9d308845386cb02d0bf70355",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "gameplay-hud-mobile.png",
+      "bytes": 106710,
+      "sha256": "71a639937a434b29c381f14674361cae31d6acbba2fbd892868851e26d853f27",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "level-completed-desktop.png",
+      "bytes": 76854,
+      "sha256": "c96fbcf413954e6cadc4dc7b0f815bc5b50eb18e66b43042141ff321d45ff8ed",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "level-completed-mobile.png",
+      "bytes": 58284,
+      "sha256": "a65fc74405b1205177d9348fa24b08d7abc16e9073e038f91a72216efaa9ee20",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "main-menu-desktop.png",
+      "bytes": 289167,
+      "sha256": "646af9eaec793979a33a99ef441fa9dca6a05577055fb576623c611ec22729bf",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "main-menu-mobile.png",
+      "bytes": 90465,
+      "sha256": "c0391fe88476dc104dd8d156e8e6b63334de5b5cf26cdc689746a1857ded5b48",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "revo-007-interactive-demo.webm",
+      "bytes": 2592550,
+      "sha256": "dd1e935cce1a977bde2404c931df850a1d080e4cfe1939c7772e1d1156c2d359",
+      "width": 1440,
+      "height": 900,
+      "durationSeconds": 25.48,
+      "codec": "VP8",
+      "audioTrack": false
+    }
+  ]
+}

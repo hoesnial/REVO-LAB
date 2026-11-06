@@ -39,6 +39,14 @@ Set `REVO_BASE_URL` to use a different running server. Playwright requires a sup
 
 ## Learning flow
 
-Menu → Era selection → Industry 1.0 briefing → five-part exploration → 3D assembly and knowledge checks → safe steam-powered production → historical reflection → results.
+Menu → Era selection → learning objectives / Industry 1.0 briefing → five-part exploration → 3D assembly and knowledge checks → safe steam-engine observations (motion, output, and transmission) → historical reflection → learning summary.
 
 Progress is stored locally in the browser. The simulator uses an educational model, not engineering-grade thermodynamics. See [docs/REVO-LAB.md](docs/REVO-LAB.md) for the full walkthrough, mechanics, accessibility notes, and known limitations.
+
+## Academic review and presentation
+
+The Indonesian [REVO-008 delivery package](docs/revo-delivery/01-project-overview.md) includes learning-outcome mapping, a content audit, draft validation instruments and pre/post tests, a demo script with labelled demonstration media, a lecturer presentation outline, and a release-readiness checklist. It does not contain teacher approval, student results, or evidence of learning effectiveness.
+
+The [REVO-008R.1 revision audit](docs/REVO-008R1.md) documents the lecturer feedback, observation-based progression, V1→V2 save migration, verification results, and [before/after screenshots](docs/revo-008r1-media/README.md).
+
+The [REVO-008R.1.1 UI/UX audit](docs/REVO-008R1-1.md) records semantic resource controls, accessible answer states, contrast measurements, test-count reconciliation, and [visual evidence](docs/revo-008r1-1-media/README.md).

@@ -28,7 +28,7 @@ async function openLab(page: Page) {
 }
 
 async function resetLab(page: Page) {
-  const completedScreen = page.getByRole("heading", { name: "LEVEL COMPLETED", exact: true });
+  const completedScreen = page.getByRole("heading", { name: "PEMBELAJARAN SELESAI", exact: true });
   if (await completedScreen.isVisible().catch(() => false)) await page.getByRole("button", { name: "Ulangi Level", exact: true }).click();
   else await page.getByRole("button", { name: "Ulangi seluruh level", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: /Ulangi .*Industry 1\.0/ });
@@ -54,7 +54,7 @@ async function inspectFiveComponents(page: Page) {
 
 async function machineSnapshot(page: Page) {
   return page.evaluate(() => ({
-    production: document.querySelector<HTMLElement>(".revo-production-track > i")?.style.width,
+    production: document.querySelector<HTMLElement>('[data-testid="production"]')?.textContent,
     fuel: document.querySelector<HTMLElement>('[role="meter"][aria-label="Bahan bakar"] i')?.style.width,
     water: document.querySelector<HTMLElement>('[role="meter"][aria-label="Persediaan air"] i')?.style.width,
     pressure: document.querySelector<SVGPathElement>(".revo-pressure svg path:nth-of-type(2)")?.getAttribute("stroke-dasharray"),
@@ -121,6 +121,9 @@ test("the 3D transmission hotspot explains the real drive path and belts follow 
   if (!stoppedBounds) throw new Error("Transmission canvas disappeared after stopping the engine");
   const machinery = { x: stoppedBounds.x + stoppedBounds.width * 0.38, y: stoppedBounds.y + stoppedBounds.height * 0.2, width: stoppedBounds.width * 0.52, height: stoppedBounds.height * 0.5 };
   await page.waitForTimeout(4200);
+  // Coasting follows the simulation clock, which caps long frames. Under a
+  // loaded software renderer, wall time alone does not prove the engine rests.
+  await expect(page.getByRole("meter", { name: "Kecepatan", exact: true })).toHaveAttribute("aria-valuenow", "0", { timeout: 15_000 });
   const settled = await page.screenshot({ clip: machinery });
   await page.screenshot({ clip: machinery, path: path.join(screenshots, "power-transmission-coast-a.png") });
   await page.waitForTimeout(900);
@@ -200,7 +203,7 @@ test("manual pause, guidance and stage changes freeze the machine until Experime
   await expect(page.getByRole("button", { name: "Hentikan mesin", exact: true })).toBeVisible();
 });
 
-test("desktop: explore five components, control the camera, run a real safe mission, and score the quiz", async ({ page }) => {
+test("desktop: explore five components, control the camera, observe a real safe experiment, and score the quiz", async ({ page }) => {
   await openLab(page);
   await mkdir(screenshots, { recursive: true });
   await page.screenshot({ path: path.join(screenshots, "desktop-initial.png"), fullPage: true });
@@ -248,7 +251,7 @@ test("desktop: explore five components, control the camera, run a real safe miss
     await expect(page.getByRole("button", { name: "Aktifkan suara", exact: true })).toHaveAttribute("aria-pressed", "false");
   });
 
-  await test.step("a real running engine changes geometry and reaches 100 safe units", async () => {
+  await test.step("a real running engine changes geometry and unlocks Reflection with observations", async () => {
     // Reenter through the full journey so browser Back during reflection has
     // a real briefing destination; all five explored components must survive.
     await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
@@ -270,16 +273,18 @@ test("desktop: explore five components, control the camera, run a real safe miss
     const motionA = await page.screenshot({ clip, path: path.join(screenshots, "mechanism-frame-a.png") });
     await expect.poll(async () => (await page.screenshot({ clip })).equals(motionA), { message: "The running mechanical assembly must visibly move" }).toBe(false);
     await page.screenshot({ clip, path: path.join(screenshots, "mechanism-frame-b.png") });
-    await expect(page.getByRole("dialog", { name: "Misi berhasil", exact: true })).toBeVisible({ timeout: 110_000 });
-    await expect(page.getByRole("dialog", { name: "Misi berhasil", exact: true })).toHaveCount(1);
-    await expect(page.getByTestId("production")).toHaveText("100");
-    await expect(page.getByText("Batas aman terlewati — ulangi misi")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Lanjut ke Refleksi", exact: true })).toBeDisabled();
+    await page.getByRole("button", { name: "Informasi Transmisi Tenaga", exact: true }).click();
+    await page.getByRole("button", { name: "Kembali ke mesin", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Lanjut ke Refleksi", exact: true })).toBeEnabled();
+    expect(Number(await page.getByTestId("production").textContent())).toBeLessThan(100);
+    await expect(page.getByText("Batas aman terlewati — ulangi eksperimen")).toHaveCount(0);
     expect(await pressure(page)).toBeLessThanOrEqual(75);
-    await page.screenshot({ path: path.join(screenshots, "mission-complete.png") });
+    await page.screenshot({ path: path.join(screenshots, "observations-complete.png") });
   });
 
   await test.step("submit all three conceptual answers and display the score", async () => {
-    await page.getByRole("button", { name: "Lanjut refleksi", exact: true }).click();
+    await page.getByRole("button", { name: "Lanjut ke Refleksi", exact: true }).click();
     const dialog = page.getByRole("dialog", { name: "Refleksi dan evaluasi", exact: true });
     const answers = [
       "Pabrik lebih sedikit bergantung pada arus sungai sebagai sumber tenaga.",
@@ -309,7 +314,7 @@ test("desktop: explore five components, control the camera, run a real safe miss
         // After submission, the correct-answer icon joins the accessible name.
         await expect(dialog.getByRole("radio", { name: answers[0] })).toBeChecked();
         await expect(dialog.getByText("Tepat!", { exact: true })).toBeVisible();
-        await expect(page.getByTestId("production")).toHaveText("100");
+        expect(Number(await page.getByTestId("production").textContent())).toBeLessThan(100);
       }
       await dialog.getByRole("button", { name: i === 2 ? "Lihat hasil" : "Pertanyaan berikutnya", exact: true }).click();
     }
@@ -344,7 +349,7 @@ test("resource controls, depleted fuel, and excessive pressure produce honest sa
   await expect(fuel).toHaveAttribute("aria-valuenow", "100");
   await page.getByRole("button", { name: "Nyalakan mesin", exact: true }).click();
   await expect(page.locator(".revo-engine-status")).toContainText("Tekanan tinggi", { timeout: 60_000 });
-  await expect(page.getByText("Batas aman terlewati — ulangi misi")).toBeVisible();
+  await expect(page.getByText("Batas aman terlewati — ulangi eksperimen")).toBeVisible();
   await page.getByRole("button", { name: "Tambah air", exact: true }).click();
   await expect(page.locator(".revo-live-feedback")).toContainText("Pengisian tidak aman");
   await expect(page.getByRole("progressbar", { name: "Pengisian air", exact: true })).toHaveCount(0);
@@ -361,7 +366,7 @@ test("resource controls, depleted fuel, and excessive pressure produce honest sa
   await page.getByRole("button", { name: "Lepaskan tekanan", exact: true }).click();
   expect(await pressure(page)).toBeLessThan(beforeVenting - 15);
   await expect(page.locator(".revo-live-feedback")).toContainText("Uap dilepaskan");
-  await page.getByRole("button", { name: "Ulangi misi", exact: true }).click();
+  await page.getByRole("button", { name: "Ulangi eksperimen", exact: true }).click();
   await expect(page.getByTestId("production")).toHaveText("0");
   await expect(page.getByTestId("pressure")).toHaveText("10/100");
   await expect(fuel).toHaveAttribute("aria-valuenow", "35");
@@ -410,7 +415,7 @@ test("fullscreen HUD keeps the scene and learning controls reachable at four vie
   const canvas = page.locator(".revo-scene canvas");
   const lab = page.getByRole("region", { name: "Laboratorium interaktif" });
   await expect(canvas).toBeVisible();
-  await expect(lab.getByRole("progressbar", { name: "Produksi kain" })).toBeVisible();
+  await expect(lab.getByTestId("production")).toBeVisible();
   await inspectFiveComponents(page);
   await finishAssembly(page);
 

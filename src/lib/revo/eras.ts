@@ -12,8 +12,8 @@ export const ERAS = [
 export type EraId = typeof ERAS[number]["id"];
 
 export const STEAM_LEARNING_OBJECTIVES = [
-  "Mengenal dan menghubungkan komponen utama mesin uap.",
-  "Memahami mekanisasi dalam perkembangan industri.",
-  "Mengoperasikan simulasi mesin uap.",
-  "Menjelaskan dampak perkembangan teknologi terhadap produksi dan masyarakat.",
+  ["Mengidentifikasi", " komponen utama mesin uap dan menjelaskan fungsinya."],
+  ["Menjelaskan", " bagaimana mekanisme piston, batang penghubung, dan engkol menghasilkan gerak putar yang diteruskan ke roda gila."],
+  ["Mendemonstrasikan", " bagaimana tenaga mekanis disalurkan menuju mesin tenun."],
+  ["Menganalisis", " peran mekanisasi dalam perubahan proses produksi pada Revolusi Industri pertama."],
 ] as const;

@@ -1,0 +1,116 @@
+[
+  {
+    "width": 1440,
+    "screen": "resources",
+    "styles": [
+      {
+        "text": "Kurangi",
+        "color": "rgb(201, 208, 187)",
+        "background": "rgba(0, 0, 0, 0)",
+        "rect": {
+          "width": 92.25,
+          "height": 44
+        }
+      },
+      {
+        "text": "Tambah",
+        "color": "rgb(201, 208, 187)",
+        "background": "rgba(0, 0, 0, 0)",
+        "rect": {
+          "width": 92.25,
+          "height": 44
+        }
+      },
+      {
+        "text": "Tambah air",
+        "color": "rgb(201, 208, 187)",
+        "background": "rgba(0, 0, 0, 0)",
+        "rect": {
+          "width": 189.5,
+          "height": 44
+        }
+      }
+    ]
+  },
+  {
+    "width": 1440,
+    "screen": "assembly",
+    "styles": [
+      {
+        "text": "Ketel memanaskan air dengan panas pembakaran.",
+        "color": "rgb(0, 0, 0)",
+        "background": "rgba(0, 0, 0, 0)",
+        "parent": "rgb(40, 54, 45)"
+      },
+      {
+        "text": "Pipa menghasilkan uap saat roda berputar.",
+        "color": "rgb(0, 0, 0)",
+        "background": "rgba(0, 0, 0, 0)",
+        "parent": "rgb(40, 54, 45)"
+      },
+      {
+        "text": "Roda gila mengubah putarannya menjadi uap.",
+        "color": "rgb(0, 0, 0)",
+        "background": "rgba(0, 0, 0, 0)",
+        "parent": "rgb(40, 54, 45)"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "screen": "resources",
+    "styles": [
+      {
+        "text": "Kurangi",
+        "color": "rgb(201, 208, 187)",
+        "background": "rgba(0, 0, 0, 0)",
+        "rect": {
+          "width": 173.375,
+          "height": 44
+        }
+      },
+      {
+        "text": "Tambah",
+        "color": "rgb(201, 208, 187)",
+        "background": "rgba(0, 0, 0, 0)",
+        "rect": {
+          "width": 173.375,
+          "height": 44
+        }
+      },
+      {
+        "text": "Tambah air",
+        "color": "rgb(201, 208, 187)",
+        "background": "rgba(0, 0, 0, 0)",
+        "rect": {
+          "width": 351.75,
+          "height": 44
+        }
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "screen": "assembly",
+    "styles": [
+      {
+        "text": "Ketel memanaskan air dengan panas pembakaran.",
+        "color": "rgb(0, 0, 0)",
+        "background": "rgba(0, 0, 0, 0)",
+        "parent": "rgb(40, 54, 45)"
+      },
+      {
+        "text": "Pipa menghasilkan uap saat roda berputar.",
+        "color": "rgb(0, 0, 0)",
+        "background": "rgba(0, 0, 0, 0)",
+        "parent": "rgb(40, 54, 45)"
+      },
+      {
+        "text": "Roda gila mengubah putarannya menjadi uap.",
+        "color": "rgb(0, 0, 0)",
+        "background": "rgba(0, 0, 0, 0)",
+        "parent": "rgb(40, 54, 45)"
+      }
+    ]
+  }
+]

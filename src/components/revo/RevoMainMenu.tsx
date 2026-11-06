@@ -14,7 +14,7 @@ const instructions = [
   { icon: MousePointer2, title: "Lihat lebih dekat", text: "Gulir roda tetikus atau cubit dengan dua jari untuk memperbesar dan memperkecil. Tombol +, −, dan Reset kamera juga tersedia." },
   { icon: ScanSearch, title: "Kenali setiap komponen", text: "Klik penanda bernomor pada mesin atau pilih tombol komponen untuk membaca fungsi dan perannya. Semua tombol dapat dijangkau dengan Tab. Setelah 5/5, buka Perakitan: seret bagian dari baki 3D atau pilih komponen, sambungan, lalu Pasang komponen. Selesaikan tiga cek pemahaman sebelum memilih UJI MESIN." },
   { icon: SlidersHorizontal, title: "Hidupkan mesin uap", text: "Tekan Nyalakan mesin. Tambahkan air saat menipis, atur bahan bakar, dan lepaskan tekanan bila perlu. Perhatikan perubahan panas, tekanan, dan kecepatan." },
-  { icon: ShieldCheck, title: "Selesaikan misi", text: "Hasilkan 100 unit kain dengan tekanan tetap ≤ 75 untuk membuka refleksi. Jika batas aman terlewati, mulai ulang dan coba strategi baru." },
+  { icon: ShieldCheck, title: "Amati dan refleksikan", text: "Amati gerak dan hasil produksi dengan tekanan model ≤75. Periksa transmisi tenaga T, lalu hubungkan pengamatanmu dengan perubahan industri." },
 ];
 
 export default function RevoMainMenu() {

@@ -1,0 +1,167 @@
+/* REVO-008R.1: readable educational content, with scrolling confined to panels. */
+.revo-experience { --revo-ink: #29372c; --revo-muted: #4b5945; --revo-green: #203e32; }
+.revo-experience :is(p, li) { line-height: 1.6; }
+.revo-learning-objectives {
+  padding: clamp(18px, 2vw, 28px); margin: 22px 0;
+  border-radius: 8px; background: #203e32; color: #fffdf2;
+  border: 1px solid #708873; text-align: left;
+}
+.revo-experience .revo-learning-objectives h2 { color: #fffdf2; font-size: clamp(20px, 1.7vw, 26px); line-height: 1.3; letter-spacing: .02em; margin: 0 0 14px; }
+.revo-experience .revo-learning-objectives :is(p, li) { color: #fffdf2; font-size: 17px; line-height: 1.65; }
+.revo-learning-objectives ol { list-style: decimal; padding-left: 25px; margin: 15px 0; display: grid; gap: 14px; }
+.revo-learning-objectives li { padding-left: 5px; }
+.revo-learning-objectives strong { color: #ffe234; font-weight: 700; }
+.revo-learning-objectives small { display: block; color: #e0e9dc; font-size: 14px; }
+.revo-experience :is(.revo-flow-screen, .revo-completion-screen) { --flow-muted: #4b5945; --completion-muted: #4b5945; }
+.revo-experience :is(.revo-flow-eyebrow, .revo-flow-step, .revo-flow-footer, .revo-briefing-session-note, .revo-briefing-visual-label, .revo-era-label, .revo-era-availability, .revo-completion-footer, .revo-completion-era) { color: #4b5945; font-size: 12px; }
+.revo-experience :is(.revo-era-description, .revo-era-intro > p, .revo-briefing-intro, .revo-briefing-path, .revo-briefing-visual figcaption p, .revo-completion-message, .revo-completion-conclusions p) { color: #4b5945; font-size: 16px; }
+.revo-experience :is(.revo-era-enter, .revo-era-locked, .revo-flow-back, .revo-briefing-actions .revo-menu-start, .revo-briefing-actions .revo-flow-back, .revo-completion-actions > *, .revo-menu-actions > *, .revo-menu-continue) { font-size: 15px; }
+.revo-experience .revo-briefing-reading h1 { font-size: clamp(32px, 3.6vw, 54px); }
+.revo-experience .revo-briefing-subtitle { color: #4b5945; }
+.revo-experience .revo-completion-body { height: 100%; width: min(1280px,100%); }
+.revo-experience .revo-completion-results :is(span, small) { color: #4b5945; font-size: 14px; }
+.revo-experience .revo-completion-conclusions h3 { font-size: 16px; }
+.revo-experience .revo-completion-conclusions { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.revo-completion-observations { margin: 22px 0; padding: 20px; background: #e6ecdb; color: #29372c; border: 1px solid #77876d; border-radius: 6px; }
+.revo-completion-observations h2 { font-size: 22px; }
+.revo-completion-observations p { font-size: 16px; margin-top: 10px; }
+
+.revo-hud .revo-hud-header nav > :is(a, button) { color: #354d3b; border-color: #7c8c73; font-size: 14px; min-height: 42px; }
+.revo-hud .revo-hud-title > span { font-size: 11px; color: #4b5945; }
+.revo-hud .revo-stages button { font-size: 14px; }
+.revo-hud .revo-stage-bar { gap: 12px; }
+.revo-hud .revo-stages { gap: 12px; }
+.revo-hud .revo-lab-tools { gap: 8px; }
+.revo-hud .revo-lab-tools .revo-session-label { display: none; }
+.revo-hud .revo-save-status { color: #4b5945; font-size: 12px; letter-spacing: 0; }
+.revo-hud .revo-workspace-actions .revo-era-chip { color: #4b5945; font-size: 12px; }
+.revo-hud .revo-workspace-actions .revo-reset { font-size: 13px; }
+.revo-hud .revo-lab-grid { grid-template-columns: minmax(0,1fr) clamp(350px,30vw,440px); }
+.revo-hud .revo-hud-sidebar { overflow-y: auto; overscroll-behavior: contain; }
+.revo-hud .revo-hud-controls { flex: none; overflow: visible; }
+.revo-hud .revo-control { padding: 20px; }
+.revo-hud .revo-control :is(.revo-kicker, .revo-engine-status, .revo-pressure-value > span, .revo-pressure-scale, .revo-meter-label, .revo-model-note, .revo-meter-label small) { font-size: 13px; color: #eef1e5; }
+.revo-hud .revo-control :is(button, .revo-meter-label > strong) { font-size: 15px; }
+.revo-hud .revo-control button { min-height: 44px; }
+.revo-hud .revo-engine-status > span { font-size: 12px; color: #eef1e5; }
+.revo-hud .revo-control .revo-safe-text { color: #d4ebaf; }
+.revo-hud .revo-control .revo-warn-text { color: #ffbe8a; }
+.revo-hud .revo-exhibit-title :is(.revo-kicker, .revo-location) { color: #3f5036; font-size: 12px; }
+.revo-hud .revo-component-list > button:nth-child(n) { font-size: 14px; color: #34482e; }
+.revo-hud .revo-component-info { background: #fffdf2; max-height: min(360px,calc(100% - 150px)); }
+.revo-hud .revo-component-info h2 { font-size: 20px; }
+.revo-hud .revo-component-info :is(p, .revo-component-role > p) { color: #3d4c35; font-size: 16px; line-height: 1.6; }
+.revo-hud .revo-component-info :is(.revo-kicker, small, .revo-component-role > span) { color: #4b5945; font-size: 13px; }
+.revo-hud .revo-component-actions > button { width: 36px; height: 36px; }
+.revo-hud .revo-learning-note { max-height: 105px; }
+.revo-hud .revo-learning-note :is(p, .revo-live-feedback) { color: #394d33; font-size: 14px; line-height: 1.5; }
+.revo-hud .revo-learning-note > div:nth-child(2) > span { color: #4b5945; font-size: 12px; }
+.revo-hud :is(.revo-hud-history > summary, .revo-history p, .revo-history article > p) { font-size: 16px; }
+.revo-learning-progress { flex: none; order: -1; padding: 20px; background: #e8eedb; color: #29372c; border-bottom: 1px solid #7e8e6d; }
+.revo-learning-progress h2 { font-size: 20px; margin-bottom: 8px; }
+.revo-learning-progress :is(p, li, summary) { font-size: 16px; }
+.revo-learning-progress details { margin: 14px 0; }
+.revo-learning-progress summary { cursor: pointer; font-weight: 700; padding: 8px 0; }
+.revo-learning-progress ul { list-style: none; padding: 0; margin: 12px 0; display: grid; gap: 10px; }
+.revo-learning-progress li { display: flex; gap: 8px; align-items: baseline; }
+.revo-learning-progress li svg { flex: none; }
+.revo-learning-progress > button { width: 100%; margin-top: 12px; font-size: 16px; min-height: 44px; }
+.revo-learning-progress button:disabled { opacity: 1; background: #d2d7c9; color: #4b5545; cursor: not-allowed; }
+.revo-observation-output { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 15px; }
+.revo-observation-output strong { font-size: 24px; }
+.revo-observation-output small { font-size: 14px; }
+.revo-observation-warning { padding: 12px; color: #71301e; background: #fff2da; border: 2px solid #995530; }
+.revo-hud .revo-assembly-panel { overflow-y: auto; }
+.revo-hud .revo-assembly-scroll { flex: none; overflow: visible; }
+.revo-hud .revo-assembly-panel :is(p, button, select, label, summary) { font-size: 16px; line-height: 1.6; }
+.revo-hud .revo-assembly-panel :is(small, .revo-kicker, .revo-assembly-counts, .revo-assembly-counts span, summary span) { font-size: 13px; }
+.revo-hud .revo-assembly-panel :is(h3, .revo-assembly-check h3) { font-size: 18px; }
+.revo-hud .revo-assembly-panel .revo-assembly-intro > p { display: block; }
+.revo-hud .revo-assembly-check > button { border-color: #95aa7d; }
+.revo-hud :is(.revo-assembly-caption, .revo-assembly-tray-label, .revo-assembly-flow, .revo-assembly-flow > strong, .revo-orbit-hint) { font-size: 12px; color: #354a2f; background-color: #faf7e4; }
+.revo-experience .revo-dialog :is(p, li, button, .revo-quiz-options > button) { font-size: 17px; line-height: 1.6; }
+.revo-experience .revo-dialog :is(.revo-kicker, .revo-quiz-progress, .revo-narration-status, .revo-guide-note, .revo-energy-flow strong, .revo-energy-flow span) { font-size: 14px; }
+.revo-experience .revo-dialog :is(p, .revo-quiz-explanation) { color: #3d4c35; }
+.revo-experience .revo-dialog .revo-quiz-options > button { border-color: #77896a; }
+.revo-experience .revo-dialog .revo-learning-objectives :is(p, li) { color: #fffdf2; }
+.revo-experience :is(.revo-menu-instructions p, .revo-menu-intro, .revo-menu-description, .revo-about p) { font-size: 16px; color: #4b5945; }
+.revo-experience :is(.revo-menu-kicker, .revo-menu-subtitle, .revo-menu-footer, .revo-menu-version) { color: #4b5945; font-size: 12px; }
+
+@media (max-width: 1100px) {
+  .revo-hud .revo-hud-title { padding-left: 10px; }
+  .revo-hud .revo-hud-title > span { display: none; }
+  .revo-hud .revo-save-status { display: none; }
+}
+@media (max-width: 720px) {
+  .revo-hud .revo-hud-header nav > :is(a,button) { font-size: 0; width: 40px; min-height: 40px; }
+  .revo-hud .revo-lab-grid, .revo-hud .revo-lab-grid.revo-lab-expanded, .revo-hud .revo-lab-grid.revo-assembly-grid { grid-template-columns: 1fr; grid-template-rows: minmax(0,1fr) clamp(180px,31dvh,265px); }
+  .revo-hud .revo-stages button { font-size: 12px; gap: 4px; }
+  .revo-hud .revo-stage-number { width: 20px; height: 20px; }
+  .revo-hud .revo-stages { gap: 4px; }
+  .revo-hud .revo-workspace-actions .revo-era-chip { font-size: 11px; }
+  .revo-hud .revo-component-info { bottom: 108px; max-height: calc(100% - 124px); }
+  .revo-hud .revo-component-info :is(p, .revo-component-role > p) { font-size: 15px; }
+  .revo-hud .revo-learning-note :is(p, .revo-live-feedback) { font-size: 13px; }
+  .revo-hud .revo-learning-note { max-height: 85px; }
+  .revo-hud .revo-assembly-panel :is(p,button,select,label,summary), .revo-learning-progress :is(p,li,summary) { font-size: 15px; }
+  .revo-hud .revo-assembly-panel .revo-assembly-intro { padding: 12px; }
+  .revo-hud .revo-assembly-panel .revo-assembly-intro > p { display: none; }
+  .revo-hud .revo-assembly-counts { flex-wrap: wrap; }
+  .revo-hud .revo-assembly-caption { display: none; }
+  .revo-hud .revo-assembly-tray-label { font-size: 10px; }
+  .revo-experience .revo-learning-objectives { padding: 18px; }
+  .revo-experience .revo-learning-objectives :is(p,li) { font-size: 16px; }
+  .revo-experience .revo-completion-results { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .revo-experience .revo-completion-conclusions { grid-template-columns: 1fr; }
+  .revo-experience .revo-completion-intro h1 { font-size: 28px; overflow-wrap: anywhere; }
+  .revo-experience .revo-dialog :is(p,li,button) { font-size: 16px; }
+}
+@media (max-width: 360px) {
+  .revo-hud .revo-stage-bar { padding-inline: 8px; }
+  .revo-hud .revo-stages button { font-size: 11px; gap: 3px; }
+  .revo-hud .revo-stages { gap: 2px; }
+  .revo-hud .revo-stage-number { width: 16px; height: 16px; font-size: 10px; }
+  .revo-hud .revo-lab-grid, .revo-hud .revo-lab-grid.revo-lab-expanded, .revo-hud .revo-lab-grid.revo-assembly-grid { grid-template-rows: minmax(0,1fr) 160px; }
+  .revo-experience .revo-flow-footer { font-size: 10px; }
+}
+
+.revo-experience .revo-dialog .revo-quiz-option { font-size: 17px; line-height: 1.6; color: #29372c; border-color: #77896a; }
+.revo-experience .revo-dialog .revo-quiz-feedback { font-size: 16px; }
+@media(max-width:720px) { .revo-hud .revo-brand strong { display: none; } .revo-hud .revo-hud-title h1 { font-size: 12px; } .revo-hud .revo-hud-header { gap: 6px; padding-inline: 8px; } .revo-experience .revo-dialog .revo-quiz-option { font-size: 16px; } }
+
+.revo-hud .revo-stages button { border: 0; background: transparent; color: #3b4e32; }
+.revo-hud .revo-stages button[aria-selected="true"] { color: #29372c; }
+.revo-hud .revo-workspace-actions :is(.revo-icon-button,.revo-reset), .revo-hud .revo-camera-tools > button { border: 1px solid #7d8c73; border-radius: 5px; }
+.revo-hud .revo-component-list > button:nth-child(n) { border: 0; border-right: 1px solid #b8c3a9; background: transparent; }
+.revo-hud .revo-learning-note > button { background: transparent; border: 1px solid #7d8c73; border-radius: 5px; }
+.revo-experience :is(.revo-menu-eyebrow,.revo-menu-session-note,.revo-menu-caption-label,.revo-briefing-visual figcaption > span) { color: #4b5945; font-size: 12px; }
+.revo-hud .revo-learning-progress .revo-secondary-button { color: #354d2f; border-color: #7d8c73; }
+.revo-experience .revo-dialog .revo-quiz-options legend { font-size: 22px; line-height: 1.5; color: #29372c; }
+/* Native button defaults must not introduce light backgrounds in dark panels. */
+:where(.revo-experience) button { background: transparent; border: 0; }
+.revo-experience :is(.revo-secondary-button, .revo-flow-back) { color: #354d2f; border-color: #7d8c73; }
+.revo-experience :is(.revo-menu-visual-top, .revo-menu-caption strong > span, .revo-menu-ruler, .revo-era-number, .revo-completion-subtitle, .revo-completion-card-index, .revo-completion-screen .revo-kicker) { color: #4b5945; }
+.revo-experience :is(.revo-menu-visual-top, .revo-menu-caption strong > span, .revo-menu-ruler, .revo-completion-card-index) { font-size: 12px; }
+.revo-hud .revo-brand > small, .revo-hud .revo-era-chip > span { color: #4b5945; font-size: 12px; }
+.revo-hud .revo-workspace-actions .revo-reset { color: #354d2f; background: #e9eddf; }
+.revo-hud .revo-pressure-value strong small { color: #d8e2cf; font-size: 13px; }
+.revo-hud .revo-hud-history :is(.revo-kicker, button) { color: #d8e2cf; font-size: 14px; }
+.revo-experience .revo-dialog :is(.revo-eyebrow, .revo-quiz-progress > span, .revo-quiz-letter) { color: #4b5945; font-size: 14px; }
+.revo-hud .revo-stages button[aria-selected="true"] { border-bottom: 3px solid #354d2f; }
+.revo-experience :is(a,button,input,select,summary,[tabindex]):focus-visible { outline: 3px solid #8b6500; outline-offset: 3px; }
+.revo-hud :is(.revo-control,.revo-assembly-panel,.revo-hud-history) :is(a,button,input,select,summary,[tabindex]):focus-visible { outline-color: #ffe234; }
+.revo-experience .revo-dialog :is(.revo-kicker,.revo-history-sources,.revo-energy-flow span,.revo-energy-flow strong) { color: #4b5945; font-size: 14px; }
+.revo-experience .revo-dialog .revo-quiz-feedback { color: #354d2f; }
+.revo-experience .revo-dialog .revo-quiz-feedback strong { font-size: 16px; }
+.revo-experience :is(.revo-camera-tools > button,.revo-icon-button,.revo-dialog-close) { color: #354d2f; }
+/* Filling explanations use the same reading scale as the other learning cards. */
+.revo-hud .revo-resource-context { max-height: calc(100% - 120px); overflow-y: auto; overscroll-behavior: contain; }
+.revo-hud .revo-resource-context > strong { font-size: 14px; letter-spacing: .04em; }
+.revo-hud .revo-resource-context p { display: block; font-size: 16px; line-height: 1.6; }
+.revo-hud .revo-resource-context small { display: block; color: #4b5945; font-size: 14px; }
+.revo-hud .revo-resource-context .revo-fill-action { min-height: 44px; font-size: 15px; }
+.revo-hud .revo-filling-status { font-size: 14px; }
+@media(max-width:720px) {
+  .revo-hud .revo-resource-context { top: 8px; bottom: auto; width: min(270px,calc(100% - 160px)); max-height: calc(100% - 16px); }
+  .revo-hud .revo-resource-context p { font-size: 15px; }
+}

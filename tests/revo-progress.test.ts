@@ -1,3 +1,4 @@
+import { initialObservations } from "@/lib/revo/experiment";
 import { describe, expect, it } from "vitest";
 import { initialAssemblyState } from "@/lib/revo/assembly";
 import {
@@ -18,10 +19,11 @@ import { initialLabSimulation, labSimulationReducer } from "@/lib/revo/resourceF
 const parts = ["boiler", "pipe", "piston", "flywheel", "textile"] as const;
 const checks = ["steam", "rotation", "factory"] as const;
 const correctAnswers = [1, 0, 2];
+const observations = { ...initialObservations(), operated: true, motionObserved: true, transmissionInspected: true, production: 0.25, peakPressure: 15, elapsed: 1 };
 
 function progress(overrides: Partial<Parameters<typeof createRevoProgress>[0]> = {}) {
   return createRevoProgress({
-    explored: [...parts], placed: [...parts], checks: [...checks], experimentComplete: true,
+    observations, explored: [...parts], placed: [...parts], checks: [...checks], experimentComplete: true,
     reflection: initialReflectionProgress(), checkpoint: 2, soundEnabled: false, ...overrides,
   });
 }
@@ -34,6 +36,7 @@ class MemoryStorage implements StorageLike {
 }
 
 const rawSave = (value: unknown) => JSON.stringify({
+  observations,
   version: REVO_PROGRESS_VERSION,
   selectedEra: "industry-1",
   explored: [...parts],
@@ -139,14 +142,15 @@ describe("REVO local progress schema", () => {
     expect(scoreReflection(restored?.reflection.resultAnswers ?? [])).toBe(3);
   });
 
-  it("restores experiment completion as a stopped machine with no filling", () => {
+  it("restores observation records independently of a stopped fresh machine", () => {
+    const restored = progress();
     const initial = initialLabSimulation();
-    const restored = labSimulationReducer(initial, { type: "restore-complete" });
-    expect(restored.steam.missionComplete).toBe(true);
-    expect(restored.steam.production).toBe(100);
-    expect(restored.steam.running).toBe(false);
-    expect(restored.steam.speed).toBe(0);
-    expect(restored.filling.kind).toBeNull();
+    expect(restored.experimentComplete).toBe(true);
+    expect(restored.observations.production).toBe(0.25);
+    expect(initial.steam.production).toBe(0);
+    expect(initial.steam.running).toBe(false);
+    expect(initial.steam.speed).toBe(0);
+    expect(initial.filling.kind).toBeNull();
   });
 
   it("keeps an incomplete experiment at safe initial resources rather than restoring a running timer", () => {
@@ -221,4 +225,42 @@ describe("REVO local progress schema", () => {
     expect(raw.reflection.score).toBeUndefined();
     expect(readRevoProgress(storage).progress?.levelComplete).toBe(true);
   });
+  it("migrates valid V1 completed records without inventing observations", () => {
+    const restored = normalizeProgress(JSON.parse(rawSave({ version: 1, observations: undefined, checkpoint: 4,
+      reflection: { answers: [], draftAnswer: null, checked: false, resultAnswers: [1, 0, 2], retaking: false } })));
+    expect(restored?.version).toBe(2);
+    expect(restored?.levelComplete).toBe(true);
+    expect(restored?.observations).toEqual({ ...initialObservations(), legacyCompleted: true });
+    expect(scoreReflection(restored?.reflection.resultAnswers ?? [])).toBe(3);
+  });
+  it("migrates partial V1 exploration and assembly without bypassing observations", () => {
+    const restored = normalizeProgress(JSON.parse(rawSave({ version: 1, observations: undefined, experimentComplete: false, checkpoint: 3 })));
+    expect(restored?.explored).toHaveLength(5);
+    expect(restored?.assembly.checks).toHaveLength(3);
+    expect(restored?.observations).toEqual(initialObservations());
+    expect(restored?.checkpoint).toBe(2);
+    expect(restored?.experimentComplete).toBe(false);
+  });
+  it("revokes V2 experiment flags with missing or unsafe observation evidence", () => {
+    for (const partial of [{ transmissionInspected: false }, { production: 0 }, { unsafeCount: 1 }, { peakPressure: 76 }]) {
+      const restored = normalizeProgress(JSON.parse(rawSave({ observations: { ...observations, ...partial }, checkpoint: 4 })));
+      expect(restored?.experimentComplete).toBe(false);
+      expect(restored?.checkpoint).toBe(2);
+    }
+    expect(normalizeProgress(JSON.parse(rawSave({ observations: { ...observations, production: -1 } })))).toBeNull();
+  });
+
+  it("drops negative draft indices instead of restoring an impossible answer", () => {
+    const restored = normalizeProgress(JSON.parse(rawSave({ reflection: { answers: [], draftAnswer: -1, checked: true, resultAnswers: null, retaking: false } })));
+    expect(restored?.reflection.draftAnswer).toBeNull();
+    expect(restored?.reflection.checked).toBe(false);
+  });
+
+  it("does not accept legacy provenance on a V2 incomplete experiment", () => {
+    const restored = normalizeProgress(JSON.parse(rawSave({ experimentComplete: false, observations: { ...initialObservations(), legacyCompleted: true }, checkpoint: 3 })));
+    expect(restored?.observations.legacyCompleted).toBe(false);
+    expect(restored?.experimentComplete).toBe(false);
+    expect(restored?.checkpoint).toBe(2);
+  });
+
 });

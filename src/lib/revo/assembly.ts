@@ -10,7 +10,13 @@ export const ASSEMBLY_PARTS = [
 
 export const ASSEMBLY_CHECKS = [
   { id: "steam", requires: ["boiler", "pipe"], question: "Apa yang menghasilkan uap dalam sistem ini?", options: ["Ketel memanaskan air dengan panas pembakaran.", "Pipa menghasilkan uap saat roda berputar.", "Roda gila mengubah putarannya menjadi uap."], answer: 0, explanation: "Ketel menghasilkan uap dari air yang dipanaskan. Pipa menyalurkan uap, sedangkan roda gila menyimpan energi gerak." },
-  { id: "rotation", requires: ["piston", "flywheel"], question: "Bagaimana gerak piston menjadi putaran?", options: ["Roda gila menciptakan energi dan menarik piston tanpa penghubung.", "Batang penghubung dan engkol mengubah gerak bolak-balik; roda gila membantu menjaga putaran.", "Uap langsung memutar mesin tekstil tanpa mekanisme penggerak."], answer: 1, explanation: "Batang penghubung dan engkol mengubah gerak bolak-balik piston menjadi putaran. Roda gila membantu meratakan kecepatan; ia tidak menghasilkan energi baru." },
+  { id: "rotation", requires: ["piston", "flywheel"], question: "Pada mesin uap, piston bergerak maju-mundur. Bagaimana gerakan tersebut dapat menghasilkan putaran pada roda gila?",
+    options: [
+      "Pipa uap langsung memutar roda gila tanpa mekanisme penghubung.",
+      "Batang penghubung meneruskan gerakan piston ke engkol yang mengubahnya menjadi gerak putar, sedangkan roda gila membantu menjaga kestabilan putaran.",
+      "Ketel uap secara langsung menggerakkan roda gila melalui aliran air.",
+      "Roda gila berputar sendiri tanpa menerima tenaga dari mekanisme piston.",
+    ], answer: 1, explanation: "Gerakan maju-mundur piston diteruskan oleh batang penghubung ke mekanisme engkol. Mekanisme tersebut mengubahnya menjadi gerak putar pada poros, sementara roda gila membantu mempertahankan putaran yang lebih stabil." },
   { id: "factory", requires: ["boiler", "pipe", "piston", "flywheel", "textile"], question: "Mengapa tenaga uap penting bagi lokasi pabrik?", options: ["Pabrik tidak lagi memerlukan air atau bahan bakar.", "Semua pabrik bertenaga air langsung berhenti digunakan.", "Mesin dapat digerakkan tanpa bergantung sepenuhnya pada tenaga aliran sungai."], answer: 2, explanation: "Tenaga uap mengurangi ketergantungan pada tenaga air setempat. Pasokan air, batu bara, dan transportasi tetap penting; tenaga air juga tetap digunakan." },
 ] as const;
 export type AssemblyCheckId = typeof ASSEMBLY_CHECKS[number]["id"];
@@ -38,12 +44,12 @@ export function assemblyComplete(state: AssemblyState) {
 export function assemblyProgress(state: AssemblyState) {
   return Math.round((state.placed.length + state.checks.length) / (ASSEMBLY_PARTS.length + ASSEMBLY_CHECKS.length) * 100);
 }
-export function canEnterStage(stage: number, explored: number, assembly: AssemblyState, missionComplete: boolean) {
+export function canEnterStage(stage: number, explored: number, assembly: AssemblyState, experimentReady: boolean) {
   if (stage === 0) return true;
   if (explored !== 5) return false;
   if (stage === 1) return true;
   if (!assemblyComplete(assembly)) return false;
-  return stage === 2 || stage === 3 && missionComplete;
+  return stage === 2 || stage === 3 && experimentReady;
 }
 export function assemblyReducer(state: AssemblyState, action: AssemblyAction): AssemblyState {
   if (action.type === "reset") return initialAssemblyState();

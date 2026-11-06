@@ -3,6 +3,7 @@
 import { useMemo, useRef, type RefObject } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { Droplets, Flame } from "lucide-react";
 import { Block, Cylinder, Pipe, Ring, Rod } from "./ScenePrimitives";
 import { coalPose, fillingProgress, type FillingState, type ResourceKind } from "@/lib/revo/resourceFilling";
 import type { SceneVector } from "./scene-types";
@@ -94,7 +95,7 @@ export function ResourceContext({ resources }: { resources: ResourceSceneProps }
     <button className="revo-resource-close" aria-label="Tutup pengisian" onClick={() => resources.onSelect(null)}>×</button>
     <strong>{kind === "coal" ? "BATU BARA · SUMBER PANAS" : "POMPA AIR PENGISI"}</strong>
     <p>{kind === "coal" ? "Batu bara digunakan sebagai bahan bakar untuk memanaskan air dan menghasilkan uap." : "Air dipanaskan dalam ketel untuk menghasilkan uap yang digunakan menggerakkan mesin. Pompa memasok air melalui pipa dan katup satu arah."}</p>
-    <button className="revo-fill-action" disabled={!resources.enabled || filling.kind !== null} onClick={() => resources.onFill(kind)}>{filling.kind ? "Pengisian berlangsung…" : kind === "coal" ? "Masukkan Batu Bara" : "Isi Air"}</button>
+    <button className={`revo-fill-action revo-action-${kind === "coal" ? "fuel" : "water"}`} disabled={!resources.enabled || filling.kind !== null} onClick={() => resources.onFill(kind)}>{kind === "coal" ? <Flame size={18} aria-hidden="true" /> : <Droplets size={18} aria-hidden="true" />}{filling.kind ? "Pengisian berlangsung…" : kind === "coal" ? "Masukkan Batu Bara" : "Isi Air"}</button>
     <small>Pengisian diblokir saat tekanan tinggi. Mekanisme disederhanakan untuk pembelajaran.</small>
   </section>;
 }
@@ -102,7 +103,7 @@ export function ResourceContext({ resources }: { resources: ResourceSceneProps }
 export function FillingProgress({ filling }: { filling: FillingState }) {
   if (!filling.kind) return null;
   const progress = Math.round(fillingProgress(filling) * 100);
-  return <div className="revo-filling-status" role="progressbar" aria-label={filling.kind === "coal" ? "Pengisian bahan bakar" : "Pengisian air"} aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
+  return <div className="revo-filling-status" data-filling-resource={filling.kind} role="progressbar" aria-label={filling.kind === "coal" ? "Pengisian bahan bakar" : "Pengisian air"} aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
     <span>{filling.kind === "coal" ? "Sekop → ruang bakar" : "Tangki → pompa → ketel"}<b>{progress}%</b></span><i><span style={{ width: `${progress}%` }} /></i>
   </div>;
 }

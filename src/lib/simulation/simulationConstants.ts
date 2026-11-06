@@ -41,5 +41,4 @@ export const SIMULATION = {
   speedWaterConsumption: 0.0018,
   // Safe production per second = speed / 100 × maximumProductionRate.
   maximumProductionRate: 2.3,
-  missionTarget: 100,
 } as const;

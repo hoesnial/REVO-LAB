@@ -8,7 +8,6 @@ import { initialLabSimulation, labSimulationReducer } from "@/lib/revo/resourceF
 export function useSteamSimulation(active = true) {
   const [model, update] = useReducer(labSimulationReducer, undefined, initialLabSimulation);
   const dispatch = useCallback((action: SteamAction) => update(action), []);
-  const restoreMissionComplete = useCallback(() => update({ type: "restore-complete" }), []);
   const cancelFilling = useCallback(() => update({ type: "cancel-fill" }), []);
 
   useEffect(() => {
@@ -38,7 +37,7 @@ export function useSteamSimulation(active = true) {
     };
 
     // Discard the background interval on both transitions. There is no catch-up
-    // burst, resource consumption, or accidental mission completion in hidden tabs.
+    // burst, resource consumption, or accidental learning progression in hidden tabs.
     const visibilityChanged = () => { previous = null; accumulator = 0; };
     document.addEventListener("visibilitychange", visibilityChanged);
     frame = window.requestAnimationFrame(animate);
@@ -49,5 +48,5 @@ export function useSteamSimulation(active = true) {
     };
   }, [active]);
 
-  return { state: model.steam, filling: model.filling, dispatch, restoreMissionComplete, cancelFilling };
+  return { state: model.steam, filling: model.filling, dispatch, cancelFilling };
 }

@@ -173,7 +173,7 @@ test("captures REVO-007 screens and a short interactive demo recording", async (
     await expect(page.getByText("4/5 terpasang", { exact: true })).toBeVisible();
     await placeAssemblyPart(page, "piston", "Mekanisme piston");
     await expect(page.getByText("5/5 terpasang", { exact: true })).toBeVisible();
-    await page.getByRole("button", { name: "Batang penghubung dan engkol mengubah gerak bolak-balik; roda gila membantu menjaga putaran.", exact: true }).click();
+    await page.getByRole("button", { name: "Batang penghubung meneruskan gerakan piston ke engkol yang mengubahnya menjadi gerak putar, sedangkan roda gila membantu menjaga kestabilan putaran.", exact: true }).click();
     await page.getByRole("button", { name: "Mesin dapat digerakkan tanpa bergantung sepenuhnya pada tenaga aliran sungai.", exact: true }).click();
     await expect(page.getByRole("heading", { name: "PERAKITAN SELESAI", exact: true })).toBeVisible();
     await page.waitForTimeout(340);
@@ -188,14 +188,19 @@ test("captures REVO-007 screens and a short interactive demo recording", async (
     await page.screenshot({ path: path.join(screenshots, "gameplay-hud-mobile.png") });
     await page.setViewportSize({ width: 1440, height: 900 });
 
+    // Stop the live observation writer before replacing storage with a QA
+    // fixture. A running engine legitimately persists new samples every tick.
+    await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
+    await expect(page).toHaveURL(/\/revo-lab$/);
     await page.evaluate(({ key, data }) => localStorage.setItem(key, JSON.stringify(data)), {
       key: storageKey,
       data: progress({ experimentComplete: true, answers: [1, 0, 2], soundEnabled: true }),
     });
     await page.reload();
-    await expect(page.getByRole("heading", { name: "LEVEL COMPLETED", exact: true })).toBeVisible();
+    await page.getByRole("link", { name: "Lihat Hasil", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "PEMBELAJARAN SELESAI", exact: true })).toBeVisible();
     await expect(page.getByText("3/3", { exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "LEVEL COMPLETED", exact: true })).toBeFocused();
+    await expect(page.getByRole("heading", { name: "PEMBELAJARAN SELESAI", exact: true })).toBeFocused();
     await page.waitForTimeout(350);
     await page.screenshot({ path: path.join(screenshots, "level-completed-desktop.png") });
     await page.setViewportSize({ width: 390, height: 844 });

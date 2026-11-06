@@ -4,14 +4,13 @@ import { SIMULATION } from "@/lib/simulation/simulationConstants";
 export type ResourceKind = "coal" | "water";
 export type FillingState = { kind: ResourceKind | null; elapsed: number; duration: number; serial: number };
 export type LabSimulationState = { steam: SteamState; filling: FillingState };
-export type LabSimulationAction = SteamAction | { type: "tick"; steps: number } | { type: "fill"; kind: ResourceKind } | { type: "cancel-fill" } | { type: "restore-complete" };
+export type LabSimulationAction = SteamAction | { type: "tick"; steps: number } | { type: "fill"; kind: ResourceKind } | { type: "cancel-fill" };
 export const FILL_DURATION = { coal: 3.6, water: 3.2 } as const;
 export const emptyFilling = (): FillingState => ({ kind: null, elapsed: 0, duration: 0, serial: 0 });
 export const initialLabSimulation = (): LabSimulationState => ({ steam: initialSteamState(), filling: emptyFilling() });
 export const fillingProgress = (fill: FillingState) => fill.kind ? Math.min(1, fill.elapsed / fill.duration) : 0;
 
 export function fillingBlocked(steam: SteamState, kind: ResourceKind): string | null {
-  if (steam.missionComplete) return "Misi sudah selesai. Ulangi misi untuk mencoba pengisian lagi.";
   if (kind === "coal" && steam.fuel >= 100) return "Persediaan bahan bakar sudah penuh. Tidak ada batu bara yang ditambahkan.";
   if (kind === "water" && steam.water >= 100) return "Persediaan air sudah penuh. Tidak ada air yang ditambahkan.";
   if (steam.safety === "danger" || steam.pressure > SIMULATION.safePressure)
@@ -30,13 +29,6 @@ function cancel(state: LabSimulationState): LabSimulationState {
  * transition invokes the existing resource action; frames never award resources. */
 export function labSimulationReducer(state: LabSimulationState, action: LabSimulationAction): LabSimulationState {
   if (action.type === "cancel-fill") return cancel(state);
-  if (action.type === "restore-complete") {
-    const steam = initialSteamState();
-    return {
-      steam: { ...steam, production: SIMULATION.missionTarget, missionComplete: true, event: { id: steam.event.id + 1, type: "complete", message: "Misi 100 unit yang aman dipulihkan. Mesin tetap berhenti." } },
-      filling: emptyFilling(),
-    };
-  }
   if (action.type === "machine-reset") return {
     steam: applySteamAction(state.steam, action),
     filling: { ...emptyFilling(), serial: state.filling.serial + (state.filling.kind ? 1 : 0) },

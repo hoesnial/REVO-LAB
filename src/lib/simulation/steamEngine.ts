@@ -14,9 +14,8 @@ export interface SteamState {
   /** Cumulative time the engine has operated, excluding hidden-tab time. */
   elapsed: number;
   peakPressure: number;
-  /** Distinct crossings above the mission's safe pressure limit. */
+  /** Distinct crossings above the educational safe pressure limit. */
   unsafeCount: number;
-  missionComplete: boolean;
   event: { id: number; type: string; message: string };
 }
 
@@ -40,7 +39,6 @@ export function initialSteamState(): SteamState {
     elapsed: 0,
     peakPressure: C.initial.pressure,
     unsafeCount: 0,
-    missionComplete: false,
     event: {
       id: 0,
       type: "ready",
@@ -73,7 +71,7 @@ function safetyFor(state: SteamState, wasDanger: boolean): SteamSafety {
 
 /** One bounded integration step. All subsequent values derive from these equations. */
 function integrate(state: SteamState, dt: number): SteamState {
-  const firing = state.running && hasResources(state) && state.safety !== "danger" && !state.missionComplete;
+  const firing = state.running && hasResources(state) && state.safety !== "danger";
   const heatTarget = firing ? clamp(C.ambientHeat + state.fuel * C.fuelHeatGain) : C.ambientHeat;
   const heat = clamp(approach(state.heat, heatTarget, dt, firing ? C.heatingTime : C.coolingTime));
   const pressureTarget = state.water >= C.minimumWater
@@ -81,7 +79,7 @@ function integrate(state: SteamState, dt: number): SteamState {
     : 0;
   const pressure = clamp(approach(state.pressure, pressureTarget, dt, C.pressureResponseTime));
   const crossing = state.pressure <= C.safePressure && pressure > C.safePressure;
-  let next: SteamState = {
+  const next: SteamState = {
     ...state,
     heat,
     pressure,
@@ -108,14 +106,6 @@ function integrate(state: SteamState, dt: number): SteamState {
     next.production += dt * (next.speed / 100) * C.maximumProductionRate;
   }
 
-  if (
-    !state.missionComplete && next.production >= C.missionTarget &&
-    next.unsafeCount === 0 && next.peakPressure <= C.safePressure
-  ) {
-    next = { ...next, production: C.missionTarget, missionComplete: true, running: false };
-    return feedback(next, "complete", "Selamat! 100 unit diproduksi tanpa melewati batas tekanan aman. Mari refleksikan penemuanmu.");
-  }
-
   if (next.safety === "danger" && state.safety !== "danger") {
     return feedback({ ...next, running: false }, "emergency",
       "Mesin berhenti darurat karena tekanan mencapai 90. Lepaskan uap dan tunggu ketel mendingin sebelum menyalakan kembali.");
@@ -126,9 +116,9 @@ function integrate(state: SteamState, dt: number): SteamState {
       : "Mesin berhenti: bahan bakar habis. Tambahkan bahan bakar sebelum melanjutkan.");
   }
   if (crossing) return feedback(next, "warning",
-    "Tekanan melewati batas aman 75. Kurangi bahan bakar dan lepaskan uap. Reset diperlukan untuk mengulang misi aman.");
+    "Tekanan melewati batas aman 75. Kurangi bahan bakar dan lepaskan uap. Reset diperlukan untuk mengulang pengamatan aman.");
   if (state.safety === "danger" && next.safety !== "danger") return feedback(next, "recovered",
-    "Tekanan dan panas sudah turun. Mesin dapat dinyalakan kembali; reset untuk mencoba ulang misi aman.");
+    "Tekanan dan panas sudah turun. Mesin dapat dinyalakan kembali; reset untuk mencoba ulang pengamatan aman.");
   if (state.safety === "safe" && next.safety === "warning") return feedback(next, "resource-low",
     next.water <= C.lowWater ? "Air mulai menipis. Tambahkan air sebelum mesin berhenti." : "Bahan bakar mulai menipis. Tambahkan secukupnya.");
   return next;
@@ -159,14 +149,12 @@ export function applySteamAction(state: SteamState, action: SteamAction): SteamS
       elapsed: state.elapsed,
       peakPressure: state.peakPressure,
       unsafeCount: state.unsafeCount,
-      missionComplete: state.missionComplete,
-    }, "machine-reset", "Kondisi operasi mesin direset. Progres dan riwayat keselamatan misi tetap tersimpan.");
+    }, "machine-reset", "Kondisi operasi mesin direset. Progres dan riwayat keselamatan percobaan tetap tersimpan.");
   }
   if (action.type === "reset") {
     return feedback({ ...initialSteamState(), event: state.event }, "reset",
-      "Simulasi direset. Coba hasilkan 100 unit dengan tekanan tidak lebih dari 75.");
+      "Percobaan direset. Amati gerak dan produksi, periksa transmisi T, serta jaga tekanan model ≤75.");
   }
-  if (state.missionComplete) return state;
   switch (action.type) {
     case "start": {
       if (state.running) return state;

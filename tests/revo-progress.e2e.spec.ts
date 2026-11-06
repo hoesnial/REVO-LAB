@@ -75,7 +75,8 @@ test("partial assembly and completed knowledge checks reconstruct their visual a
   await page.reload();
   await expect(page.getByRole("tab", { name: /Perakitan/ })).toHaveAttribute("aria-selected", "true");
   await expect(page.getByText("2/5 terpasang", { exact: true })).toBeVisible();
-  await expect(page.getByText(/1\/3 cek pemahaman/)).toBeVisible();
+  await expect(page.locator(".revo-assembly-counts").getByText(/1\/3 cek pemahaman/)).toBeVisible();
+  await expect(page.locator(".revo-check-confirmation")).toContainText("1/3 cek pemahaman benar");
   await expect(page.getByRole("button", { name: "Pilih Ketel uap", exact: true })).toBeDisabled();
   await expect(page.getByRole("button", { name: "Pilih Pipa uap", exact: true })).toBeDisabled();
 });
@@ -107,7 +108,7 @@ test("completed experiment restores safely and reopens a saved checked reflectio
   await expect(page.getByRole("link", { name: "Lanjutkan", exact: true })).toBeVisible();
   await page.getByRole("link", { name: "Lanjutkan", exact: true }).click();
   await expect(page.getByRole("dialog", { name: "Refleksi dan evaluasi", exact: true })).toBeVisible();
-  await expect(page.getByTestId("production")).toHaveText("100");
+  await expect(page.getByTestId("production")).toHaveText("0");
   await expect(page.getByRole("button", { name: "Pertanyaan berikutnya", exact: true })).toBeEnabled();
   await expect(page.getByRole("radio", { name: "Pabrik lebih sedikit bergantung pada arus sungai sebagai sumber tenaga." })).toBeChecked();
   await expect(page.getByText("Tepat!", { exact: true })).toBeVisible();
@@ -122,18 +123,18 @@ test("completed result survives reload, permits imperfect scores, and confirms w
   await page.goto("/revo-lab");
   await expect(page.getByRole("link", { name: "Lihat Hasil", exact: true })).toBeVisible();
   await page.getByRole("link", { name: "Lihat Hasil", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "LEVEL COMPLETED", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "PEMBELAJARAN SELESAI", exact: true })).toBeVisible();
   await expect(page.locator(".revo-completion-results").getByText("5/5", { exact: true })).toHaveCount(2);
   await expect(page.getByText("3/3 cek pemahaman", { exact: true })).toBeVisible();
   await expect(page.getByText("1/3", { exact: true })).toBeVisible();
-  await expect(page.getByText("100/100 unit", { exact: true })).toBeVisible();
+  await expect(page.getByText("Selesai pada versi sebelumnya", { exact: true })).toBeVisible();
   await page.reload();
-  await expect(page.getByRole("heading", { name: "LEVEL COMPLETED", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "PEMBELAJARAN SELESAI", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Ulangi Level", exact: true }).click();
   const confirm = page.getByRole("dialog", { name: "Ulangi Industry 1.0", exact: true });
   await expect(confirm).toBeVisible();
   await confirm.getByRole("button", { name: "Pertahankan hasil", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "LEVEL COMPLETED", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "PEMBELAJARAN SELESAI", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Ulangi Level", exact: true }).click();
   await page.getByRole("dialog", { name: "Ulangi Industry 1.0", exact: true }).getByRole("button", { name: "Ulangi Level", exact: true }).click();
   await expect(page.getByText("0/5 komponen dijelajahi")).toBeVisible();
@@ -150,7 +151,7 @@ test("level-completion screen stays fullscreen without document scrolling at com
   await page.goto("/revo-lab/industry-1");
   for (const [width, height] of [[320, 568], [390, 844], [768, 1024], [1440, 900], [844, 390]]) {
     await page.setViewportSize({ width, height });
-    await expect(page.getByRole("heading", { name: "LEVEL COMPLETED", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "PEMBELAJARAN SELESAI", exact: true })).toBeVisible();
     const geometry = await page.evaluate(() => ({ width: innerWidth, height: innerHeight, scrollWidth: document.documentElement.scrollWidth, scrollHeight: document.documentElement.scrollHeight, screenHeight: document.querySelector<HTMLElement>(".revo-completion-screen")?.getBoundingClientRect().height }));
     expect(geometry.scrollWidth, `${width}x${height} horizontal page overflow`).toBeLessThanOrEqual(width);
     expect(geometry.scrollHeight, `${width}x${height} document scrolling`).toBeLessThanOrEqual(height);

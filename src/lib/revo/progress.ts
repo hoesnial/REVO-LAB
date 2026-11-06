@@ -1,8 +1,9 @@
+import { experimentReady, initialObservations, normalizeObservations, type ExperimentObservations } from "@/lib/revo/experiment";
 import { ASSEMBLY_CHECKS, ASSEMBLY_PARTS, type AssemblyCheckId } from "@/lib/revo/assembly";
 import { quizQuestions, type ComponentId } from "@/lib/revo/content";
 
 export const REVO_PROGRESS_KEY = "revo:industry-1:progress";
-export const REVO_PROGRESS_VERSION = 1 as const;
+export const REVO_PROGRESS_VERSION = 2 as const;
 
 export type LearningCheckpoint = 0 | 1 | 2 | 3 | 4;
 export type CompletedLearningStage = "exploration" | "assembly" | "experiment" | "reflection" | "level";
@@ -24,6 +25,7 @@ export interface RevoProgress {
   explored: ComponentId[];
   assembly: { placed: ComponentId[]; checks: AssemblyCheckId[] };
   completedStages: CompletedLearningStage[];
+  observations: ExperimentObservations;
   experimentComplete: boolean;
   reflection: ReflectionProgress;
   levelComplete: boolean;
@@ -64,7 +66,7 @@ const completedStages = (explored: ComponentId[], assembled: boolean, experiment
  * can safely be resolved by revoking the dependent, later learning stages.
  */
 export function normalizeProgress(value: unknown): RevoProgress | null {
-  if (!isObject(value) || value.version !== REVO_PROGRESS_VERSION || value.selectedEra !== "industry-1") return null;
+  if (!isObject(value) || (value.version !== 1 && value.version !== REVO_PROGRESS_VERSION) || value.selectedEra !== "industry-1") return null;
   if (!Array.isArray(value.explored) || !isObject(value.assembly) || !Array.isArray(value.assembly.placed) || !Array.isArray(value.assembly.checks)) return null;
   if (!Array.isArray(value.completedStages) || typeof value.experimentComplete !== "boolean" || typeof value.levelComplete !== "boolean" || !isCheckpoint(value.checkpoint)) return null;
   if (!isObject(value.reflection) || !isObject(value.preferences) || typeof value.preferences.soundEnabled !== "boolean") return null;
@@ -79,7 +81,15 @@ export function normalizeProgress(value: unknown): RevoProgress | null {
   const placedSet = new Set(orderedPlaced);
   const validChecks = ASSEMBLY_CHECKS.filter(check => checks.includes(check.id) && check.requires.every(id => placedSet.has(id))).map(check => check.id);
   const assembled = orderedPlaced.length === knownComponents.length && validChecks.length === ASSEMBLY_CHECKS.length;
-  const experimentComplete = value.experimentComplete && assembled;
+  const observations = assembled
+    ? value.version === 1
+      ? { ...initialObservations(), legacyCompleted: value.experimentComplete }
+      : normalizeObservations(value.observations)
+    : initialObservations();
+  if (!observations) return null;
+  if (!value.experimentComplete) observations.legacyCompleted = false;
+  // Legacy completion is retained explicitly; missing measurements are not invented.
+  const experimentComplete = value.experimentComplete && assembled && experimentReady(observations);
 
   const rawReflection = value.reflection;
   if (!Array.isArray(rawReflection.answers) || typeof rawReflection.checked !== "boolean" || typeof rawReflection.retaking !== "boolean") return null;
@@ -96,7 +106,7 @@ export function normalizeProgress(value: unknown): RevoProgress | null {
     const answers = rawAnswers.length <= quizQuestions.length ? [...rawAnswers] : [];
     const questionIndex = answers.length;
     const draftAnswer = rawReflection.draftAnswer as number | null;
-    const validDraft = draftAnswer === null || (questionIndex < quizQuestions.length && draftAnswer < quizQuestions[questionIndex].options.length);
+    const validDraft = draftAnswer === null || (questionIndex < quizQuestions.length && draftAnswer >= 0 && draftAnswer < quizQuestions[questionIndex].options.length);
     const canResumeAttempt = validDraft && (questionIndex < quizQuestions.length);
     const checked = canResumeAttempt && draftAnswer !== null && rawReflection.checked;
     reflection = {
@@ -118,7 +128,7 @@ export function normalizeProgress(value: unknown): RevoProgress | null {
   const stages = completedStages(orderedExplored, assembled, experimentComplete, levelComplete);
   const checkpoint = Math.min(value.checkpoint, levelComplete ? 4 : experimentComplete ? 3 : assembled ? 2 : explorationComplete ? 1 : 0) as LearningCheckpoint;
   // Contradictory stage flags are never trusted; the returned list comes only
-  // from the validated component, mission and reflection data above.
+  // from the validated component, observation and reflection data above.
 
   return {
     version: REVO_PROGRESS_VERSION,
@@ -126,6 +136,7 @@ export function normalizeProgress(value: unknown): RevoProgress | null {
     explored: orderedExplored,
     assembly: { placed: orderedPlaced, checks: validChecks },
     completedStages: stages,
+    observations,
     experimentComplete,
     reflection,
     levelComplete,
@@ -138,6 +149,7 @@ export function createRevoProgress(input: {
   explored: ComponentId[];
   placed: ComponentId[];
   checks: AssemblyCheckId[];
+  observations: ExperimentObservations;
   experimentComplete: boolean;
   reflection: ReflectionProgress;
   checkpoint: LearningCheckpoint;
@@ -149,6 +161,7 @@ export function createRevoProgress(input: {
     explored: input.explored,
     assembly: { placed: input.placed, checks: input.checks },
     completedStages: [],
+    observations: input.observations,
     experimentComplete: input.experimentComplete,
     reflection: input.reflection,
     levelComplete: false,
@@ -174,7 +187,7 @@ export function readRevoProgress(storage: StorageLike | null): ReadProgressResul
     if (!raw) return { progress: null, status: "available" };
     let parsed: unknown;
     try { parsed = JSON.parse(raw); } catch { return { progress: null, status: "malformed" }; }
-    if (isObject(parsed) && typeof parsed.version === "number" && parsed.version !== REVO_PROGRESS_VERSION) return { progress: null, status: "unsupported" };
+    if (isObject(parsed) && typeof parsed.version === "number" && parsed.version !== 1 && parsed.version !== REVO_PROGRESS_VERSION) return { progress: null, status: "unsupported" };
     const progress = normalizeProgress(parsed);
     return progress ? { progress, status: "available" } : { progress: null, status: "malformed" };
   } catch {

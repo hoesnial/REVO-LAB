@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef } from "react";
-import { ArrowRight, Check, RotateCcw, Trophy, X } from "lucide-react";
+import { ArrowRight, Check, Circle, CircleDot, RotateCcw, Trophy, X } from "lucide-react";
 import { quizQuestions } from "@/lib/revo/content";
 import { scoreReflection, type ReflectionProgress } from "@/lib/revo/progress";
 
@@ -51,7 +51,7 @@ export function QuizPanel({ progress, onProgress, onComplete, onClose }: QuizPan
     <section className="revo-quiz" aria-labelledby={`${id}-title`}>
       <div className="revo-quiz-heading">
         <div>
-          <span className="revo-eyebrow">TAHAP 03 / REFLEKSI</span>
+          <span className="revo-eyebrow">TAHAP 04 / REFLEKSI</span>
           <h2 id={`${id}-title`} ref={titleRef} tabIndex={-1}>
             {finished ? "Jejak belajarmu" : "Di balik putaran mesin"}
           </h2>
@@ -102,17 +102,16 @@ export function QuizPanel({ progress, onProgress, onComplete, onClose }: QuizPan
             {question.options.map((option, index) => {
               const state = answered ? index === question.answer ? "is-correct" : selected === index ? "is-incorrect" : "" : selected === index ? "is-selected" : "";
               return (
-                <label className={`revo-quiz-option ${state}`} key={`${step}-${index}`}>
-                  <input type="radio" name={`${id}-answer`} value={index} checked={selected === index} onChange={() => onProgress({ ...progress, draftAnswer: index, checked: false })} />
+                <label className={`revo-quiz-option revo-answer-card ${state}`} key={`${step}-${index}`}>
+                  <input type="radio" aria-label={option} aria-describedby={`${id}-answer-state-${index}`} name={`${id}-answer`} value={index} checked={selected === index} onChange={() => onProgress({ ...progress, draftAnswer: index, checked: false })} />
                   <span className="revo-quiz-letter" aria-hidden="true">{String.fromCharCode(65 + index)}</span>
-                  <span>{option}</span>
-                  {answered && index === question.answer && <Check size={18} aria-label="Jawaban benar" />}
-                  {answered && selected === index && index !== question.answer && <X size={18} aria-label="Jawaban belum tepat" />}
+                  <span className="revo-answer-copy">{option}<span id={`${id}-answer-state-${index}`} className="revo-answer-state">{answered && index === question.answer ? selected === index ? "Jawabanmu · benar" : "Jawaban benar" : answered && selected === index ? "Jawabanmu · belum tepat" : selected === index ? "Dipilih · belum diperiksa" : ""}</span></span>
+                  <span className="revo-answer-marker" aria-hidden="true">{answered && index === question.answer ? <Check size={20} /> : answered && selected === index ? <X size={20} /> : selected === index ? <CircleDot size={20} /> : <Circle size={20} />}</span>
                 </label>
               );
             })}
           </fieldset>
-          <div className="revo-quiz-feedback" aria-live="polite" aria-atomic="true">
+          <div className={`revo-quiz-feedback ${answered ? correct ? "is-correct" : "is-incorrect" : ""}`} aria-live="polite" aria-atomic="true">
             {answered && <>
               <strong>{correct ? "Tepat!" : "Belum tepat. Mari kita pelajari."}</strong>
               <p>{question.explanation}</p>

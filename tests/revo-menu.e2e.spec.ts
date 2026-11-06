@@ -68,7 +68,7 @@ test("help supports keyboard opening, focus containment, Escape and focus restor
   await page.keyboard.press("Enter");
   const dialog = page.getByRole("dialog", { name: "Cara Bermain", exact: true });
   await expect(dialog).toBeVisible();
-  for (const name of ["Putar sudut pandang", "Lihat lebih dekat", "Kenali setiap komponen", "Hidupkan mesin uap", "Selesaikan misi"]) await expect(dialog.getByRole("heading", { name })).toBeVisible();
+  for (const name of ["Putar sudut pandang", "Lihat lebih dekat", "Kenali setiap komponen", "Hidupkan mesin uap", "Amati dan refleksikan"]) await expect(dialog.getByRole("heading", { name })).toBeVisible();
   await page.keyboard.press("Shift+Tab");
   await expect(dialog.getByRole("button", { name: "Siap menjelajah" })).toBeFocused();
   await page.keyboard.press("Tab");
@@ -92,6 +92,10 @@ test("journey navigation pauses the machine and preserves exploration, resources
   }
   await expect(page.getByText("5/5 komponen dijelajahi")).toBeVisible();
   await finishAssembly(page);
+  // Entering Experiment intentionally clears the old exploration selection.
+  // Select a component here so the return assertion checks an actual retained panel.
+  await componentList.getByRole("button", { name: /Ketel uap/ }).click();
+  await expect(page.getByRole("heading", { name: "Ketel uap", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Tambah air", exact: true }).click();
   await page.getByRole("button", { name: "Aktifkan suara", exact: true }).click();
   await page.getByRole("button", { name: "Nyalakan mesin", exact: true }).click();

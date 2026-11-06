@@ -1,0 +1,116 @@
+[
+  {
+    "width": 1440,
+    "screen": "resources",
+    "styles": [
+      {
+        "text": "Tambah bahan bakar",
+        "color": "rgb(41, 55, 44)",
+        "background": "rgb(231, 160, 74)",
+        "rect": {
+          "width": 192,
+          "height": 64
+        }
+      },
+      {
+        "text": "Kurangi bahan bakar",
+        "color": "rgb(255, 253, 242)",
+        "background": "rgb(52, 65, 59)",
+        "rect": {
+          "width": 192,
+          "height": 64
+        }
+      },
+      {
+        "text": "Tambah air",
+        "color": "rgb(255, 253, 242)",
+        "background": "rgb(23, 101, 139)",
+        "rect": {
+          "width": 392,
+          "height": 48
+        }
+      }
+    ]
+  },
+  {
+    "width": 1440,
+    "screen": "assembly",
+    "styles": [
+      {
+        "text": "AKetel memanaskan air dengan panas pembakaran.",
+        "color": "rgb(255, 253, 242)",
+        "background": "rgb(38, 56, 46)",
+        "parent": "rgb(40, 54, 45)"
+      },
+      {
+        "text": "BPipa menghasilkan uap saat roda berputar.",
+        "color": "rgb(255, 253, 242)",
+        "background": "rgb(38, 56, 46)",
+        "parent": "rgb(40, 54, 45)"
+      },
+      {
+        "text": "CRoda gila mengubah putarannya menjadi uap.",
+        "color": "rgb(255, 253, 242)",
+        "background": "rgb(38, 56, 46)",
+        "parent": "rgb(40, 54, 45)"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "screen": "resources",
+    "styles": [
+      {
+        "text": "Tambah bahan bakar",
+        "color": "rgb(41, 55, 44)",
+        "background": "rgb(231, 160, 74)",
+        "rect": {
+          "width": 171,
+          "height": 64
+        }
+      },
+      {
+        "text": "Kurangi bahan bakar",
+        "color": "rgb(255, 253, 242)",
+        "background": "rgb(52, 65, 59)",
+        "rect": {
+          "width": 171,
+          "height": 64
+        }
+      },
+      {
+        "text": "Tambah air",
+        "color": "rgb(255, 253, 242)",
+        "background": "rgb(23, 101, 139)",
+        "rect": {
+          "width": 350,
+          "height": 48
+        }
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "screen": "assembly",
+    "styles": [
+      {
+        "text": "AKetel memanaskan air dengan panas pembakaran.",
+        "color": "rgb(255, 253, 242)",
+        "background": "rgb(38, 56, 46)",
+        "parent": "rgb(40, 54, 45)"
+      },
+      {
+        "text": "BPipa menghasilkan uap saat roda berputar.",
+        "color": "rgb(255, 253, 242)",
+        "background": "rgb(38, 56, 46)",
+        "parent": "rgb(40, 54, 45)"
+      },
+      {
+        "text": "CRoda gila mengubah putarannya menjadi uap.",
+        "color": "rgb(255, 253, 242)",
+        "background": "rgb(38, 56, 46)",
+        "parent": "rgb(40, 54, 45)"
+      }
+    ]
+  }
+]

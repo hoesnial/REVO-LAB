@@ -26,22 +26,16 @@ describe("REVO steam engine learning model", () => {
     }
   });
 
-  it("completes 100 safe units in the 60–90 second demonstration window", () => {
-    let state = start();
-    while (!state.missionComplete && state.elapsed < 90) state = stepSteam(state, C.fixedStep);
-    expect(state.missionComplete).toBe(true);
-    expect(state.elapsed).toBeGreaterThanOrEqual(60);
-    expect(state.elapsed).toBeLessThanOrEqual(90);
-    expect(state.production).toBe(C.missionTarget);
+  it("continues producing beyond 100 safely without automatic completion or stopping", () => {
+    const state = run(start(), 85);
+    expect(state.production).toBeGreaterThan(100);
     expect(state.peakPressure).toBeLessThanOrEqual(C.safePressure);
     expect(state.unsafeCount).toBe(0);
-    expect(state.running).toBe(false);
-    expect(state.event.type).toBe("complete");
-    const later = run(state, 90);
-    expect(later.missionComplete).toBe(true);
-    expect(later.production).toBe(100);
+    expect(state.running).toBe(true);
+    expect(state.event.type).not.toBe("complete");
+    const later = run(state, 3);
+    expect(later.production).toBeGreaterThan(state.production);
     expect(later.unsafeCount).toBe(0);
-    expect(later.event.id).toBe(state.event.id);
   });
 
   it("excess fuel leads to a warning and a latched emergency stop", () => {
@@ -59,10 +53,9 @@ describe("REVO steam engine learning model", () => {
     expect(state.unsafeCount).toBe(1);
     expect(state.peakPressure).toBeGreaterThanOrEqual(C.emergencyPressure);
     expect(applySteamAction(state, { type: "start" }).running).toBe(false);
-    expect(state.missionComplete).toBe(false);
   });
 
-  it("counts separate unsafe crossings and cannot erase a failed mission by venting", () => {
+  it("counts separate unsafe crossings and cannot erase a unsafe history by venting", () => {
     let state = start({ heat: 65, pressure: 74.99, fuel: 50 });
     state = run(state, 0.2);
     expect(state.unsafeCount).toBe(1);
@@ -73,7 +66,6 @@ describe("REVO steam engine learning model", () => {
     state = { ...state, running: true, pressure: 50, heat: 42, fuel: 25, safety: "safe", production: 99.99 };
     state = run(state, 1);
     expect(state.production).toBeGreaterThan(100);
-    expect(state.missionComplete).toBe(false);
   });
 
   it("vents pressure and heat, and only releases the latch once both are safe", () => {
@@ -170,7 +162,7 @@ describe("REVO steam engine learning model", () => {
     expect(reset.event.id).toBeGreaterThan(failed.event.id);
   });
 
-  it("resets current machine conditions without erasing mission production or its safety history", () => {
+  it("resets current machine conditions without erasing observed production or its safety history", () => {
     const working = { ...run(start(), 24), unsafeCount: 1, production: 37, peakPressure: 78 };
     const reset = applySteamAction(working, { type: "machine-reset" });
     expect(reset.running).toBe(false);
@@ -182,14 +174,13 @@ describe("REVO steam engine learning model", () => {
     expect(reset.elapsed).toBe(working.elapsed);
     expect(reset.unsafeCount).toBe(1);
     expect(reset.peakPressure).toBe(78);
-    expect(reset.missionComplete).toBe(false);
     expect(reset.event.type).toBe("machine-reset");
   });
 
-  it("does not undo a completed mission when only machine conditions reset", () => {
-    const complete = { ...initialSteamState(), production: 100, missionComplete: true, elapsed: 72 };
+  it("does not undo a recorded experiment when only machine conditions reset", () => {
+    const complete = { ...initialSteamState(), production: 100, elapsed: 72 };
     const reset = applySteamAction(complete, { type: "machine-reset" });
-    expect(reset.missionComplete).toBe(true);
+    expect(reset.elapsed).toBe(72);
     expect(reset.production).toBe(100);
     expect(reset.running).toBe(false);
   });

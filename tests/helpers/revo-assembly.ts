@@ -5,7 +5,7 @@ export const assemblyParts = [
 ] as const;
 export const correctAssemblyAnswers = [
   "Ketel memanaskan air dengan panas pembakaran.",
-  "Batang penghubung dan engkol mengubah gerak bolak-balik; roda gila membantu menjaga putaran.",
+  "Batang penghubung meneruskan gerakan piston ke engkol yang mengubahnya menjadi gerak putar, sedangkan roda gila membantu menjaga kestabilan putaran.",
   "Mesin dapat digerakkan tanpa bergantung sepenuhnya pada tenaga aliran sungai.",
 ];
 export async function openAssembly(page: Page) {

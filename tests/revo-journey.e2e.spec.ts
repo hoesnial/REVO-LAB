@@ -43,8 +43,9 @@ test("main menu → era selection → briefing → existing factory, with both b
   await expect(page).toHaveURL(/\/revo-lab\/industry-1\/briefing$/);
   await expect(page.getByRole("heading", { name: "THE AGE OF STEAM", exact: true })).toBeVisible();
   await expect(page.locator(".revo-experience")).toHaveAttribute("data-revo-screen", "level-briefing");
-  await expect(page.locator(".revo-briefing-objectives li")).toHaveCount(4);
-  await expect(page.getByRole("region", { name: "MISIMU DI ERA INI", exact: true })).toContainText("100 unit produksi");
+  await expect(page.locator(".revo-learning-objectives li")).toHaveCount(4);
+  await expect(page.getByRole("region", { name: "Tujuan Pembelajaran", exact: true })).toContainText("Menganalisis");
+  await expect(page.getByText("MISIMU DI ERA INI", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Simulasi edukasi sederhana. Skala 0–100, bukan ukuran termodinamika nyata.")).toBeVisible();
   await expect(page.locator("canvas")).toHaveCount(0);
   await page.getByRole("link", { name: "Kembali ke Pilih Era", exact: true }).click();
@@ -138,13 +139,17 @@ test("era selection and briefing fit target viewports with accessible internal s
     await assertFitsViewport(page, page.getByRole("link", { name: "Kembali ke Pilih Era", exact: true }));
     const reading = page.getByRole("region", { name: "Ringkasan level dan tujuan pembelajaran", exact: true });
     await assertFitsViewport(page, reading);
-    if (width >= 1280) expect(await reading.evaluate(el => el.scrollHeight - el.clientHeight)).toBeLessThanOrEqual(1);
-    for (const item of await page.locator(".revo-briefing-objectives li").all()) {
+    // Enlarged educational text may scroll inside the reading panel, including
+    // desktop. Preserve legibility and reachability rather than shrinking it.
+    for (const item of await page.locator(".revo-learning-objectives li").all()) {
+      expect(await item.evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(16);
+    }
+    for (const item of await page.locator(".revo-learning-objectives li").all()) {
       await item.scrollIntoViewIfNeeded();
       await assertFitsViewport(page, item);
     }
-    await page.locator(".revo-briefing-mission").scrollIntoViewIfNeeded();
-    await assertFitsViewport(page, page.locator(".revo-briefing-mission"));
+    await page.locator(".revo-briefing-path").scrollIntoViewIfNeeded();
+    await assertFitsViewport(page, page.locator(".revo-briefing-path"));
     await page.getByRole("heading", { name: "THE AGE OF STEAM", exact: true }).scrollIntoViewIfNeeded();
     await assertFitsViewport(page, page.getByRole("heading", { name: "THE AGE OF STEAM", exact: true }));
     await assertNoDocumentScroll(page);

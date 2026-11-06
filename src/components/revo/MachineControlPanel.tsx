@@ -1,6 +1,6 @@
 "use client";
 
-import { Droplets, Flame, Gauge, Info, Minus, Play, Plus, Square, Thermometer, Wind } from "lucide-react";
+import { Droplets, Flame, Gauge, Info, Minus, Play, Square, Thermometer, Wind } from "lucide-react";
 import type { SteamAction, SteamState } from "@/lib/simulation/steamEngine";
 import { SIMULATION } from "@/lib/simulation/simulationConstants";
 import type { FillingState } from "@/lib/revo/resourceFilling";
@@ -15,8 +15,8 @@ function Meter({ label, value, icon, tone }: { label: string; value: number; ico
 
 export default function MachineControlPanel({ state, filling, onAction, lockedReason }: { state: SteamState; filling: FillingState; onAction: (action: SteamAction) => void; lockedReason: string | null }) {
   const pressure = Math.round(state.pressure);
-  const controlsDisabled = state.missionComplete || lockedReason !== null;
-  const status = state.missionComplete ? "Misi berhasil" : state.safety === "danger" ? "Berhenti darurat" : lockedReason ?? (state.safety === "warning" ? state.pressure > SIMULATION.safePressure ? "Tekanan tinggi" : "Sumber daya menipis" : state.running ? "Mesin beroperasi" : "Mesin siap");
+  const controlsDisabled = lockedReason !== null;
+  const status = state.safety === "danger" ? "Berhenti darurat" : lockedReason ?? (state.safety === "warning" ? state.pressure > SIMULATION.safePressure ? "Tekanan tinggi" : "Sumber daya menipis" : state.running ? "Mesin beroperasi" : "Mesin siap");
   return <aside className="revo-control" aria-label="Kontrol mesin uap">
     <div className="revo-control-heading"><div><span className="revo-kicker">DI TANGANMU</span><h2>Kendali mesin</h2></div><Gauge size={21} strokeWidth={1.5} /></div>
     <div className={`revo-engine-status ${state.safety}`}><i />{status}<span>MESIN 01</span></div>
@@ -31,12 +31,13 @@ export default function MachineControlPanel({ state, filling, onAction, lockedRe
       <div className="revo-pressure-scale"><span>0</span><span>Batas aman ≤ {SIMULATION.safePressure}</span><span>100</span></div>
     </div>
     <div className="revo-resources">
-      <div><Meter label="Bahan bakar" value={state.fuel} icon={<Flame size={14} />} tone="#f2994a" /><div className="revo-resource-actions"><button disabled={controlsDisabled || filling.kind !== null} onClick={() => onAction({ type: "reduce-fuel" })} aria-label="Kurangi bahan bakar"><Minus size={13} />Kurangi</button><button disabled={controlsDisabled || filling.kind !== null} onClick={() => onAction({ type: "add-fuel" })} aria-label="Tambah bahan bakar"><Plus size={13} />Tambah</button></div></div>
-      <div><Meter label="Persediaan air" value={state.water} icon={<Droplets size={14} />} tone="#8bbdcc" /><div className="revo-resource-actions"><button disabled={controlsDisabled || filling.kind !== null} className="revo-water-button" onClick={() => onAction({ type: "add-water" })}><Plus size={13} />Tambah air</button></div></div>
+      <div><Meter label="Bahan bakar" value={state.fuel} icon={<Flame size={16} aria-hidden="true" />} tone="var(--revo-action-fuel)" /><div className="revo-resource-actions"><button className="revo-action-fuel" disabled={controlsDisabled || filling.kind !== null} onClick={() => onAction({ type: "add-fuel" })}><Flame size={18} aria-hidden="true" />Tambah bahan bakar</button><button className="revo-action-secondary" disabled={controlsDisabled || filling.kind !== null} onClick={() => onAction({ type: "reduce-fuel" })}><Minus size={18} aria-hidden="true" />Kurangi bahan bakar</button></div></div>
+      <div><Meter label="Persediaan air" value={state.water} icon={<Droplets size={16} aria-hidden="true" />} tone="var(--revo-water-indicator)" /><div className="revo-resource-actions"><button disabled={controlsDisabled || filling.kind !== null} className="revo-action-water" onClick={() => onAction({ type: "add-water" })}><Droplets size={18} aria-hidden="true" />Tambah air</button></div></div>
     </div>
     <FillingProgress filling={filling} />
+    <p className="revo-control-feedback">{state.event.message}</p>
     <div className="revo-engine-readings"><Meter label="Panas" value={state.heat} icon={<Thermometer size={14} />} tone="#eab889" /><Meter label="Kecepatan" value={state.speed} icon={<Gauge size={14} />} tone="#cfcebd" /></div>
-    <button className={`revo-start ${state.running ? "is-running" : ""}`} onClick={() => onAction({ type: state.running ? "stop" : "start" })} disabled={controlsDisabled}>{state.running ? <Square size={15} fill="currentColor" /> : <Play size={16} fill="currentColor" />}{state.missionComplete ? "Misi berhasil" : state.running ? "Hentikan mesin" : "Nyalakan mesin"}</button>
+    <button className={`revo-start ${state.running ? "is-running" : ""}`} onClick={() => onAction({ type: state.running ? "stop" : "start" })} disabled={controlsDisabled}>{state.running ? <Square size={15} fill="currentColor" /> : <Play size={16} fill="currentColor" />}{state.running ? "Hentikan mesin" : "Nyalakan mesin"}</button>
     <button disabled={controlsDisabled} className="revo-vent" onClick={() => onAction({ type: "vent" })}><Wind size={16} />Lepaskan tekanan</button>
     <p className="revo-model-note"><Info size={13} /><span>Model edukasi sederhana. Skala 0–100, bukan ukuran termodinamika nyata.</span></p>
   </aside>;

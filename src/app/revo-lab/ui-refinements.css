@@ -1,0 +1,216 @@
+/* REVO-008R.1.1 — shared semantic controls and answer states.
+   Scope tokens to the experience, including its native dialogs. */
+.revo-experience {
+  --revo-background: #f6f6f0;
+  --revo-surface: #26382e;
+  --revo-surface-elevated: #34473b;
+  --revo-text-primary: #fffdf2;
+  --revo-text-secondary: #d8e2cf;
+  --revo-text-ink: #29372c;
+  --revo-text-muted: #4b5945;
+  --revo-action-water: #17658b;
+  --revo-action-water-hover: #124e6c;
+  --revo-water-indicator: #8bd1ee;
+  --revo-action-fuel: #e7a04a;
+  --revo-action-fuel-hover: #f3b86e;
+  --revo-action-primary: #ffe234;
+  --revo-action-primary-hover: #ffed83;
+  --revo-action-secondary: #34413b;
+  --revo-action-secondary-hover: #46564c;
+  --revo-action-learning: #285640;
+  --revo-action-learning-hover: #1c4130;
+  --revo-action-danger: #8e3335;
+  --revo-action-danger-hover: #72272a;
+  --revo-state-success: #284f3c;
+  --revo-state-success-border: #a7dfb1;
+  --revo-state-error: #652f30;
+  --revo-state-error-border: #ffb4a9;
+  --revo-state-warning: #fff0cd;
+  --revo-state-warning-text: #63461b;
+  --revo-border-default: #98ad98;
+  --revo-border-focus: #ffe234;
+  --revo-focus-on-light: #665000;
+  --revo-selection-background: #38513e;
+  --revo-disabled-background: #d4d9ce;
+  --revo-disabled-text: #4b5545;
+  --revo-control-radius: 6px;
+}
+
+/* Navigation is yellow; advancing learning is green; ordinary secondary actions are neutral. */
+.revo-experience :is(.revo-primary-button, .revo-button-primary, .revo-menu-start, .revo-start, .revo-era-enter) {
+  background: var(--revo-action-primary); color: var(--revo-text-ink); border: 1px solid var(--revo-focus-on-light);
+  box-shadow: none; min-height: 44px; border-radius: var(--revo-control-radius);
+}
+.revo-experience :is(.revo-primary-button, .revo-button-primary, .revo-menu-start, .revo-start, .revo-era-enter):hover:not(:disabled) { background: var(--revo-action-primary-hover); }
+.revo-experience :is(.revo-learning-progress, .revo-assembly-targets, .revo-assembly-success) .revo-primary-button {
+  background: var(--revo-action-learning); color: var(--revo-text-primary); border-color: var(--revo-border-default);
+}
+.revo-experience :is(.revo-learning-progress, .revo-assembly-targets, .revo-assembly-success) .revo-primary-button:hover:not(:disabled) { background: var(--revo-action-learning-hover); }
+.revo-experience :is(.revo-secondary-button, .revo-button-secondary, .revo-flow-back, .revo-menu-help, .revo-menu-continue),
+.revo-experience .revo-learning-progress .revo-secondary-button,
+.revo-experience .revo-hud :is(.revo-vent, .revo-action-secondary),
+.revo-experience .revo-narration button {
+  background: var(--revo-action-secondary); color: var(--revo-text-primary); border: 1px solid var(--revo-border-default);
+  min-height: 44px; border-radius: var(--revo-control-radius);
+}
+.revo-experience :is(.revo-secondary-button, .revo-button-secondary, .revo-flow-back, .revo-menu-help, .revo-menu-continue):hover:not(:disabled),
+.revo-experience .revo-learning-progress .revo-secondary-button:hover:not(:disabled),
+.revo-experience .revo-hud :is(.revo-vent, .revo-action-secondary):hover:not(:disabled),
+.revo-experience .revo-narration button:hover:not(:disabled) { background: var(--revo-action-secondary-hover); }
+.revo-experience .revo-dialog .revo-action-danger { background: var(--revo-action-danger); color: var(--revo-text-primary); border-color: var(--revo-state-error-border); }
+.revo-experience .revo-dialog .revo-action-danger:hover { background: var(--revo-action-danger-hover); }
+.revo-experience :is(.revo-menu-help,.revo-menu-continue) { padding: 10px 16px; }
+.revo-experience :is(button, a, summary) { touch-action: manipulation; }
+.revo-experience :is(button, a):active:not(:disabled) { filter: brightness(.94); }
+.revo-experience :is(button, a) > svg { flex-shrink: 0; }
+.revo-experience :is(a, button, input, select, summary, [tabindex]):focus-visible { outline: 3px solid var(--revo-focus-on-light); outline-offset: 3px; }
+.revo-experience :is(.revo-control, .revo-assembly-panel, .revo-hud-history) :is(a, button, input, select, summary, [tabindex]):focus-visible { outline-color: var(--revo-border-focus); }
+/* Disabled text stays readable, without looking like a usable primary action. */
+.revo-experience button:disabled,
+.revo-experience .revo-hud button:disabled,
+.revo-experience .revo-learning-progress button:disabled {
+  opacity: 1; background: var(--revo-disabled-background); color: var(--revo-disabled-text);
+  border: 1px dashed var(--revo-text-muted); box-shadow: none; cursor: not-allowed; filter: none;
+}
+.revo-experience .revo-hud .revo-stages button:disabled { background: transparent; border: 0; color: var(--revo-text-muted); }
+.revo-experience .revo-assembly-fieldset:disabled { opacity: 1; }
+.revo-experience .revo-assembly-parts > button:disabled { background: var(--revo-surface); color: var(--revo-text-secondary); border-color: var(--revo-border-default); }
+.revo-experience .revo-assembly-parts > button:disabled small { color: var(--revo-text-secondary); }
+
+/* Resource groups have enough room for explicit labels, including 320px screens. */
+.revo-experience .revo-hud .revo-resources { grid-template-columns: minmax(0,1fr); gap: 20px; }
+.revo-experience .revo-hud .revo-resource-actions { gap: 8px; }
+.revo-experience .revo-hud .revo-resource-actions > button,
+.revo-experience .revo-hud .revo-fill-action { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 12px; min-height: 48px; border-radius: var(--revo-control-radius); font-size: 15px; line-height: 1.4; font-weight: 600; }
+.revo-experience .revo-hud button.revo-action-water { background: var(--revo-action-water); color: var(--revo-text-primary); border: 1px solid var(--revo-water-indicator); }
+.revo-experience .revo-hud button.revo-action-water:hover:not(:disabled) { background: var(--revo-action-water-hover); }
+.revo-experience .revo-hud button.revo-action-fuel { background: var(--revo-action-fuel); color: var(--revo-text-ink); border: 1px solid var(--revo-action-fuel-hover); }
+.revo-experience .revo-hud button.revo-action-fuel:hover:not(:disabled) { background: var(--revo-action-fuel-hover); }
+.revo-experience .revo-hud :is(button.revo-action-water,button.revo-action-fuel):disabled { background: var(--revo-disabled-background); color: var(--revo-disabled-text); border: 1px dashed var(--revo-text-muted); }
+.revo-experience .revo-hud .revo-meter-label :is(span, svg, strong, small),
+.revo-experience .revo-hud .revo-pressure-scale > span { color: var(--revo-text-secondary); font-size: 13px; }
+.revo-experience .revo-hud .revo-start,
+.revo-experience .revo-hud .revo-vent { padding: 10px; line-height: 1.4; }
+.revo-experience .revo-hud .revo-start.is-running { background: var(--revo-action-secondary); color: var(--revo-text-primary); border-color: var(--revo-border-default); }
+.revo-experience .revo-hud .revo-control-feedback { order: 6; padding: 10px 12px; border-left: 3px solid var(--revo-border-default); background: var(--revo-surface-elevated); color: var(--revo-text-primary); font-size: 14px; line-height: 1.5; }
+.revo-experience .revo-filling-status > i { height: 6px; }
+.revo-experience .revo-filling-status[data-filling-resource="coal"] > i > span { background: var(--revo-action-fuel); }
+.revo-experience .revo-filling-status[data-filling-resource="water"] > i > span { background: var(--revo-water-indicator); }
+.revo-experience .revo-engine-status.warning { background: var(--revo-state-warning); color: var(--revo-state-warning-text); border-color: var(--revo-state-warning-text); }
+.revo-experience .revo-engine-status.danger { background: var(--revo-state-error); color: var(--revo-text-primary); border-color: var(--revo-state-error-border); }
+.revo-experience .revo-engine-status.warning > span { color: var(--revo-state-warning-text); }
+
+/* The same answer card is used for immediate assembly checks and submitted reflection answers. */
+.revo-experience .revo-dialog .revo-answer-card,
+.revo-experience .revo-hud .revo-assembly-check > .revo-answer-card {
+  position: relative; display: flex; align-items: flex-start; gap: 12px; width: 100%; min-width: 0; min-height: 56px;
+  margin: 0 0 10px; padding: 16px; border: 2px solid var(--revo-border-default); border-radius: 8px;
+  background: var(--revo-surface); color: var(--revo-text-primary); text-align: left;
+  font-size: 17px; line-height: 1.6; cursor: pointer; overflow-wrap: anywhere;
+}
+.revo-experience .revo-answer-copy { flex: 1; min-width: 0; color: inherit; }
+.revo-experience .revo-answer-marker { display: flex; flex: none; padding-top: 3px; color: inherit; }
+.revo-experience .revo-answer-state { display: block; margin-top: 7px; color: inherit; font-size: 14px; font-weight: 700; line-height: 1.5; }
+.revo-experience .revo-answer-state:empty { display: none; }
+.revo-experience .revo-dialog .revo-answer-card .revo-quiz-letter,
+.revo-experience .revo-answer-letter { display: grid; place-items: center; flex: 0 0 26px; min-width: 26px; height: 28px; margin-top: 1px; font-size: 14px; font-weight: 700; color: var(--revo-text-secondary); background: transparent; }
+.revo-experience .revo-dialog .revo-answer-card:hover:not(:has(input:disabled),.is-selected,.is-correct,.is-incorrect),
+.revo-experience .revo-hud .revo-assembly-check > .revo-answer-card:hover:not(:disabled,.is-incorrect) { background: var(--revo-surface-elevated); border-color: var(--revo-text-primary); }
+.revo-experience .revo-dialog .revo-answer-card.is-selected { background: var(--revo-selection-background); border-color: var(--revo-border-focus); box-shadow: inset 4px 0 var(--revo-border-focus); }
+.revo-experience .revo-dialog .revo-answer-card:has(input:focus-visible),
+.revo-experience .revo-hud .revo-assembly-check > .revo-answer-card:focus-visible { outline: 3px solid var(--revo-focus-on-light); outline-offset: 3px; box-shadow: 0 0 0 3px var(--revo-text-primary); }
+.revo-experience .revo-answer-card input:focus-visible { outline: none; }
+.revo-experience .revo-answer-card input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit; }
+.revo-experience .revo-dialog .revo-answer-card.is-correct,
+.revo-experience .revo-check-confirmation:not(:empty) { background: var(--revo-state-success); color: var(--revo-text-primary); border-color: var(--revo-state-success-border); }
+.revo-experience .revo-dialog .revo-answer-card.is-incorrect,
+.revo-experience .revo-hud .revo-assembly-check > .revo-answer-card.is-incorrect { background: var(--revo-state-error); color: var(--revo-text-primary); border-color: var(--revo-state-error-border); }
+.revo-experience .revo-dialog .revo-answer-card:has(input:disabled) { cursor: default; }
+.revo-experience .revo-dialog .revo-answer-card:has(input:disabled):not(.is-correct,.is-incorrect),
+.revo-experience .revo-hud .revo-assembly-check > .revo-answer-card:disabled { background: var(--revo-surface-elevated); color: var(--revo-text-secondary); border-style: dashed; }
+.revo-experience .revo-hud .revo-assembly-check > .revo-answer-card:disabled { cursor: not-allowed; }
+.revo-experience .revo-dialog .revo-quiz-feedback:not(:empty),
+.revo-experience .revo-hud .revo-assembly-answer,
+.revo-experience .revo-check-confirmation:not(:empty) { padding: 16px; border: 1px solid var(--revo-state-success-border); border-left-width: 4px; border-radius: 6px; background: var(--revo-state-success); color: var(--revo-text-primary); font-size: 16px; line-height: 1.6; }
+.revo-experience .revo-dialog .revo-quiz-feedback.is-incorrect,
+.revo-experience .revo-hud .revo-assembly-answer.is-incorrect { background: var(--revo-state-error); color: var(--revo-text-primary); border-color: var(--revo-state-error-border); }
+.revo-experience .revo-dialog .revo-quiz-feedback :is(p,strong) { color: inherit; }
+.revo-experience .revo-check-confirmation:not(:empty) { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 16px; font-size: 15px; }
+.revo-experience .revo-check-confirmation > svg { flex: none; margin-top: 3px; }
+.revo-experience .revo-hud .revo-answer-instruction { color: var(--revo-text-secondary); margin-bottom: 12px; font-size: 15px; }
+.revo-experience .revo-dialog .revo-quiz-score,
+.revo-experience .revo-dialog .revo-quiz-score > small { color: var(--revo-action-learning); }
+.revo-experience .revo-dialog .revo-quiz-takeaway { color: var(--revo-text-ink); }
+.revo-experience .revo-quiz-options { min-width: 0; }
+
+/* Clear selected components and useful touch targets across the HUD and overlays. */
+.revo-experience .revo-hud .revo-hud-workspace { grid-template-columns: minmax(0,1fr); }
+.revo-experience .revo-hud :is(.revo-lab-grid,.revo-hud-sidebar,.revo-learning-note,.revo-stages) { min-width: 0; }
+.revo-experience .revo-hud .revo-stages { overflow-x: auto; scrollbar-width: none; }
+.revo-experience .revo-hud .revo-component-list > button:nth-child(n) { min-height: 44px; }
+.revo-experience .revo-hud .revo-component-list > button[aria-pressed="true"] { background: var(--revo-selection-background); color: var(--revo-text-primary); border-radius: 6px; }
+.revo-experience .revo-hud .revo-component-list > button > span { color: var(--revo-text-ink); border-color: var(--revo-text-muted); }
+.revo-experience .revo-hud .revo-assembly-parts > button { min-height: 48px; padding: 10px; border-color: var(--revo-border-default); }
+.revo-experience .revo-hud .revo-assembly-parts > button[aria-pressed="true"] { background: var(--revo-selection-background); color: var(--revo-text-primary); border: 2px solid var(--revo-border-focus); }
+.revo-experience .revo-hud .revo-assembly-panel :is(summary,select,.revo-assembly-retry) { min-height: 44px; }
+.revo-experience .revo-hud .revo-assembly-panel summary { padding-block: 10px; }
+.revo-experience .revo-hud :is(.revo-workspace-actions .revo-icon-button,.revo-workspace-actions .revo-reset,.revo-camera-tools > button,.revo-component-actions > button,.revo-learning-note > button),
+.revo-experience :is(.revo-dialog-close,.revo-icon-button,.revo-resource-close) { width: 44px; height: 44px; min-height: 44px; flex-shrink: 0; }
+.revo-experience .revo-hud .revo-workspace-actions .revo-reset { width: auto; padding-inline: 10px; }
+.revo-experience .revo-hud .revo-hud-header nav > :is(a,button) { min-height: 44px; }
+.revo-experience .revo-hud .revo-stages button { min-height: 44px; }
+.revo-experience .revo-hud .revo-assembly-socket:disabled { background: var(--revo-state-success); color: var(--revo-text-primary); border: 1px solid var(--revo-state-success-border); cursor: default; }
+.revo-experience .revo-resource-context > strong { padding-right: 36px; }
+.revo-experience .revo-dialog { padding-top: 58px; }
+.revo-experience .revo-quiz-heading { gap: 16px; }
+.revo-experience .revo-dialog :is(button,a) { min-height: 44px; }
+.revo-experience .revo-dialog .revo-history-sources a { display: inline-flex; align-items: center; }
+.revo-experience .revo-narration { gap: 10px; }
+.revo-experience .revo-narration button { padding: 8px 12px; }
+.revo-experience .revo-hud .revo-hud-title h1:focus:not(:focus-visible) { outline: none; }
+
+@media (max-width: 850px) {
+  .revo-experience .revo-hud .revo-workspace-actions .revo-reset { width: 44px; padding: 0; }
+  .revo-experience .revo-hud .revo-workspace-actions { gap: 4px; }
+}
+@media (max-width: 720px) {
+  .revo-experience .revo-briefing-actions { flex-wrap: wrap; gap: 8px; }
+  .revo-experience .revo-briefing-actions > a { max-width: 100%; }
+  .revo-experience .revo-hud .revo-stage-bar { gap: 0; }
+  .revo-experience .revo-hud .revo-stages { gap: 4px; }
+  .revo-experience .revo-hud .revo-hud-header nav > :is(a,button) { width: 44px; height: 44px; }
+  .revo-experience .revo-hud .revo-hud-title { padding-left: 6px; }
+  .revo-experience .revo-hud .revo-hud-header nav { gap: 4px; }
+  .revo-experience .revo-dialog .revo-answer-card,
+  .revo-experience .revo-hud .revo-assembly-check > .revo-answer-card { padding: 12px; gap: 8px; font-size: 16px; }
+  .revo-experience .revo-dialog .revo-quiz-letter,
+  .revo-experience .revo-answer-letter { flex-basis: 18px; min-width: 18px; }
+  .revo-experience .revo-dialog { padding-inline: 18px; }
+  .revo-experience .revo-hud .revo-component-info { bottom: 122px; max-height: calc(100% - 138px); }
+  .revo-experience .revo-hud .revo-component-info > div:nth-child(2) { grid-column: 1 / 3; }
+  .revo-experience .revo-hud .revo-component-info-number { display: none; }
+  .revo-experience .revo-hud .revo-camera-tools { margin-left: auto; }
+  .revo-experience .revo-hud .revo-orbit-hint { display: none; }
+}
+@media (max-width: 360px) {
+  .revo-experience .revo-hud .revo-stages { gap: 2px; }
+  .revo-experience .revo-hud .revo-workspace-actions .revo-era-chip { width: 100px; max-width: 100px; flex-wrap: wrap; justify-content: center; gap: 2px; padding: 3px 5px; font-size: 10px; line-height: 1.25; }
+  .revo-experience .revo-hud .revo-era-chip > span { display: none; }
+  /* The stage/header already names this workspace. Keep decorative subtitles off the small canvas. */
+  .revo-experience .revo-hud .revo-exhibit-title { display: none; }
+}
+@media (max-width: 730px) and (max-height: 730px) {
+  .revo-experience .revo-menu-eyebrow { display: none; }
+  .revo-experience .revo-menu-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+  .revo-experience .revo-menu-actions > :is(a,button) { width: 100%; min-width: 0; min-height: 44px; font-size: 14px; padding: 8px; gap: 6px; justify-content: center; }
+  .revo-experience .revo-menu-actions > .revo-menu-start { padding-inline: 6px; gap: 4px; white-space: nowrap; }
+  .revo-experience .revo-menu-actions:has(.revo-menu-continue) .revo-menu-help { grid-column: 1 / -1; }
+  .revo-experience .revo-menu-caption-label { display: none; }
+}
+@media (min-width: 731px) and (max-height: 500px) {
+  .revo-experience .revo-menu-actions { gap: 8px; }
+  .revo-experience .revo-menu-help { padding: 8px; font-size: 14px; gap: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .revo-experience :is(button,a,label) { transition: none; }
+}
