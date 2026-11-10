@@ -17,13 +17,13 @@ export default function RevoEraSelection() {
     </div>
     <EraGridKeyboard>
       {ERAS.map(era => <article key={era.id} className={`revo-era-card ${era.briefingHref ? "is-playable" : "is-upcoming"}`} aria-labelledby={`${era.id}-title`} data-era={era.id}>
-        <div className="revo-era-card-top"><div><span className="revo-era-label">{era.label}</span><span className="revo-era-availability">{era.briefingHref ? <><i />TERSEDIA</> : <><LockKeyhole size={10} />SEGERA HADIR</>}</span></div><span className="revo-era-number" aria-hidden="true">{era.number}</span></div>
+        <div className="revo-era-card-top"><div><span className="revo-era-label">{era.label}</span><span className="revo-era-availability">{era.briefingHref ? <><i />{era.id === "industry-2" ? "EKSPLORASI TERSEDIA" : "TERSEDIA"}</> : <><LockKeyhole size={10} />SEGERA HADIR</>}</span></div><span className="revo-era-number" aria-hidden="true">{era.number}</span></div>
         <h2 id={`${era.id}-title`}>{era.title}</h2>
         <div className="revo-era-art">{era.id === "industry-1" ? <Image src={factoryPreview} alt="Pabrik tekstil dengan ketel uap dan roda gila." fill sizes="(max-width: 600px) 130px, (max-width: 1000px) 45vw, 23vw" loading="eager" /> : <EraIllustration era={era.id} />}</div>
         <p className="revo-era-description">{era.description}</p>
-        <div className="revo-era-card-bottom">{era.briefingHref ? <Link href={era.briefingHref} className="revo-era-enter">Jelajahi Era<ArrowRight size={17} /></Link> : <><button className="revo-era-locked" disabled aria-describedby={`${era.id}-availability`}><LockKeyhole size={13} />Dalam Pengembangan</button><span id={`${era.id}-availability`} className="revo-sr-only">{era.label} belum dapat dimainkan. Saat ini hanya Industry 1.0 yang tersedia.</span></>}</div>
+        <div className="revo-era-card-bottom">{era.briefingHref ? <Link href={era.briefingHref} className="revo-era-enter">{era.id === "industry-2" ? "Buka Briefing 2.0" : "Jelajahi Era"}<ArrowRight size={17} aria-hidden="true" /></Link> : <><button className="revo-era-locked" disabled aria-describedby={`${era.id}-availability`}><LockKeyhole size={13} />Dalam Pengembangan</button><span id={`${era.id}-availability`} className="revo-sr-only">{era.label} belum dapat dimainkan.</span></>}</div>
       </article>)}
     </EraGridKeyboard>
-    <footer className="revo-flow-footer"><span>SATU ERA TERBUKA. RASA INGIN TAHU TANPA BATAS.</span><span className="revo-era-scroll-hint"><ArrowDown size={12} />Gulir daftar untuk melihat semua era</span><span className="revo-flow-school">Informatika Terapan — SMAN 16 Bandung</span></footer>
+    <footer className="revo-flow-footer"><span>RASA INGIN TAHU TANPA BATAS.</span><span className="revo-era-scroll-hint"><ArrowDown size={12} />Gulir daftar untuk melihat semua era</span><span className="revo-flow-school">Informatika Terapan — SMAN 16 Bandung</span></footer>
   </main>;
 }

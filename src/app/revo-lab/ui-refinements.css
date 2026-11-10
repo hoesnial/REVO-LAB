@@ -101,7 +101,7 @@
 .revo-experience .revo-engine-status.warning > span { color: var(--revo-state-warning-text); }
 
 /* The same answer card is used for immediate assembly checks and submitted reflection answers. */
-.revo-experience .revo-dialog .revo-answer-card,
+.revo-experience :is(.revo-dialog,.electric-concept-options) .revo-answer-card,
 .revo-experience .revo-hud .revo-assembly-check > .revo-answer-card {
   position: relative; display: flex; align-items: flex-start; gap: 12px; width: 100%; min-width: 0; min-height: 56px;
   margin: 0 0 10px; padding: 16px; border: 2px solid var(--revo-border-default); border-radius: 8px;
@@ -114,19 +114,19 @@
 .revo-experience .revo-answer-state:empty { display: none; }
 .revo-experience .revo-dialog .revo-answer-card .revo-quiz-letter,
 .revo-experience .revo-answer-letter { display: grid; place-items: center; flex: 0 0 26px; min-width: 26px; height: 28px; margin-top: 1px; font-size: 14px; font-weight: 700; color: var(--revo-text-secondary); background: transparent; }
-.revo-experience .revo-dialog .revo-answer-card:hover:not(:has(input:disabled),.is-selected,.is-correct,.is-incorrect),
+.revo-experience :is(.revo-dialog,.electric-concept-options) .revo-answer-card:hover:not(:has(input:disabled),.is-selected,.is-correct,.is-incorrect),
 .revo-experience .revo-hud .revo-assembly-check > .revo-answer-card:hover:not(:disabled,.is-incorrect) { background: var(--revo-surface-elevated); border-color: var(--revo-text-primary); }
-.revo-experience .revo-dialog .revo-answer-card.is-selected { background: var(--revo-selection-background); border-color: var(--revo-border-focus); box-shadow: inset 4px 0 var(--revo-border-focus); }
-.revo-experience .revo-dialog .revo-answer-card:has(input:focus-visible),
+.revo-experience :is(.revo-dialog,.electric-concept-options) .revo-answer-card.is-selected { background: var(--revo-selection-background); border-color: var(--revo-border-focus); box-shadow: inset 4px 0 var(--revo-border-focus); }
+.revo-experience :is(.revo-dialog,.electric-concept-options) .revo-answer-card:has(input:focus-visible),
 .revo-experience .revo-hud .revo-assembly-check > .revo-answer-card:focus-visible { outline: 3px solid var(--revo-focus-on-light); outline-offset: 3px; box-shadow: 0 0 0 3px var(--revo-text-primary); }
 .revo-experience .revo-answer-card input:focus-visible { outline: none; }
 .revo-experience .revo-answer-card input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit; }
-.revo-experience .revo-dialog .revo-answer-card.is-correct,
+.revo-experience :is(.revo-dialog,.electric-concept-options) .revo-answer-card.is-correct,
 .revo-experience .revo-check-confirmation:not(:empty) { background: var(--revo-state-success); color: var(--revo-text-primary); border-color: var(--revo-state-success-border); }
-.revo-experience .revo-dialog .revo-answer-card.is-incorrect,
+.revo-experience :is(.revo-dialog,.electric-concept-options) .revo-answer-card.is-incorrect,
 .revo-experience .revo-hud .revo-assembly-check > .revo-answer-card.is-incorrect { background: var(--revo-state-error); color: var(--revo-text-primary); border-color: var(--revo-state-error-border); }
-.revo-experience .revo-dialog .revo-answer-card:has(input:disabled) { cursor: default; }
-.revo-experience .revo-dialog .revo-answer-card:has(input:disabled):not(.is-correct,.is-incorrect),
+.revo-experience :is(.revo-dialog,.electric-concept-options) .revo-answer-card:has(input:disabled) { cursor: default; }
+.revo-experience :is(.revo-dialog,.electric-concept-options) .revo-answer-card:has(input:disabled):not(.is-correct,.is-incorrect),
 .revo-experience .revo-hud .revo-assembly-check > .revo-answer-card:disabled { background: var(--revo-surface-elevated); color: var(--revo-text-secondary); border-style: dashed; }
 .revo-experience .revo-hud .revo-assembly-check > .revo-answer-card:disabled { cursor: not-allowed; }
 .revo-experience .revo-dialog .revo-quiz-feedback:not(:empty),
@@ -157,7 +157,6 @@
 .revo-experience .revo-hud :is(.revo-workspace-actions .revo-icon-button,.revo-workspace-actions .revo-reset,.revo-camera-tools > button,.revo-component-actions > button,.revo-learning-note > button),
 .revo-experience :is(.revo-dialog-close,.revo-icon-button,.revo-resource-close) { width: 44px; height: 44px; min-height: 44px; flex-shrink: 0; }
 .revo-experience .revo-hud .revo-workspace-actions .revo-reset { width: auto; padding-inline: 10px; }
-.revo-experience .revo-hud .revo-hud-header nav > :is(a,button) { min-height: 44px; }
 .revo-experience .revo-hud .revo-stages button { min-height: 44px; }
 .revo-experience .revo-hud .revo-assembly-socket:disabled { background: var(--revo-state-success); color: var(--revo-text-primary); border: 1px solid var(--revo-state-success-border); cursor: default; }
 .revo-experience .revo-resource-context > strong { padding-right: 36px; }
@@ -167,7 +166,6 @@
 .revo-experience .revo-dialog .revo-history-sources a { display: inline-flex; align-items: center; }
 .revo-experience .revo-narration { gap: 10px; }
 .revo-experience .revo-narration button { padding: 8px 12px; }
-.revo-experience .revo-hud .revo-hud-title h1:focus:not(:focus-visible) { outline: none; }
 
 @media (max-width: 850px) {
   .revo-experience .revo-hud .revo-workspace-actions .revo-reset { width: 44px; padding: 0; }
@@ -178,17 +176,11 @@
   .revo-experience .revo-briefing-actions > a { max-width: 100%; }
   .revo-experience .revo-hud .revo-stage-bar { gap: 0; }
   .revo-experience .revo-hud .revo-stages { gap: 4px; }
-  .revo-experience .revo-hud .revo-hud-header nav > :is(a,button) { width: 44px; height: 44px; }
-  .revo-experience .revo-hud .revo-hud-title { padding-left: 6px; }
-  .revo-experience .revo-hud .revo-hud-header nav { gap: 4px; }
-  .revo-experience .revo-dialog .revo-answer-card,
+  .revo-experience :is(.revo-dialog,.electric-concept-options) .revo-answer-card,
   .revo-experience .revo-hud .revo-assembly-check > .revo-answer-card { padding: 12px; gap: 8px; font-size: 16px; }
   .revo-experience .revo-dialog .revo-quiz-letter,
   .revo-experience .revo-answer-letter { flex-basis: 18px; min-width: 18px; }
   .revo-experience .revo-dialog { padding-inline: 18px; }
-  .revo-experience .revo-hud .revo-component-info { bottom: 122px; max-height: calc(100% - 138px); }
-  .revo-experience .revo-hud .revo-component-info > div:nth-child(2) { grid-column: 1 / 3; }
-  .revo-experience .revo-hud .revo-component-info-number { display: none; }
   .revo-experience .revo-hud .revo-camera-tools { margin-left: auto; }
   .revo-experience .revo-hud .revo-orbit-hint { display: none; }
 }

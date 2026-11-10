@@ -1,0 +1,33 @@
+/* Shared navigation and learning presentation. Scene palettes stay era-specific. */
+.revo-menu-resume { display: flex; flex-wrap: wrap; gap: 6px 8px; margin-top: 12px; }
+.revo-experience .revo-menu-resume .revo-menu-continue {
+  width: auto; max-width: 100%; min-width: 0; justify-content: flex-start; gap: 7px;
+  padding: 6px 10px; font-size: 13px; line-height: 1.25;
+}
+.revo-menu-resume .revo-menu-continue > span { color: var(--revo-text-secondary); font-size: 11px; white-space: nowrap; }
+.revo-menu-resume .revo-menu-continue > svg { margin-left: auto; }
+.revo-menu:has(.revo-menu-resume) .revo-menu-actions { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; }
+.revo-menu:has(.revo-menu-resume) .revo-menu-actions .revo-menu-start { width: auto; gap: 12px; padding: 6px 12px; min-height: 44px; }
+.revo-menu:has(.revo-menu-resume) .revo-menu-actions .revo-menu-help { min-height: 44px; padding: 6px 12px; }
+
+.revo-experience .electric-shell .electric-learning-action:not(:disabled) {
+  background: var(--revo-action-learning); color: var(--revo-text-primary); border-color: var(--revo-action-learning);
+}
+.revo-experience .electric-shell .electric-learning-action:hover:not(:disabled) { background: var(--revo-action-learning-hover); }
+.revo-experience .electric-concept-options > .revo-answer-card { margin: 0; }
+.revo-experience .electric-concept-feedback.is-correct {
+  background: var(--revo-state-success); border-color: var(--revo-state-success-border); color: var(--revo-text-primary);
+}
+.revo-experience .electric-concept-feedback.is-wrong {
+  background: var(--revo-state-error); border-color: var(--revo-state-error-border); color: var(--revo-text-primary);
+}
+.revo-experience .electric-shell .electric-retry { margin-top: 12px; }
+
+@media (max-width: 380px) {
+  .electric-briefing .revo-flow-header .revo-flow-step { display: none; }
+}
+@media (max-width: 730px) and (max-height: 730px) {
+  .revo-menu:has(.revo-menu-resume) .revo-menu-actions .revo-menu-help { grid-column: auto; width: 100%; }
+  .revo-menu:has(.revo-menu-resume) .revo-menu-actions .revo-menu-start { width: 100%; gap: 4px; padding: 6px; }
+  .revo-menu-resume { margin-top: 6px; }
+}

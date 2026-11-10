@@ -1,0 +1,236 @@
+/* Canonical extension of ui-refinements.css: one semantic palette, two surface tones. */
+.revo-experience {
+  --revo-font-heading: "Manrope", sans-serif;
+  --revo-font-body: "DM Sans", sans-serif;
+  --revo-type-title: clamp(24px, 2.7vw, 40px);
+  --revo-type-heading: clamp(20px, 1.8vw, 26px);
+  --revo-type-body: 16px;
+  --revo-type-label: 13px;
+  --revo-type-caption: 12px;
+  --revo-leading-body: 1.55;
+  --revo-space-1: 4px;
+  --revo-space-2: 8px;
+  --revo-space-3: 12px;
+  --revo-space-4: 16px;
+  --revo-space-6: 24px;
+  --revo-panel-padding: clamp(16px, 2vw, 28px);
+  --revo-surface-paper: #fffdf2;
+  --revo-surface-subtle: #e9ede2;
+  --revo-scene-floor: #e7e3d8;
+  --revo-line-subtle: #c7cec0;
+  --revo-info: var(--revo-action-water);
+  --revo-mechanical: #98551f;
+  --revo-radius-panel: 10px;
+  font-family: var(--revo-font-body);
+}
+.revo-experience :is(h1,h2,h3) { font-family: var(--revo-font-heading); }
+.revo-experience .electric-shell {
+  --electric-ink: var(--revo-text-ink);
+  --electric-muted: var(--revo-text-muted);
+  --electric-line: var(--revo-line-subtle);
+  --electric-deep: var(--revo-surface);
+}
+.revo-experience .electric-shell :is(.electric-primary,.electric-secondary,.electric-path,select) {
+  border-radius: var(--revo-control-radius); font-family: var(--revo-font-body); font-size: var(--revo-type-label);
+}
+.revo-experience .electric-shell :is(button,a,select,[tabindex]):focus-visible { outline-color: var(--revo-focus-on-light); }
+.revo-experience .electric-shell :is(.electric-workspace) { grid-template-columns: minmax(0,1fr) minmax(350px,32%); }
+.revo-experience .electric-stage { background: radial-gradient(ellipse at 50% 40%, var(--revo-surface-paper), var(--revo-scene-floor)); }
+.revo-experience .electric-stage-title { padding: var(--revo-space-4) var(--revo-panel-padding) 0; }
+.revo-experience .electric-stage-title h1 { font-size: var(--revo-type-title); font-weight: 800; letter-spacing: -.045em; }
+.revo-experience .electric-kicker { font-size: var(--revo-type-caption); letter-spacing: .1em; }
+.revo-experience :is(.electric-inspector,.electric-assembly-panel,.electric-experiment-panel) { background: var(--revo-background); }
+.revo-experience :is(.electric-inspector-heading h2,.electric-assembly-body h2,.electric-experiment-body h2) { font-size: var(--revo-type-heading); }
+.revo-experience :is(.electric-assembly-instruction,.electric-material-note,.electric-experiment-cause p:not(.electric-kicker),.electric-observation-log p) {
+  font-size: var(--revo-type-body); line-height: var(--revo-leading-body);
+}
+.revo-experience :is(.electric-experiment-cause,.electric-observation-log) { padding: var(--revo-space-4) 0; background: transparent; border: 0; border-top: 1px solid var(--revo-line-subtle); border-radius: 0; }
+.revo-experience .electric-experiment-cause h3 { font-size: var(--revo-type-heading); }
+.revo-experience .electric-run-settings button { min-height: 60px; padding: var(--revo-space-2); }
+.revo-experience .electric-run-settings button > span { font-size: var(--revo-type-caption); }
+.revo-experience .electric-run-settings button strong { font-size: 15px; }
+.revo-experience .electric-run-status { gap: 0; background: var(--revo-surface-paper); border-radius: var(--revo-radius-panel); padding: var(--revo-space-2); }
+.revo-experience .electric-run-status > div[data-signal] { background: transparent; border: 0; border-radius: 0; padding: var(--revo-space-2); }
+.revo-experience .electric-run-status dt { font-size: var(--revo-type-caption); color: var(--revo-text-muted); }
+.revo-experience .electric-run-status dd { font-size: 14px; margin-top: var(--revo-space-1); }
+.revo-experience .electric-run-status [data-signal="on"] dd { color: var(--revo-action-learning); }
+.revo-experience .electric-run-status [data-signal="alert"] dd { color: var(--revo-action-danger); }
+.revo-experience .electric-experiment-scene-footer { flex-wrap: wrap; }
+.revo-experience .electric-experiment-scene-footer .electric-run-status { flex-basis: 100%; }
+.electric-camera-controls { display: flex; align-items: center; gap: var(--revo-space-2); margin-left: auto; position: relative; }
+.electric-camera-controls select { width: 100%; min-width: 0; min-height: 44px; padding: 8px; background: var(--revo-surface-paper); border: 1px solid var(--revo-border-default); color: var(--revo-text-ink); }
+/* Reveal the camera options on demand so the overview stays clear. */
+.electric-camera-popover { display: grid; position: absolute; bottom: 52px; right: 0; z-index: 4; padding: var(--revo-space-3); width: 200px; gap: 6px; background: var(--revo-surface-paper); border: 1px solid var(--revo-border-default); border-radius: var(--revo-control-radius); box-shadow: 0 8px 24px #26382e24; font-size: var(--revo-type-label); }
+.electric-stage:not(:has(canvas)) .electric-camera-controls { display: none; }
+.revo-experience .electric-experiment-stage .electric-camera-controls { position: absolute; right: var(--revo-space-4); bottom: 90px; z-index: 1; }
+.revo-experience .electric-experiment-stage .electric-camera-reset { position: static; }
+.revo-experience .electric-scene-tools { flex-wrap: wrap; }
+/* The same presentational component is used inside both eras' information hosts. */
+.revo-experience .revo-component-card { display: grid; grid-template-columns: auto minmax(0,1fr); gap: var(--revo-space-3); padding: var(--revo-space-4); background: var(--revo-surface-paper); border: 1px solid var(--revo-border-default); border-radius: var(--revo-radius-panel); }
+.revo-experience :is(.revo-component-card,.revo-component-info) .revo-component-info-number { display: grid; place-items: center; width: 36px; height: 36px; background: var(--revo-action-primary); color: var(--revo-text-ink); border-radius: 50%; font-weight: 800; }
+.revo-experience .revo-hud .revo-component-info h2,
+.revo-experience .revo-component-card :is(h2,h3) { font-size: var(--revo-type-heading); line-height: 1.2; margin: 4px 0; }
+.revo-experience .revo-component-card > :is(p,.revo-component-role,button) { grid-column: 1 / -1; }
+.revo-experience :is(.revo-component-card,.revo-component-info) > p,
+.revo-experience :is(.revo-component-card,.revo-component-info) .revo-component-role p { font-size: var(--revo-type-body); line-height: var(--revo-leading-body); margin: 0; }
+.revo-experience .revo-component-card .revo-component-role { padding: var(--revo-space-3); background: var(--revo-surface-subtle); border-left: 3px solid var(--revo-action-learning); border-radius: var(--revo-control-radius); }
+.revo-experience .revo-component-card :is(.revo-kicker,.revo-component-role > span) { color: var(--revo-text-muted); font-size: var(--revo-type-caption); letter-spacing: .08em; font-weight: 700; }
+.electric-detail-feedback { display: flex; align-items: center; gap: var(--revo-space-2); color: var(--revo-action-learning); }
+.revo-experience .electric-parts { gap: var(--revo-space-1); }
+.revo-experience .electric-parts button { min-height: 44px; font-size: 14px; }
+@media (max-width: 750px) and (min-height: 431px) {
+  .revo-experience { --revo-type-body: 15px; --revo-panel-padding: 12px; }
+  .revo-experience .electric-shell .electric-workspace { grid-template-columns: minmax(0,1fr); grid-template-rows: minmax(230px,49%) minmax(0,1fr); }
+  .revo-experience .electric-experiment .electric-workspace { grid-template-rows: minmax(250px,53%) minmax(0,1fr); }
+  .revo-experience .electric-stage-title { padding: 8px 12px 0; }
+  .revo-experience .electric-stage-title h1 { font-size: 24px; }
+  .revo-experience .electric-stage-title .electric-kicker { display: none; }
+  .revo-experience .electric-run-status { grid-template-columns: repeat(3,minmax(0,1fr)); grid-template-rows: auto minmax(50px, auto); padding: 4px; }
+  .revo-experience .electric-run-status > div { padding: 3px 5px; text-align: left; }
+  .revo-experience .electric-run-status dt { font-size: 11px; justify-content: flex-start; }
+  .revo-experience .electric-run-status dd { font-size: 12px; margin-top: 1px; }
+  .revo-experience .electric-experiment-stage .electric-camera-controls { bottom: 9px; right: 10px; gap: 2px; }
+  .revo-experience .electric-run-settings button { min-height: 49px; padding: 5px; }
+  .revo-experience .electric-experiment-body h2 { font-size: 20px; }
+  .revo-experience .electric-scene-tools { padding: 0 6px 6px; gap: 4px; }
+  .revo-experience .electric-explore .electric-path { padding-inline: 6px; }
+  .revo-experience .electric-inspector { padding: 12px; }
+}
+.revo-experience .revo-hud .revo-component-info:focus-visible {
+  outline: 2px solid var(--revo-focus-on-light);
+  outline-offset: 2px;
+}
+@media (max-width: 380px) and (min-height: 431px) {
+  .revo-experience .electric-experiment .electric-workspace { grid-template-rows: minmax(clamp(250px, calc(100dvh - 298px), 270px), 53%) minmax(0,1fr); }
+  .revo-experience .electric-stage-title h1 { font-size: 23px; }
+  .revo-experience .electric-explore .electric-path { font-size: 12px; padding-inline: 4px; }
+  .revo-experience .electric-explore .electric-path > span { display: none; }
+}
+@media (max-height:430px) and (orientation:landscape) {
+  .revo-experience .electric-shell .electric-workspace { grid-template-columns: minmax(0,1fr) minmax(265px,43%); }
+}
+@media (max-width:360px) {
+  .revo-experience .electric-assembly .electric-stage { grid-template-rows: auto minmax(0,1fr) auto; }
+  .revo-experience .electric-assembly-tools { position: static; pointer-events: auto; }
+  .revo-experience .electric-assembly-tools .electric-legend { display: none; }
+}
+
+/* Lab chrome: same controls and visual states for route navigation and in-page tabs. */
+.revo-experience .revo-game-header {
+  flex: none;
+  min-height: 64px;
+  padding: 6px var(--revo-panel-padding);
+  gap: var(--revo-space-4);
+  background: var(--revo-background);
+  color: var(--revo-text-ink);
+  border-bottom: 1px solid var(--revo-line-subtle);
+}
+.revo-experience .revo-game-header nav { display: flex; align-items: center; gap: var(--revo-space-2); margin: 0 0 0 auto; }
+.revo-experience .revo-game-header .revo-flow-step { margin: 0; font-size: var(--revo-type-caption); color: var(--revo-text-muted); letter-spacing: .08em; }
+.revo-game-header .revo-hud-title { min-width: 0; display: grid; gap: var(--revo-space-1); }
+.revo-game-header .revo-hud-title h1 { font-size: 18px; line-height: 1.1; letter-spacing: -.035em; white-space: nowrap; }
+.revo-game-header .revo-hud-title h1 > span { color: var(--revo-action-learning); }
+.revo-game-header .revo-hud-title h1:focus:not(:focus-visible) { outline: none; }
+.revo-experience .revo-game-header :is(.revo-game-action,.revo-flow-back) {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--revo-space-2);
+  min-width: 44px; min-height: 44px; padding: 0 10px; white-space: nowrap;
+  border: 1px solid var(--revo-border-default); border-radius: var(--revo-control-radius);
+  font: 700 var(--revo-type-label)/1.25 var(--revo-font-body);
+}
+.revo-experience .revo-game-header .revo-game-action { color: var(--revo-text-ink); background: var(--revo-surface-paper); }
+.revo-experience .revo-game-header .revo-game-action:hover { background: var(--revo-surface-subtle); }
+
+.revo-experience .revo-stage-track {
+  display: flex; align-items: stretch; min-width: 0; min-height: 50px;
+  gap: clamp(8px,2vw,24px); padding-inline: var(--revo-panel-padding);
+  background: #f5f6ed; border-bottom: 1px solid var(--revo-line-subtle);
+  overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.revo-experience .revo-hud .revo-stage-track { padding-inline: 0; border-bottom: 0; }
+.revo-experience .revo-stage-track > .revo-stage-entry {
+  display: inline-flex; position: relative; align-items: center; flex: 0 0 auto; gap: 6px;
+  min-height: 44px; padding: 0 2px; border: 0; border-bottom: 3px solid transparent;
+  background: transparent; color: var(--revo-text-ink); opacity: 1; font-size: 14px; white-space: nowrap;
+}
+.revo-experience .revo-stage-track > .revo-stage-entry::after { content: none; }
+.revo-experience .revo-stage-track > .revo-stage-entry:focus-visible { outline-offset: -3px; }
+.revo-experience .revo-stage-track > .revo-stage-entry:disabled { color: var(--revo-text-muted); cursor: not-allowed; }
+.revo-experience .revo-stage-track > .revo-stage-entry:is([aria-current],[aria-selected="true"]) { border-color: var(--revo-action-primary); font-weight: 750; }
+.revo-experience .revo-stage-track .revo-stage-number {
+  display: grid; place-items: center; flex: 0 0 23px; width: 23px; height: 23px;
+  border: 1px solid var(--revo-line-subtle); border-radius: 50%; color: var(--revo-text-muted); font-size: 10px;
+}
+.revo-experience .revo-stage-track :is([aria-current],[aria-selected="true"]) .revo-stage-number { background: var(--revo-action-primary); color: var(--revo-text-ink); border-color: transparent; }
+.revo-experience .revo-stage-track [data-complete]:not([aria-current],[aria-selected="true"]) .revo-stage-number { background: var(--revo-surface-subtle); color: var(--revo-action-learning); }
+.revo-stage-entry small { display: block; font-size: 10px; line-height: 1.05; }
+
+.revo-hud .revo-lab-grid { position: relative; }
+.revo-hud .revo-exhibit { grid-area: 1 / 1; }
+.revo-hud-dock { display: contents; }
+/* The desktop card uses the first grid area's bounds, just as it did inside the scene. */
+.revo-hud .revo-component-info { grid-area: 1 / 1 / 2 / 2; }
+.revo-component-info :focus-visible { outline-offset: -3px; }
+.revo-experience .revo-component-card:has(.revo-component-actions) { grid-template-columns: auto minmax(0,1fr) auto; }
+.revo-experience .revo-component-card:focus-visible { outline-offset: -3px; }
+.revo-component-card .revo-component-actions > button {
+  display: grid; place-items: center; width: 44px; height: 44px;
+  border: 1px solid var(--revo-border-default); border-radius: 50%;
+  color: var(--revo-text-ink); background: var(--revo-surface-paper);
+}
+.revo-component-card .revo-component-actions > button:hover { background: var(--revo-surface-subtle); }
+.revo-component-card .revo-component-info-number { font-size: 16px; line-height: 1; }
+
+@media (max-width: 720px) {
+  .revo-experience .revo-game-header { min-height: 50px; padding: 3px var(--revo-space-2); gap: var(--revo-space-2); }
+  .revo-experience .revo-game-header nav { gap: 5px; }
+  .revo-experience .revo-game-header :is(.revo-game-action,.revo-flow-back) { width: 44px; padding: 0; }
+  .revo-game-header :is(.revo-game-action,.revo-flow-back) > span { display: none; }
+  .revo-game-header :is(.revo-hud-title,.revo-flow-step) { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  .revo-experience .revo-stage-track { justify-content: space-between; gap: 4px; padding-inline: var(--revo-space-2); }
+  .revo-experience .revo-hud .revo-stage-track { min-height: 44px; }
+  .revo-experience .revo-stage-track > .revo-stage-entry { gap: 4px; font-size: 12px; }
+  .revo-experience .revo-stage-track .revo-stage-number { flex-basis: 19px; width: 19px; height: 19px; }
+
+  .revo-experience .revo-hud .revo-lab-grid:has(.revo-component-info) {
+    grid-template-rows: minmax(0,1fr) clamp(160px,39%,300px);
+  }
+  .revo-hud-dock:has(.revo-component-info) {
+    display: flex; flex-direction: column; min-width: 0; min-height: 0; grid-area: 2 / 1;
+    overflow: hidden auto; overscroll-behavior: contain; scrollbar-width: thin;
+    background: var(--revo-background); border-top: 1px solid var(--revo-line-subtle);
+  }
+  .revo-experience .revo-hud .revo-hud-dock:has(.revo-component-info) :is(.revo-hud-sidebar,.revo-hud-controls) { overflow: visible; flex: none; }
+  .revo-experience .revo-hud .revo-hud-dock .revo-component-info {
+    position: static; flex: none; width: auto; min-width: 0; max-height: none;
+    margin: var(--revo-space-2); padding: var(--revo-space-3); overflow: visible;
+    grid-template-columns: 30px minmax(0,1fr) auto; gap: var(--revo-space-2);
+    background: var(--revo-surface-paper); border: 1px solid var(--revo-border-default);
+    border-radius: var(--revo-radius-panel); box-shadow: none; backdrop-filter: none;
+  }
+  .revo-experience .revo-hud .revo-component-info:focus-visible { outline-offset: -3px; }
+  .revo-experience :is(.revo-component-info,.revo-component-card) .revo-component-info-number { width: 30px; height: 30px; font-size: 14px; }
+  .revo-experience .revo-hud .revo-component-info .revo-component-identification { grid-column: 2; }
+  .revo-experience :is(.revo-component-info,.revo-component-card) .revo-component-role {
+    padding: var(--revo-space-3); background: var(--revo-surface-subtle);
+    border: 0; border-left: 3px solid var(--revo-action-learning); border-radius: var(--revo-control-radius);
+  }
+  .revo-experience :is(.revo-component-info,.revo-component-card) .revo-component-role p { color: var(--revo-text-ink); }
+  .revo-experience .revo-hud .revo-lab-grid:has(.revo-component-info) .revo-scene-bottom {
+    position: static; flex: none; padding: 0 var(--revo-space-2) 4px;
+  }
+  .revo-experience .revo-hud .revo-lab-grid:has(.revo-component-info) .revo-camera-tools {
+    border: 0; border-radius: 0; background: none; box-shadow: none; padding: 0; gap: 4px;
+  }
+  .revo-hud .revo-lab-grid:has(.revo-component-info) .revo-camera-tools > i { display: none; }
+  .revo-experience .revo-hud .revo-lab-grid:has(.revo-component-info) .revo-component-list { flex-basis: 50px; height: 50px; }
+}
+
+@media (max-width: 420px) {
+  .revo-experience .revo-stage-track > .revo-stage-entry { font-size: 11px; gap: 3px; padding-inline: 0; }
+  .revo-experience .revo-stage-track .revo-stage-number { flex-basis: 16px; width: 16px; height: 16px; }
+  .revo-stage-track .revo-stage-entry:not([aria-current],[aria-selected="true"],[data-complete]) .revo-stage-number { display: none; }
+  .revo-stage-entry:has(small) > svg { display: none; }
+  .revo-stage-entry small { font-size: 9px; }
+  .revo-experience .revo-hud .revo-component-info .revo-kicker { letter-spacing: .06em; font-size: 12px; }
+}

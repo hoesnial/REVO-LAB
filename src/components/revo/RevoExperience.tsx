@@ -5,11 +5,12 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getRevoScreen } from "@/lib/revo/routes";
 import { RevoProgressProvider } from "./RevoProgressProvider";
+import { ElectricProgressProvider } from "./industry-2/ElectricProgressProvider";
 
 const RevoLab = dynamic(() => import("./RevoLab"));
 
 export default function RevoExperience({ children }: { children: React.ReactNode }) {
-  return <RevoProgressProvider><ExperienceSession>{children}</ExperienceSession></RevoProgressProvider>;
+  return <RevoProgressProvider><ElectricProgressProvider><ExperienceSession>{children}</ExperienceSession></ElectricProgressProvider></RevoProgressProvider>;
 }
 
 function ExperienceSession({ children }: { children: React.ReactNode }) {

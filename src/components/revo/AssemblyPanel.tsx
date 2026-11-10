@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Check, Circle, RotateCcw, Wrench, X } from "lucide-react";
+import { ArrowRight, Check, RotateCcw, Wrench } from "lucide-react";
+import RevoAnswerFace from "./RevoAnswerFace";
 import { ASSEMBLY_CHECKS, ASSEMBLY_PARTS, assemblyComplete, assemblyProgress, type AssemblyAction, type AssemblyState } from "@/lib/revo/assembly";
 
 function KnowledgeChoices({ check, feedback, onAction }: {
@@ -16,9 +17,7 @@ function KnowledgeChoices({ check, feedback, onAction }: {
     {check.options.map((option, index) => {
       const incorrect = attempt === index && feedback?.correct === false;
       return <button type="button" key={option} aria-label={option} className={`revo-answer-card ${incorrect ? "is-incorrect" : ""}`} onClick={() => { setAttempt(index); onAction({ type: "answer", id: check.id, answer: index }); }}>
-        <span className="revo-answer-letter" aria-hidden="true">{String.fromCharCode(65 + index)}</span>
-        <span className="revo-answer-copy">{option}{incorrect && <span className="revo-answer-state">Jawabanmu · belum tepat</span>}</span>
-        <span className="revo-answer-marker" aria-hidden="true">{incorrect ? <X size={20} /> : <Circle size={20} />}</span>
+        <RevoAnswerFace index={index} text={option} state={incorrect ? "incorrect" : undefined} />
       </button>;
     })}
     {feedback && <p role="status" className={`revo-assembly-answer ${feedback.correct ? "is-correct" : "is-incorrect"}`}>{feedback.message}</p>}
@@ -44,7 +43,7 @@ export default function AssemblyPanel({ state, enabled, onAction, onExperiment, 
   }, [state.checks.length]);
   return <aside ref={panel} id="revo-controls" tabIndex={-1} className="revo-assembly-panel" aria-label="Kendali perakitan">
     <div className="revo-assembly-intro"><span className="revo-kicker"><Wrench size={13} /> PERAKITAN MESIN</span><h2>{complete ? "PERAKITAN SELESAI" : "Rangkai tenaga. Pahami hubungan."}</h2><p>Rangkai sistem penggerak pabrik tenaga uap dengan memasang komponen pada posisi dan hubungan yang tepat.</p>
-      <div className="revo-assembly-counts"><strong>{state.placed.length}/5 terpasang</strong><span>{5 - state.placed.length} tersisa · {state.checks.length}/3 cek pemahaman</span></div>
+      <div className="revo-assembly-counts" role="status"><strong>{state.placed.length}/5 terpasang</strong><span>{5 - state.placed.length} tersisa · {state.checks.length}/3 cek pemahaman</span></div>
       <div className="revo-production-track" role="progressbar" aria-label="Progres perakitan" aria-valuemin={0} aria-valuemax={100} aria-valuenow={assemblyProgress(state)}><i style={{ width: `${assemblyProgress(state)}%` }} /></div>
     </div>
     <div className="revo-assembly-scroll">

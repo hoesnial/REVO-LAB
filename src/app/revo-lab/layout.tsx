@@ -8,6 +8,8 @@ import "./industry-1/filling.css";
 import "./industry-1/completion.css";
 import "./readability.css";
 import "./ui-refinements.css";
+import "./cross-era.css";
+import "./design-system.css";
 
 export default function RevoLayout({ children }: { children: React.ReactNode }) {
   return <RevoExperience>{children}</RevoExperience>;

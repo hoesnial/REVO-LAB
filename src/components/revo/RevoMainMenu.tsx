@@ -4,10 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, CircleHelp, Cog, Factory, Hand, MousePointer2, ScanSearch, ShieldCheck, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
-import { REVO_ROUTES } from "@/lib/revo/routes";
+import { electricResumeRoute, REVO_ROUTES } from "@/lib/revo/routes";
+import { hasSavedProgress } from "@/lib/revo/progress";
+import { electricResumeLabel } from "@/lib/revo/industry-2/progress";
 import factoryPreview from "../../../public/revo/factory-preview.png";
 import RevoDialog from "./RevoDialog";
 import { useRevoProgress } from "./RevoProgressProvider";
+import { useElectricProgress } from "./industry-2/ElectricProgressProvider";
 
 const instructions = [
   { icon: Hand, title: "Putar sudut pandang", text: "Klik dan geser diorama untuk memutar kamera. Di layar sentuh, geser dengan satu jari." },
@@ -20,6 +23,14 @@ const instructions = [
 export default function RevoMainMenu() {
   const [helpOpen, setHelpOpen] = useState(false);
   const { hydrated, progress, storageStatus } = useRevoProgress();
+  const { progress: electric, status: electricStatus } = useElectricProgress();
+  const resumeElectric = electric && electric.stage !== "briefing" ? electric : null;
+  const canResumeSteam = hydrated && hasSavedProgress(progress) ? progress : null;
+  const saveWarning = storageStatus === "unavailable" || electricStatus === "unavailable"
+    ? "Penyimpanan perangkat tidak tersedia. Progres sesi dapat hilang saat halaman dimuat ulang."
+    : storageStatus === "malformed" || storageStatus === "unsupported" || electricStatus === "invalid"
+      ? "Ada simpanan era yang tidak dapat dibuka. Mulai perjalanan baru di era tersebut."
+      : "";
 
   return <main className="revo-menu" lang="id" aria-label="Menu utama REVO">
     <div className="revo-menu-left">
@@ -30,11 +41,18 @@ export default function RevoMainMenu() {
         <p className="revo-menu-description">Jelajahi sejarah. Hidupkan teknologi.<br />Rasakan perubahannya.</p>
         <div className="revo-menu-actions">
           <Link href={REVO_ROUTES.eraSelect} className="revo-menu-start">Mulai Jelajah<ArrowRight size={20} /></Link>
-          {hydrated && progress && <Link href={REVO_ROUTES.simulator} className="revo-menu-continue">{progress.levelComplete ? "Lihat Hasil" : "Lanjutkan"}<ArrowRight size={18} /></Link>}
           <button className="revo-menu-help" onClick={() => setHelpOpen(true)}><CircleHelp size={16} />Cara Bermain</button>
         </div>
-        <p className="revo-menu-session-note" role={hydrated && storageStatus !== "available" ? "status" : undefined}>
-          {hydrated && storageStatus === "unavailable" ? "Penyimpanan perangkat tidak tersedia. Progres hanya bertahan selama halaman ini terbuka." : hydrated && (storageStatus === "malformed" || storageStatus === "unsupported") ? "Simpanan tidak dapat dipakai. Mulai perjalanan baru untuk membuat progres perangkat yang valid." : progress ? "Progres Industry 1.0 tersimpan di perangkat ini." : "Pilih satu era untuk memulai perjalanan."}
+        {(canResumeSteam || resumeElectric) && <nav className="revo-menu-resume" aria-label="Lanjutkan progres per era">
+          {canResumeSteam && <Link href={REVO_ROUTES.simulator} className="revo-menu-continue" aria-label={canResumeSteam.levelComplete && canResumeSteam.checkpoint === 4 ? "Lihat Hasil" : "Lanjutkan"} aria-describedby="revo-resume-steam">
+            <span id="revo-resume-steam">Industry 1.0</span>{canResumeSteam.levelComplete && canResumeSteam.checkpoint === 4 ? "Lihat Hasil" : "Lanjutkan"}<ArrowRight size={16} aria-hidden="true" />
+          </Link>}
+          {resumeElectric && <Link href={electricResumeRoute(resumeElectric.stage)} className="revo-menu-continue">
+            <span>Industry 2.0</span>{electricResumeLabel(resumeElectric)}<ArrowRight size={16} aria-hidden="true" />
+          </Link>}
+        </nav>}
+        <p className="revo-menu-session-note" role={saveWarning ? "status" : undefined}>
+          {saveWarning || (canResumeSteam || resumeElectric ? "Progres setiap era tersimpan secara terpisah." : "Pilih satu era untuk memulai perjalanan.")}
         </p>
       </div>
     </div>
@@ -51,6 +69,7 @@ export default function RevoMainMenu() {
       <span className="revo-kicker">PANDUAN PENJELAJAH</span>
       <h2>Sejarah bisa<br />kamu gerakkan.</h2>
       <div className="revo-menu-instructions">{instructions.map(({ icon: Icon, title, text }, index) => <div key={title}><span className="revo-menu-step"><Icon size={20} strokeWidth={1.5} /><small>0{index + 1}</small></span><div><h3>{title}</h3><p>{text}</p></div></div>)}</div>
+      <p className="revo-guide-note"><strong>Industry 2.0:</strong> Kenali tujuh komponen, susun lima sambungan, lalu jawab tiga cek konsep. Dalam Eksperimen, jalankan mesin dan catat pengaruh listrik, transmisi, dan hambatan pada konveyor.</p>
       <p className="revo-guide-note">Kembali ke menu akan menjeda mesin. Progres belajar tersimpan di perangkat ini dan dapat dilanjutkan setelah halaman dimuat ulang. Simulasi mesin tidak berjalan di latar belakang.</p>
       <button className="revo-primary-button" onClick={() => setHelpOpen(false)}>Siap menjelajah<ArrowRight size={16} /></button>
     </RevoDialog>}

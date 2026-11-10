@@ -41,6 +41,8 @@ Set `REVO_BASE_URL` to use a different running server. Playwright requires a sup
 
 Menu → Era selection → learning objectives / Industry 1.0 briefing → five-part exploration → 3D assembly and knowledge checks → safe steam-engine observations (motion, output, and transmission) → historical reflection → learning summary.
 
+Industry 2.0 supports briefing, seven-part exploration, five assembly connections and three concept checks, followed by a conveyor experiment with four recorded observations. Reflection and the learning summary are not available yet. Industry 3.0 and 4.0 remain locked.
+
 Progress is stored locally in the browser. The simulator uses an educational model, not engineering-grade thermodynamics. See [docs/REVO-LAB.md](docs/REVO-LAB.md) for the full walkthrough, mechanics, accessibility notes, and known limitations.
 
 ## Academic review and presentation
@@ -50,3 +52,13 @@ The Indonesian [REVO-008 delivery package](docs/revo-delivery/01-project-overvie
 The [REVO-008R.1 revision audit](docs/REVO-008R1.md) documents the lecturer feedback, observation-based progression, V1→V2 save migration, verification results, and [before/after screenshots](docs/revo-008r1-media/README.md).
 
 The [REVO-008R.1.1 UI/UX audit](docs/REVO-008R1-1.md) records semantic resource controls, accessible answer states, contrast measurements, test-count reconciliation, and [visual evidence](docs/revo-008r1-1-media/README.md).
+
+The [REVO-009A Industry 2.0 readiness audit](docs/REVO-009A.md) records the I.1 architecture boundary, visual review, R.2 dependency decision, proposed 2.0 learning interactions, implementation backlog, and school-readiness gates.
+
+The [REVO-009B.1 implementation report](docs/REVO-009B1.md) covers the Industry 2.0 briefing, interactive factory, independent save data, test results, and screenshots.
+
+The [REVO-009B.2 report](docs/REVO-009B2.md) covers the Industry 2.0 assembly activity, concept checks, and save migration.
+
+The [REVO-009B.2.1 cross-era audit](docs/REVO-009B2-1.md) describes shared navigation, independent resumes and resets, and the browser comparisons.
+
+The [REVO-009B.3 experiment report](docs/REVO-009B3.md) explains the conveyor model, observation rules, save migration, and browser evidence.

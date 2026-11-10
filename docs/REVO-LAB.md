@@ -28,7 +28,7 @@ REVO has no login, server database, API credentials, external 3D assets, or paid
 Menu → Era selection → Learning Objectives / Briefing → Explore → Assembly → Experiment → Reflection → Learning Summary
 ```
 
-- **Era selection and briefing:** Industry 1.0 is playable. Industry 2.0–4.0 are visibly marked as in development. The briefing introduces four proposed learning objectives in a prominent green card. The objectives can also be opened in the gameplay HUD and reviewed in the final summary.
+- **Era selection and briefing:** Industry 1.0 is playable from briefing to final summary. Its briefing introduces four proposed learning objectives that can also be opened in the gameplay HUD and reviewed in the final summary. Industry 2.0 has a separate flow through briefing, exploration, assembly, and experiment. Industry 3.0 and 4.0 remain locked.
 - **Explore:** Inspect the boiler, steam pipe, piston mechanism, flywheel, and textile machine. Every component must be explored once.
 - **Assembly:** Install those five parts in their fixed sockets, then answer three conceptual questions about steam generation, rotary motion, and factory power. The 3D drag interaction has inventory/socket controls for keyboard and touch users.
 - **Experiment:** Run the engine explicitly. Observe motion and output above zero, inspect transmission hotspot T during Experiment, and keep the educational pressure scale at or below 75. Choose **Lanjut ke Refleksi** when the evidence is complete. There is no production target, waiting period, automatic completion, or stop at 100. Any crossing above 75 invalidates the safe attempt; emergency protection at 90 remains unchanged.
@@ -151,3 +151,17 @@ Typecheck, lint, production build, and 79 unit tests passed. The browser sequenc
 ## REVO-008R.1.1 — UI consistency
 
 Water actions use blue with droplet icons, fuel actions use amber with flame icons, and ordinary decrement actions use a neutral surface. Shared answer cards provide visible selection, correct/incorrect labels and icons, and keyboard focus. Learning progression, simulation formulas, questions, and scoring remain as documented above. See [the UI/UX audit](REVO-008R1-1.md) for measured contrast, the 98→79 test-count reconciliation, verification results and [before/after evidence](revo-008r1-1-media/README.md).
+
+The [REVO-009A readiness audit](REVO-009A.md) documents the Industry 2.0 learning design, isolated state/progress architecture, remaining REVO-008R.2 work, implementation backlog, and criteria required before a student trial.
+
+The [REVO-009B.1 report](REVO-009B1.md) documents the implemented Industry 2.0 briefing and exploration, the independent save format, the test runs, and the remaining work before school validation.
+
+The [REVO-009B.2 report](REVO-009B2.md) documents the functional electrical and mechanical connections, concept checks, V1→V2 save migration, and browser evidence.
+
+The Main Menu shows a separate resume choice for each era with a valid save. From the lab, use the stage rail to review unlocked stages and **Pilih Era** to switch eras. In Industry 2.0, **Ulangi Perakitan** preserves completed exploration; the separate HUD reset returns Industry 2.0 to its briefing. Both leave the Industry 1.0 save intact. See the [cross-era contract and browser evidence](REVO-009B2-1.md).
+
+After seven inspections, five connections, and three correct concept checks, open **Uji Penggerak**. Press **Mulai** and use the three switches to compare normal operation, power loss, disconnected transmission, and an obstructed conveyor. Use **Catat observasi** in each condition. **Reset Eksperimen** clears those observations and preserves Assembly. Reload restores valid observations with the machine stopped. Industry 2.0 Reflection and the learning summary are unavailable. See the [experiment report](REVO-009B3.md) for the simplified model and validation limits.
+
+[REVO-009B.3R](REVO-009B3R.md) compares the two eras before and after the visual redesign across six viewports. The [REVO design system](REVO-DESIGN-SYSTEM.md) documents shared component information, controls, typography, and layout. The Industry 2.0 laboratory adds camera focus options without changing learning progress or experiment rules.
+
+[REVO-009B.3R.1](REVO-009B3R1.md) documents the compact steam inspector, shared gameplay navigation, and before/after checks with component information open.

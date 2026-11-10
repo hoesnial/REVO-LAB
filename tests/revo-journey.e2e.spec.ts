@@ -67,7 +67,8 @@ test("main menu → era selection → briefing → existing factory, with both b
 test("unfinished eras explain their disabled state and have no playable route", async ({ page, request }) => {
   await page.goto("/revo-lab/eras");
   await expect(page.getByRole("link", { name: "Jelajahi Era", exact: true })).toHaveCount(1);
-  for (const [id, title] of [["industry-2", "THE AGE OF ELECTRICITY"], ["industry-3", "THE AGE OF AUTOMATION"], ["industry-4", "THE AGE OF INTELLIGENCE"]]) {
+  await expect(page.getByRole("article", { name: "THE AGE OF ELECTRICITY", exact: true }).getByRole("link", { name: "Buka Briefing 2.0" })).toHaveAttribute("href", "/revo-lab/industry-2/briefing");
+  for (const [id, title] of [["industry-3", "THE AGE OF AUTOMATION"], ["industry-4", "THE AGE OF INTELLIGENCE"]]) {
     const card = page.getByRole("article", { name: title, exact: true });
     const button = card.getByRole("button", { name: "Dalam Pengembangan", exact: true });
     await expect(button).toBeDisabled();
