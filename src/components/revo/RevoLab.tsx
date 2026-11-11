@@ -6,7 +6,9 @@ import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { ArrowRight, ArrowUpRight, AudioLines, BookOpen, Check, CircleHelp, Cog, Headphones, House, Info, LockKeyhole, Maximize2, Minus, MousePointer2, Pause, Play, Plus, RotateCcw, RotateCw, Sparkles, Volume2, VolumeX } from "lucide-react";
 import { useSteamSimulation } from "@/hooks/useSteamSimulation";
 import { useRevoAudio } from "@/hooks/useRevoAudio";
+import ExplorationSheetToggle from "./ExplorationSheetToggle";
 import RevoComponentInfo from "./RevoComponentInfo";
+import RevoExplorationComplete from "./RevoExplorationComplete";
 import { components, narrationText, quizQuestions } from "@/lib/revo/content";
 import { LEARNING_STAGES, REVO_ROUTES } from "@/lib/revo/routes";
 import { SIMULATION } from "@/lib/simulation/simulationConstants";
@@ -61,6 +63,7 @@ export default function RevoLab({ active = true }: { active?: boolean }) {
   const inspectorDock = useRef<HTMLDivElement>(null);
   const inspectorTrigger = useRef<HTMLButtonElement | null>(null);
   const componentButtons = useRef<Partial<Record<ComponentId, HTMLButtonElement | null>>>({});
+  const [sheetExpanded, setSheetExpanded] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [cameraCommand, setCameraCommand] = useState<{ kind: "reset" | "zoom-in" | "zoom-out" | "focus"; serial: number }>({ kind: "reset", serial: 0 });
   const previousEvent = useRef(-1);
@@ -158,18 +161,21 @@ export default function RevoLab({ active = true }: { active?: boolean }) {
         feedback: repeated ? `Kamu meninjau kembali ${name}.` : `Bagus! Kamu telah mengenal fungsi ${name}.`,
       };
     });
-    setCameraCommand(old => ({ kind: "focus", serial: old.serial + 1 }));
+    if (stage !== 0) setCameraCommand(old => ({ kind: "focus", serial: old.serial + 1 }));
+    setSheetExpanded(false);
     audio.play("click");
   }
   function inspectComponent(id: ComponentId) {
     inspectorTrigger.current = componentButtons.current[id] ?? null;
     selectComponent(id);
-    if (window.matchMedia("(max-width: 720px)").matches) {
-      requestAnimationFrame(() => {
+    const compact = window.matchMedia("(max-width: 720px)").matches;
+    requestAnimationFrame(() => {
+      if (inspector.current) inspector.current.scrollTop = 0;
+      if (compact) {
         if (inspectorDock.current) inspectorDock.current.scrollTop = 0;
         inspector.current?.focus({ preventScroll: true });
-      });
-    }
+      }
+    });
   }
   function closeInspector() {
     setSelected(null);
@@ -178,6 +184,7 @@ export default function RevoLab({ active = true }: { active?: boolean }) {
   }
   function inspectNextComponent() {
     const index = components.findIndex(component => component.id === selected);
+    inspectorTrigger.current = componentButtons.current[components[(index + 1) % components.length].id] ?? null;
     selectComponent(components[(index + 1) % components.length].id);
     if (inspector.current) inspector.current.scrollTop = 0;
     if (inspectorDock.current) inspectorDock.current.scrollTop = 0;
@@ -298,12 +305,13 @@ export default function RevoLab({ active = true }: { active?: boolean }) {
     onReplay={resetLevel}
   />;
 
-  return <main className="revo-app revo-hud" lang="id">
-    <a className="revo-skip" href="#revo-controls">Langsung ke kendali mesin</a>
-    <RevoScreenHeader gameplay step="01 / INDUSTRI 1.0" back={{ href: REVO_ROUTES.eraSelect, label: "Pilih Era" }}
-      title={<h1 ref={gameplayHeading} tabIndex={-1}>THE AGE OF <span>STEAM<span className="revo-title-dot">.</span></span></h1>}
+  const ExhibitHeading = stage === 0 ? "h1" : "h2";
+  return <main className={`revo-app revo-hud ${stage === 0 ? "revo-exploration" : ""}`} data-sheet-expanded={sheetExpanded} data-inspector-open={Boolean(current)} data-exploration-complete={stage === 0 && explorationComplete || undefined} lang="id">
+    <a className="revo-skip" href={stage === 0 ? "#revo-explore-parts" : "#revo-controls"}>{stage === 0 ? "Langsung ke daftar komponen" : "Langsung ke kendali mesin"}</a>
+    <RevoScreenHeader gameplay step={stage === 0 ? "INDUSTRI 1.0 / EKSPLORASI" : "01 / INDUSTRI 1.0"} back={{ href: REVO_ROUTES.menu, label: "Pilih Era" }}
+      title={stage !== 0 ? <h1 ref={gameplayHeading} tabIndex={-1}>THE AGE OF <span>STEAM<span className="revo-title-dot">.</span></span></h1> : undefined}
       actions={<>
-        <Link className="revo-game-action" href={REVO_ROUTES.menu} aria-label="Kembali ke Menu" title="Kembali ke Menu"><House size={17} aria-hidden="true" /><span>Menu</span></Link>
+        <Link className="revo-game-action" href={REVO_ROUTES.menu} aria-label="Kembali ke Menu" title="Kembali ke Menu"><House size={17} aria-hidden="true" /><span>Menu Utama</span></Link>
         <button className="revo-game-action" onClick={() => setModal("objectives")} aria-label="Tujuan Pembelajaran" title="Tujuan Pembelajaran"><BookOpen size={17} aria-hidden="true" /><span>Tujuan Pembelajaran</span></button>
         <button className="revo-game-action" onClick={() => setModal("guide")} aria-label="Panduan belajar" title="Panduan belajar"><CircleHelp size={17} aria-hidden="true" /><span>Panduan belajar</span></button>
       </>} />
@@ -344,23 +352,27 @@ export default function RevoLab({ active = true }: { active?: boolean }) {
         </div>
         <div className={`revo-lab-grid ${stage === 1 ? "revo-assembly-grid" : ""} ${expanded ? "revo-lab-expanded" : ""}`} id="revo-learning-panel" role="tabpanel" aria-labelledby={`revo-stage-${stage}`}>
           <div className={`revo-exhibit ${expanded ? "revo-exhibit-expanded" : ""}`}>
-            <div className="revo-exhibit-title"><div><span className="revo-kicker">{stage === 0 ? "KENALI SETIAP BAGIANNYA" : stage === 1 ? "PERAKITAN MESIN" : "ENERGI MENJADI GERAK"}</span><h2>{stage === 1 ? assembled ? "Sistem siap diuji" : "Hubungkan sistem penggerak" : "Bengkel yang mengubah dunia"}</h2></div><span className="revo-location">INGGRIS, MODEL ±1800</span></div>
-            <div className="revo-scene" aria-label="Diorama pabrik mesin uap 3D. Gunakan tombol komponen untuk menjelajah dengan keyboard.">{active && <FactoryScene speed={state.speed} heat={state.heat} pressure={state.pressure} water={state.water} running={state.running} animationActive={clockActive} safety={state.safety} selected={stage === 1 ? null : selected} onSelect={inspectComponent} onTransmissionInfo={inspectTransmission} assembly={stage === 1 ? { state: assembly, enabled: assemblyActive, onAction: assemblyAction } : undefined} resources={stage === 2 ? { filling, enabled: clockActive && !experimentComplete, selected: resourceSelected, onSelect: kind => { setResourceSelected(kind); setSelected(null); }, onFill: kind => action({ type: kind === "coal" ? "add-fuel" : "add-water" }) } : undefined} cameraCommand={cameraCommand} reducedMotion={reducedMotion} />}</div>
+            <div className="revo-exhibit-title"><div><span className="revo-kicker">{stage === 0 ? "KENALI SETIAP BAGIANNYA" : stage === 1 ? "PERAKITAN MESIN" : "ENERGI MENJADI GERAK"}</span><ExhibitHeading ref={stage === 0 ? gameplayHeading : undefined} tabIndex={-1}>{stage === 1 ? assembled ? "Sistem siap diuji" : "Hubungkan sistem penggerak" : stage === 0 ? "Kenali Mesin Uap" : "Bengkel yang mengubah dunia"}</ExhibitHeading>{stage === 0 && <p>Pilih titik pada model untuk mempelajari komponen dan fungsinya.</p>}</div>{(stage !== 0 || !explorationComplete) && <span className="revo-location">{stage === 0 ? `${visited.length}/5 komponen dijelajahi` : "INGGRIS, MODEL ±1800"}</span>}</div>
+            <div className="revo-scene" aria-label="Diorama pabrik mesin uap 3D. Gunakan tombol komponen untuk menjelajah dengan keyboard.">{active && <FactoryScene exploration={stage === 0} speed={state.speed} heat={state.heat} pressure={state.pressure} water={state.water} running={state.running} animationActive={clockActive} safety={state.safety} selected={stage === 1 ? null : selected} onSelect={inspectComponent} onTransmissionInfo={inspectTransmission} assembly={stage === 1 ? { state: assembly, enabled: assemblyActive, onAction: assemblyAction } : undefined} resources={stage === 2 ? { filling, enabled: clockActive && !experimentComplete, selected: resourceSelected, onSelect: kind => { setResourceSelected(kind); setSelected(null); }, onFill: kind => action({ type: kind === "coal" ? "add-fuel" : "add-water" }) } : undefined} cameraCommand={cameraCommand} reducedMotion={reducedMotion} />}</div>
             <div className="revo-scene-bottom"><div className="revo-orbit-hint"><MousePointer2 size={13} /><span>Geser untuk memutar<i />Gulir untuk mendekat</span></div><div className="revo-camera-tools"><button aria-label="Perkecil tampilan" title="Perkecil" onClick={() => setCameraCommand(old => ({ kind: "zoom-out", serial: old.serial + 1 }))}><Minus size={16} /></button><button aria-label="Perbesar tampilan" title="Perbesar" onClick={() => setCameraCommand(old => ({ kind: "zoom-in", serial: old.serial + 1 }))}><Plus size={16} /></button><i /><button aria-label="Reset kamera" title="Reset kamera" onClick={() => { setSelected(null); setCameraCommand(old => ({ kind: "reset", serial: old.serial + 1 })); }}><RotateCcw size={15} /></button><button aria-label={expanded ? "Kecilkan diorama" : "Perluas diorama"} title="Perluas diorama" aria-pressed={expanded} onClick={() => setExpanded(value => !value)}><Maximize2 size={15} /></button></div></div>
-            {stage === 1 ? <><div className="revo-assembly-flow" aria-label="Aliran energi"><strong>{assembled ? "ALIRAN ENERGI" : "BAKI KOMPONEN · SERET KE SAMBUNGAN"}</strong>{assembled && ASSEMBLY_PARTS.map((part, index) => <span key={part.id}>{index > 0 && <ArrowRight size={11} />}{part.name}</span>)}</div><p className="revo-assembly-caption">Model hubungan sederhana; engkol, poros, dan sabuk ditampilkan sebagai skema.</p>{paused && <div className="revo-assembly-paused"><strong>PERAKITAN DIJEDA</strong><button onClick={() => setPaused(false)}>Lanjutkan perakitan</button></div>}</> : <div className="revo-component-list" aria-label="Pilih komponen mesin">{components.map(component => <button key={component.id} ref={button => { componentButtons.current[component.id] = button; }} onClick={() => inspectComponent(component.id)} aria-pressed={selected === component.id} aria-controls={selected === component.id ? "revo-component-inspector" : undefined}><span>{visited.includes(component.id) ? <Check size={11} /> : component.number}</span>{{ boiler: "Ketel uap", flywheel: "Roda gila", piston: "Piston", pipe: "Pipa uap", textile: "Mesin tekstil" }[component.id]}<ArrowUpRight size={12} /></button>)}</div>}
+            {stage === 1 ? <><div className="revo-assembly-flow" aria-label="Aliran energi"><strong>{assembled ? "ALIRAN ENERGI" : "BAKI KOMPONEN · SERET KE SAMBUNGAN"}</strong>{assembled && ASSEMBLY_PARTS.map((part, index) => <span key={part.id}>{index > 0 && <ArrowRight size={11} />}{part.name}</span>)}</div><p className="revo-assembly-caption">Model hubungan sederhana; engkol, poros, dan sabuk ditampilkan sebagai skema.</p>{paused && <div className="revo-assembly-paused"><strong>PERAKITAN DIJEDA</strong><button onClick={() => setPaused(false)}>Lanjutkan perakitan</button></div>}</> : <div id="revo-explore-parts" tabIndex={-1} className="revo-component-list" aria-label="Pilih komponen mesin">{components.map(component => <button key={component.id} ref={button => { componentButtons.current[component.id] = button; }} onClick={() => inspectComponent(component.id)} aria-pressed={selected === component.id} aria-controls={selected === component.id ? "revo-component-inspector" : undefined}><span>{visited.includes(component.id) ? <Check size={11} /> : component.number}</span>{{ boiler: "Ketel uap", flywheel: "Roda gila", piston: "Piston", pipe: "Pipa uap", textile: "Mesin tekstil" }[component.id]}<ArrowUpRight size={12} /></button>)}</div>}
           </div>
           {stage === 1 ? <AssemblyPanel state={assembly} enabled={assemblyActive} onAction={assemblyAction} onExperiment={enterExperiment} onReset={retryAssembly} /> : <div className="revo-hud-dock" ref={inspectorDock}>
             {current && <section ref={inspector} id="revo-component-inspector" className="revo-component-info" aria-label="Informasi komponen" tabIndex={0} aria-live="polite"
               onKeyDown={event => { if (event.key === "Escape") { event.stopPropagation(); closeInspector(); } }}>
+              {stage === 0 && <ExplorationSheetToggle expanded={sheetExpanded} onToggle={() => setSheetExpanded(value => !value)} />}
               <RevoComponentInfo number={current.number} subtitle={current.subtitle} name={current.name} description={current.description} relationship={current.role}
                 actions={<><button onClick={closeInspector} aria-label="Tutup informasi komponen"><span aria-hidden="true">×</span></button><button onClick={inspectNextComponent} aria-label="Jelajahi komponen berikutnya"><ArrowRight size={19} aria-hidden="true" /></button></>} />
             </section>}
-            <div className="revo-hud-sidebar">
+            <div className="revo-hud-sidebar" hidden={stage === 0}>
             <div id="revo-controls" className="revo-hud-controls"><MachineControlPanel state={state} filling={filling} onAction={action} lockedReason={!explorationComplete ? "Jelajahi 5 komponen dahulu" : !assembled ? "Selesaikan Perakitan dahulu" : stage !== 2 ? "Pilih tahap Eksperimen" : experimentComplete ? "Pengamatan tersimpan — ulangi eksperimen untuk mencoba lagi" : !interactionActive ? "Simulasi dijeda" : null} /><details className="revo-hud-history"><summary><BookOpen size={17} />Konteks sejarah<ArrowRight size={15} /></summary><HistoricalInfoPanel onHistory={() => setModal("history")} /></details></div>
             <LearningProgressPanel state={state} observations={observed} onTransmission={inspectTransmission} enabled={interactionActive} visited={visited.length} stage={stage} canAssemble={explorationComplete} assembled={assembled} onAssembly={() => enterStage(1)} onQuiz={openQuiz} onReset={retryExperiment} />
             </div>
           </div>}
         </div>
+        {stage === 0 && explorationComplete && <RevoExplorationComplete total={components.length} action={
+          <button className="revo-primary-button revo-explore-completion-action" onClick={() => enterStage(1)}>Lanjut ke Perakitan<ArrowRight size={18} aria-hidden="true" /></button>
+        } />}
         <div className={`revo-learning-note ${state.safety !== "safe" ? "revo-learning-warning" : ""}`}><div className="revo-note-icon">{state.safety !== "safe" ? <Info size={19} /> : <Sparkles size={19} />}</div><div><span>{state.safety !== "safe" ? "PERHATIKAN MESINMU" : "CATATAN PENJELAJAH"}</span><p>{hint}</p><p className="revo-live-feedback" role="status" aria-live="polite">{liveFeedback}</p></div><button onClick={() => setModal("guide")} aria-label="Buka bantuan"><CircleHelp size={19} /></button></div>
     </section>
     {modal === "reset-level" && <RevoDialog active={active} title="Ulangi seluruh Industry 1.0" onClose={() => setModal(null)}><div className="revo-dialog-emblem"><RotateCw size={28} /></div><span className="revo-kicker">RESET SELURUH LEVEL</span><h2>Mulai kembali<br />dari awal?</h2><p>Eksplorasi, perakitan, hasil pengamatan, dan refleksi Industry 1.0 yang tersimpan di perangkat akan dihapus. Reset mesin dan ulangi eksperimen hanya mengatur percobaan, bukan seluruh level.</p><div className="revo-dialog-actions"><button className="revo-secondary-button" onClick={() => setModal(null)}>Pertahankan progres</button><button className="revo-primary-button revo-action-danger" onClick={resetLevel}>Ulangi Level<ArrowRight size={16} /></button></div></RevoDialog>}

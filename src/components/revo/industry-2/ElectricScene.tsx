@@ -4,6 +4,7 @@ import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber"
 import { Line, OrbitControls } from "@react-three/drei";
 import { Component, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { CanvasTexture, Group, Mesh, MeshStandardMaterial, OrthographicCamera, SRGBColorSpace } from "three";
+import ExplorationCamera from "../ExplorationCamera";
 import ElectricMachineDetails from "./ElectricMachineDetails";
 import { Block, Cylinder, Crate, Rod } from "../ScenePrimitives";
 import { PARTS, PATHS, type ElectricPartId, type PathKind } from "@/lib/revo/industry-2/content";
@@ -13,6 +14,7 @@ import type { ElectricOutcome, ElectricRun } from "@/lib/revo/industry-2/experim
 type Vec = [number, number, number];
 type ExperimentView = { run: ElectricRun; outcome: ElectricOutcome; motion: boolean };
 type SceneProps = {
+  explorationCamera?: { kind: string; serial: number };
   selected: ElectricPartId | null;
   focus?: ElectricPartId | null;
   target?: ElectricPartId | null;
@@ -223,14 +225,16 @@ function ExperimentMotion({ run, outcome, motion }: ExperimentView) {
   </>;
 }
 
-function Diorama({ selected, target, connections, path, inspect, experiment }: Omit<SceneProps, "fallback">) {
-  const part = (id: ElectricPartId, children: ReactNode) => experiment ? children : <Part id={id} active={selected === id || target === id} inspect={inspect}>{children}</Part>;
+function Diorama({ selected, target, connections, path, inspect, experiment, preview }: Omit<SceneProps, "fallback"> & { preview?: boolean }) {
+  const part = (id: ElectricPartId, children: ReactNode) => experiment || preview ? children : <Part id={id} active={selected === id || target === id} inspect={inspect}>{children}</Part>;
   return <>
-    <ambientLight intensity={1.1} color="#fff7e4" />
-    <directionalLight position={[-3, 8, 6]} intensity={2.8} color="#fff0cf" castShadow shadow-mapSize={[1024,1024]} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={7} shadow-camera-bottom={-7} shadow-normalBias={.04} />
-    <directionalLight position={[4, 4, -5]} intensity={.8} color="#c6e8ef" />
+    {!preview && <>
+      <ambientLight intensity={1.1} color="#fff7e4" />
+      <directionalLight position={[-3, 8, 6]} intensity={2.8} color="#fff0cf" castShadow shadow-mapSize={[1024,1024]} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={7} shadow-camera-bottom={-7} shadow-normalBias={.04} />
+      <directionalLight position={[4, 4, -5]} intensity={.8} color="#c6e8ef" />
+    </>}
     <Shop />
-    <ElectricMachineDetails inspect={experiment ? undefined : inspect} />
+    <ElectricMachineDetails inspect={experiment || preview ? undefined : inspect} />
     {part("supply", <group position={[-4.15,.08,-1.55]}>
       <Block position={[0,.11,0]} size={[1.52,.22,1.12]} color="#414d45" />
       <Block position={[0,.74,0]} size={[1.34,1.2,.9]} color={steel} />
@@ -284,8 +288,13 @@ function Diorama({ selected, target, connections, path, inspect, experiment }: O
     {experiment ? <>
       <AssemblyLinks installed={experiment.run.transmission ? experimentLinks : looseExperimentLinks} experiment={experiment} />
       <ExperimentMotion {...experiment} />
-    </> : connections ? <AssemblyLinks installed={connections} /> : <Flows path={path} />}
+    </> : connections ? <AssemblyLinks installed={connections} /> : preview ? null : <Flows path={path} />}
   </>;
+}
+
+/** Canonical diorama in its idle, non-interactive mode for Briefing and asset capture. */
+export function ElectricPreviewModel() {
+  return <Diorama preview selected={null} path={null} inspect={() => {}} />;
 }
 
 class ElectricSceneBoundary extends Component<{ children: ReactNode; fallback: ReactNode }, { failed: boolean }> {
@@ -320,7 +329,7 @@ export default function ElectricScene({ fallback, reset, ...view }: SceneProps &
         gl.domElement.addEventListener("webglcontextlost", lost);
         removeListener.current = () => gl.domElement.removeEventListener("webglcontextlost", lost);
       }}>
-      <Camera reset={reset} focus={view.focus} />
+      {view.explorationCamera ? <ExplorationCamera command={view.explorationCamera} /> : <Camera reset={reset} focus={view.focus} />}
       <Diorama {...view} />
     </Canvas>
   </ElectricSceneBoundary>;

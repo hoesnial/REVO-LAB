@@ -44,7 +44,7 @@ const test = base.extend<{ browserErrors: string[] }>({
 
 test("fresh menu hides Continue and real exploration progress survives menu navigation and reload", async ({ page }) => {
   await page.goto("/revo-lab");
-  await expect(page.getByRole("link", { name: "Mulai Jelajah", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Progres Saya", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Lanjutkan", exact: true })).toHaveCount(0);
   await page.goto("/revo-lab/industry-1");
   await expect(page.getByRole("button", { name: "Jelajahi Ketel uap", exact: true })).toBeVisible();

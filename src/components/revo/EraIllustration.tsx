@@ -2,37 +2,16 @@ import type { EraId } from "@/lib/revo/eras";
 
 // Small, static SVG diagrams share the factory's olive/cream palette. These are
 // illustrative era motifs, not additional simulations or historical replicas.
-export default function EraIllustration({ era }: { era: Exclude<EraId, "industry-1"> }) {
+export default function EraIllustration({ era }: { era: Extract<EraId, "industry-3" | "industry-4"> }) {
   const label = {
-    "industry-2": "Ilustrasi generator listrik, lampu pabrik, dan lini perakitan.",
-    "industry-3": "Ilustrasi lengan robot, pengendali elektronik, dan konveyor otomatis.",
-    "industry-4": "Ilustrasi pabrik cerdas, sensor terhubung, dan grafik data industri.",
+    "industry-3": "Pratinjau konsep lengan robot, pengendali elektronik, dan konveyor otomatis.",
+    "industry-4": "Pratinjau konsep pabrik cerdas, sensor terhubung, dan grafik data industri.",
   }[era];
   return <svg className="revo-era-illustration" viewBox="0 0 320 210" role="img" aria-label={label} fill="none">
     <path d="M25 168 157 117 300 166 168 204Z" fill="#d8d8c8" />
     <path d="m25 168 143 36v5L25 174Z" fill="#c5c8b6" />
     <path d="m168 204 132-38v6l-132 37Z" fill="#b8beaa" />
     <path d="M42 175 173 127M78 185l130-47M115 194l129-46M75 149l142 41M114 134l141 42" stroke="#b9c0a8" strokeWidth="1" />
-    {era === "industry-2" && <>
-      <path d="M55 150V48l204 40v67M55 48l204 40" stroke="#65745b" strokeWidth="5" />
-      <path d="M105 58v20m93-1v20" stroke="#58644e" strokeWidth="2" />
-      <path d="m94 83 11-7 12 11-23-4Zm92 19 12-6 12 11-24-5Z" fill="#818a66" />
-      <path d="m99 85 12 2m80 17 13 3" stroke="#d4be70" strokeWidth="3" strokeLinecap="round" />
-      <path d="m75 143 34-14 72 20-35 18Z" fill="#899277" />
-      <path d="m75 143 71 24v10l-71-24Zm71 24 35-18v10l-35 18Z" fill="#637455" />
-      <path d="M97 144v-28m58 44v-28" stroke="#58694f" strokeWidth="6" />
-      <path d="m103 110 35-14 27 9-35 15Z" fill="#bbc1a3" />
-      <path d="m103 110 27 10v34l-27-10Z" fill="#7b8b69" />
-      <path d="m130 120 35-15v34l-35 15Z" fill="#4b6350" />
-      <ellipse cx="109" cy="128" rx="14" ry="20" transform="rotate(-17 109 128)" fill="#3c5345" stroke="#a4aa7f" strokeWidth="3" />
-      <ellipse cx="109" cy="128" rx="6" ry="10" transform="rotate(-17 109 128)" fill="#b3ad77" />
-      <path d="m96 123 26 9M106 110l6 36" stroke="#c3bb8b" strokeWidth="2" />
-      <path d="m186 158 55-22 39 12-54 24Z" fill="#909b7b" />
-      <path d="m186 158 40 14v8l-40-14Zm40 14 54-24v8l-54 24Z" fill="#5f725b" />
-      <path d="m192 157 36 12m-25-17 36 12m-25-17 36 12m-25-17 36 12" stroke="#bec4a8" strokeWidth="3" />
-      <path d="M197 169v16m68-24v15" stroke="#65745b" strokeWidth="4" />
-      <path d="m213 145 11-5 13 5-11 5Z" fill="#c7b685" /><path d="m213 145 13 5v11l-13-4Zm13 5 11-5v11l-11 5Z" fill="#ab9f72" />
-    </>}
     {era === "industry-3" && <>
       <path d="m58 112 36-15 35 11-35 17Z" fill="#bcc2a6" />
       <path d="m58 112 36 13v53l-36-13Z" fill="#899678" /><path d="m94 125 35-17v53l-35 17Z" fill="#5c7158" />

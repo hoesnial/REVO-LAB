@@ -1,3 +1,4 @@
+import { openEraSelection } from "./helpers/revo-menu";
 import { test as base, expect, type Page, type Locator } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
@@ -33,7 +34,7 @@ async function assertFitsViewport(page: Page, locator: Locator) {
 
 test("main menu → era selection → briefing → existing factory, with both back routes", async ({ page }) => {
   await page.goto("/revo-lab");
-  await page.getByRole("link", { name: "Mulai Jelajah", exact: true }).click();
+  await openEraSelection(page);
   await expect(page).toHaveURL(/\/revo-lab\/eras$/);
   await expect(page.getByRole("heading", { name: "JELAJAHI EMPAT REVOLUSI INDUSTRI" })).toBeVisible();
   await expect(page.locator(".revo-experience")).toHaveAttribute("data-revo-screen", "era-select");
@@ -41,20 +42,23 @@ test("main menu → era selection → briefing → existing factory, with both b
   await expect(page.locator("canvas")).toHaveCount(0);
   await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click();
   await expect(page).toHaveURL(/\/revo-lab\/industry-1\/briefing$/);
-  await expect(page.getByRole("heading", { name: "THE AGE OF STEAM", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Era Mesin Uap", exact: true })).toBeVisible();
   await expect(page.locator(".revo-experience")).toHaveAttribute("data-revo-screen", "level-briefing");
-  await expect(page.locator(".revo-learning-objectives li")).toHaveCount(4);
-  await expect(page.getByRole("region", { name: "Tujuan Pembelajaran", exact: true })).toContainText("Menganalisis");
+  await page.getByRole("button", { name: "Lihat tujuan lengkap" }).click();
+  const objectives = page.getByRole("dialog", { name: "Tujuan Pembelajaran" });
+  await expect(objectives.locator(".revo-learning-objectives li")).toHaveCount(4);
+  await expect(objectives).toContainText("Menganalisis");
   await expect(page.getByText("MISIMU DI ERA INI", { exact: true })).toHaveCount(0);
-  await expect(page.getByText("Simulasi edukasi sederhana. Skala 0–100, bukan ukuran termodinamika nyata.")).toBeVisible();
+  await expect(objectives.getByText("Simulasi edukasi sederhana. Skala 0–100, bukan ukuran termodinamika nyata.")).toBeVisible();
+  await page.keyboard.press("Escape");
   await expect(page.locator("canvas")).toHaveCount(0);
   await page.getByRole("link", { name: "Kembali ke Pilih Era", exact: true }).click();
   await expect(page).toHaveURL(/\/revo-lab\/eras$/);
   await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
   await expect(page).toHaveURL(/\/revo-lab$/);
-  await page.getByRole("link", { name: "Mulai Jelajah", exact: true }).click();
+  await openEraSelection(page);
   await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click();
-  await page.getByRole("link", { name: "Mulai Simulasi", exact: true }).click();
+  await page.getByRole("link", { name: "Mulai Eksplorasi", exact: true }).click();
   await expect(page).toHaveURL(/\/revo-lab\/industry-1$/);
   await expect(page.locator(".revo-experience")).toHaveAttribute("data-revo-screen", "gameplay");
   await expect(page.locator(".revo-scene canvas")).toBeVisible();
@@ -87,7 +91,10 @@ test("unfinished eras explain their disabled state and have no playable route", 
 test("keyboard navigation activates each available transition and scrolls the era list", async ({ page }) => {
   await page.goto("/revo-lab");
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("link", { name: "Mulai Jelajah", exact: true })).toBeFocused();
+  await expect(page.getByRole("button", { name: "Progres Saya", exact: true })).toBeFocused();
+  await page.keyboard.press("Enter");
+  const choose = page.getByRole("dialog", { name: "Progres Saya" }).getByRole("link", { name: "Pilih Era" });
+  await choose.focus();
   await page.keyboard.press("Enter");
   const enterEra = page.getByRole("link", { name: "Jelajahi Era", exact: true });
   await enterEra.focus();
@@ -136,10 +143,11 @@ test("era selection and briefing fit target viewports with accessible internal s
     if (width === 1440 || width === 390) await page.screenshot({ path: path.join(screenshots, `era-selection-${width}.png`), style: "nextjs-portal {visibility:hidden}" });
     await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click();
     await assertNoDocumentScroll(page);
-    await assertFitsViewport(page, page.getByRole("link", { name: "Mulai Simulasi", exact: true }));
+    await assertFitsViewport(page, page.getByRole("link", { name: "Mulai Eksplorasi", exact: true }));
     await assertFitsViewport(page, page.getByRole("link", { name: "Kembali ke Pilih Era", exact: true }));
     const reading = page.getByRole("region", { name: "Ringkasan level dan tujuan pembelajaran", exact: true });
     await assertFitsViewport(page, reading);
+    await page.getByRole("button", { name: "Lihat tujuan lengkap" }).click();
     // Enlarged educational text may scroll inside the reading panel, including
     // desktop. Preserve legibility and reachability rather than shrinking it.
     for (const item of await page.locator(".revo-learning-objectives li").all()) {
@@ -151,8 +159,9 @@ test("era selection and briefing fit target viewports with accessible internal s
     }
     await page.locator(".revo-briefing-path").scrollIntoViewIfNeeded();
     await assertFitsViewport(page, page.locator(".revo-briefing-path"));
-    await page.getByRole("heading", { name: "THE AGE OF STEAM", exact: true }).scrollIntoViewIfNeeded();
-    await assertFitsViewport(page, page.getByRole("heading", { name: "THE AGE OF STEAM", exact: true }));
+    await page.keyboard.press("Escape");
+    await page.getByRole("heading", { name: "Era Mesin Uap", exact: true }).scrollIntoViewIfNeeded();
+    await assertFitsViewport(page, page.getByRole("heading", { name: "Era Mesin Uap", exact: true }));
     await assertNoDocumentScroll(page);
     if (width === 1440 || width === 390) await page.screenshot({ path: path.join(screenshots, `level-briefing-${width}.png`), style: "nextjs-portal {visibility:hidden}" });
   }

@@ -1,5 +1,5 @@
 import { test as base, expect, type Page } from "@playwright/test";
-import { assemblyParts, correctAssemblyAnswers, openAssembly, placeAssemblyPart } from "./helpers/revo-assembly";
+import { assemblyParts, correctAssemblyAnswers, openAssembly, placeAssemblyPart, settleAssemblyView } from "./helpers/revo-assembly";
 import { mkdir } from "node:fs/promises";
 
 const test = base.extend<{ browserErrors: string[] }>({
@@ -22,6 +22,7 @@ async function keyboardPlace(page: Page, id: string, name: string) {
   await page.getByRole("button", { name: "Pasang komponen", exact: true }).focus(); await page.keyboard.press("Enter");
 }
 async function dragPart(page: Page, id: string, socket: string | null) {
+  await settleAssemblyView(page);
   await expect(page.locator(`[data-tray="${id}"]`)).toBeVisible();
   const source = await page.locator(`[data-tray="${id}"]`).boundingBox();
   const target = socket ? await page.locator(`[data-socket="${socket}"]`).boundingBox() : await page.locator('[data-tray="textile"]').boundingBox();
@@ -58,7 +59,7 @@ test("keyboard selection, wrong placement, duplicates and assembly-only reset", 
   await page.getByRole("button", { name: "Ulangi perakitan", exact: true }).click();
   await progress(page, 0); await expect(boiler).toBeEnabled();
   await page.getByRole("tab", { name: /Eksplorasi/ }).click();
-  await expect(page.getByText("5/5 komponen dijelajahi")).toBeVisible();
+  await expect(page.getByText("Eksplorasi selesai · 5/5 komponen", { exact: true })).toBeVisible();
   await expect(page.getByRole("tab", { name: /Perakitan/ })).toBeEnabled();
   await expect(page.getByRole("tab", { name: /Eksperimen/ })).toBeDisabled();
 });
@@ -116,7 +117,7 @@ test("all knowledge checks require understanding; retries unlock a stopped exist
   await progress(page, 0);
   await expect(page.getByRole("tab", { name: /Eksperimen/ })).toBeDisabled();
   await page.getByRole("tab", { name: /Eksplorasi/ }).click();
-  await expect(page.getByText("5/5 komponen dijelajahi")).toBeVisible();
+  await expect(page.getByText("Eksplorasi selesai · 5/5 komponen", { exact: true })).toBeVisible();
   expect(Number(await page.getByTestId("production").textContent())).toBeGreaterThan(0);
 });
 
@@ -136,9 +137,9 @@ test("pause, help dialog, menu and return retain assembly and prevent actions", 
   await expect(page.getByRole("button", { name: "Pilih Pipa uap", exact: true })).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
   await expect(page.locator("canvas")).toHaveCount(0);
-  await page.getByRole("link", { name: "Mulai Jelajah", exact: true }).click();
-  await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click();
-  await page.getByRole("link", { name: "Mulai Simulasi", exact: true }).click();
+  await expect(page).toHaveURL(/\/revo-lab$/);
+  await page.getByRole("link", { name: "Jelajahi Industri 1.0", exact: true }).click();
+  await page.getByRole("link", { name: "Mulai Eksplorasi", exact: true }).click();
   await progress(page, 13);
   await expect(page.getByRole("button", { name: "Pilih Pipa uap", exact: true })).toHaveAttribute("aria-pressed", "true");
   await page.getByLabel("Sambungan tujuan", { exact: true }).selectOption("pipe");
@@ -215,7 +216,7 @@ test("changing stage during a drag restores exploration camera and future assemb
   await page.mouse.move(canvas.x + canvas.width * .8, canvas.y + canvas.height * .3); await page.mouse.down();
   await page.mouse.move(canvas.x + canvas.width * .9, canvas.y + canvas.height * .4, { steps: 14 }); await page.mouse.up();
   await expect.poll(() => marker.getAttribute("style")).not.toBe(before);
-  await page.getByRole("button", { name: "Lanjut ke perakitan", exact: true }).click();
+  await page.getByRole("button", { name: "Lanjut ke Perakitan", exact: true }).click();
   await progress(page, 0);
   await dragPart(page, "boiler", "boiler"); await progress(page, 13);
 });

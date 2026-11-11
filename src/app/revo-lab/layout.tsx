@@ -10,6 +10,8 @@ import "./readability.css";
 import "./ui-refinements.css";
 import "./cross-era.css";
 import "./design-system.css";
+import "./briefing.css";
+import "./exploration.css";
 
 export default function RevoLayout({ children }: { children: React.ReactNode }) {
   return <RevoExperience>{children}</RevoExperience>;

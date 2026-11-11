@@ -34,7 +34,7 @@ export default function ElectricExperiment() {
   const next = progress?.stage === "briefing" ? [REVO_ROUTES.electricBriefing, "Buka Briefing"] : progress?.exploreComplete
     ? [REVO_ROUTES.electricAssembly, "Buka Perakitan"] : [REVO_ROUTES.electricExplore, "Kembali ke Eksplorasi"];
   return <main className="electric-shell electric-gate" lang="id" aria-busy={loading}>
-    <RevoScreenHeader step="02 / EKSPERIMEN" back={{ href: REVO_ROUTES.eraSelect, label: "Pilih Era" }} />
+    <RevoScreenHeader step="02 / EKSPERIMEN" back={{ href: REVO_ROUTES.menu, label: "Pilih Era" }} />
     <section>
       <p className="electric-kicker">INDUSTRI 2.0</p>
       <h1>{loading ? "Memuat eksperimen…" : "Eksperimen terkunci"}</h1>

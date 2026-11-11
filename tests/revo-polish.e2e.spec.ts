@@ -1,3 +1,4 @@
+import { openEraSelection } from "./helpers/revo-menu";
 import { expect, test as base, type Page } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
@@ -218,13 +219,13 @@ test("screen transitions move keyboard focus and reduced motion removes entrance
   await page.goto("/revo-lab");
   const menuTitle = page.getByRole("heading", { name: "REVO — Jelajah Revolusi Industri" });
   await expect(menuTitle).toBeFocused();
-  expect(await page.locator(".revo-menu-left").evaluate(element => getComputedStyle(element).animationName)).toBe("none");
-  await page.getByRole("link", { name: "Mulai Jelajah", exact: true }).click();
+  expect(await page.locator(".revo-menu-era-intro").evaluate(element => getComputedStyle(element).animationName)).toBe("none");
+  await openEraSelection(page);
   await expect(page.getByRole("heading", { name: "JELAJAHI EMPAT REVOLUSI INDUSTRI" })).toBeFocused();
   expect(await page.locator(".revo-era-intro").evaluate(element => getComputedStyle(element).animationName)).toBe("none");
   await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "THE AGE OF STEAM", exact: true })).toBeFocused();
-  await page.getByRole("link", { name: "Mulai Simulasi", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Era Mesin Uap", exact: true })).toBeFocused();
+  await page.getByRole("link", { name: "Mulai Eksplorasi", exact: true }).click();
   await page.waitForURL(/\/revo-lab\/industry-1$/);
   await expect(page.locator(".revo-hud-title h1")).toBeFocused();
   expect(await page.locator(".revo-hud-workspace").evaluate(element => getComputedStyle(element).animationName)).toBe("none");

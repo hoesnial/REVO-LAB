@@ -30,7 +30,7 @@ export default function ElectricAssembly() {
   if (ready) return <AssemblyWorkspace progress={progress} />;
   const loading = !progress || progress.exploreComplete;
   return <main className="electric-shell electric-gate" lang="id" aria-busy={loading}>
-    <RevoScreenHeader step="02 / PERAKITAN" back={{ href: REVO_ROUTES.eraSelect, label: "Pilih Era" }} />
+    <RevoScreenHeader step="02 / PERAKITAN" back={{ href: REVO_ROUTES.menu, label: "Pilih Era" }} />
     <section>
       <p className="electric-kicker">INDUSTRI 2.0</p>
       <h1>{loading ? "Memuat perakitan…" : "Perakitan terkunci"}</h1>

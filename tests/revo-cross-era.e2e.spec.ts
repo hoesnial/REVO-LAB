@@ -60,6 +60,15 @@ test("menu resumes each validated era and resets only the explicitly confirmed e
   await expect(resume.getByRole("link", { name: "Lanjutkan", exact: true })).toHaveAccessibleDescription("Industry 1.0");
   const electricLink = resume.getByRole("link", { name: /Industry 2.0 Lanjutkan Perakitan/ });
   await expect(electricLink).toBeInViewport({ ratio: 1 });
+  await expect(page.getByRole("article", { name: "Industri 2.0" })).toBeInViewport({ ratio: 1 });
+  await page.getByRole("button", { name: "Era berikutnya" }).click();
+  await expect(page.getByRole("article", { name: "Industri 4.0" })).toBeInViewport({ ratio: 1 });
+  await expect(electricLink).toBeInViewport({ ratio: 1 });
+  await page.getByRole("button", { name: "Progres Saya" }).click();
+  const progress = page.getByRole("dialog", { name: "Progres Saya" });
+  await expect(progress.getByText("Eksplorasi · 1/5 komponen")).toBeVisible();
+  await expect(progress.getByText("Perakitan · 7/7 komponen")).toBeVisible();
+  await page.keyboard.press("Escape");
   await fits(page);
   await electricLink.press("Enter");
   await expect(page).toHaveURL(`${electric}/assembly`);

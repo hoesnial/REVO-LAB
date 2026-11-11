@@ -137,8 +137,8 @@ for (const [width, height] of [[1920,1080],[1440,900],[1366,768],[1280,720],[390
     const folder = `test-results/revo/revo-008r1-1/${width}`; await mkdir(folder, { recursive: true });
     const measurements: unknown[] = [];
     async function shot(name: string) { await fits(page); await page.screenshot({ path: `${folder}/${name}.png` }); }
-    await page.goto('/revo-lab'); await target(page.getByRole('link',{name:'Mulai Jelajah',exact:true}));
-    const menuImage = page.locator('.revo-menu-factory img');
+    await page.goto('/revo-lab'); await target(page.getByRole('link',{name:'Jelajahi Industri 1.0',exact:true}));
+    const menuImage = page.locator('[data-era="industry-1"] .revo-menu-era-art img');
     await expect(menuImage).toBeVisible();
     await expect.poll(() => menuImage.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
     expect((await menuImage.boundingBox())!.height).toBeGreaterThan(40);await shot('menu');

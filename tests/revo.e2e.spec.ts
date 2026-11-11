@@ -1,3 +1,4 @@
+import { openEraSelection } from "./helpers/revo-menu";
 import { finishAssembly } from "./helpers/revo-assembly";
 import { expect, test as base, type Page } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
@@ -49,7 +50,7 @@ async function inspectFiveComponents(page: Page) {
   for (const name of ["Ketel uap", "Roda gila", "Piston", "Pipa uap", "Mesin tekstil"]) {
     await componentList.getByRole("button", { name: new RegExp(name) }).click();
   }
-  await expect(page.getByText("5/5 komponen dijelajahi")).toBeVisible();
+  await expect(page.getByText("Eksplorasi selesai · 5/5 komponen", { exact: true })).toBeVisible();
 }
 
 async function machineSnapshot(page: Page) {
@@ -158,7 +159,7 @@ test("exploration counts unique inspections and unlocks Assembly after all five 
   for (const name of ["Roda gila", "Piston", "Pipa uap", "Mesin tekstil"]) {
     await componentList.getByRole("button", { name: new RegExp(name) }).click();
   }
-  await expect(page.getByText("5/5 komponen dijelajahi")).toBeVisible();
+  await expect(page.getByText("Eksplorasi selesai · 5/5 komponen", { exact: true })).toBeVisible();
   await expect(page.locator(".revo-learning-note")).toContainText("Seluruh komponen");
   await expect(page.getByRole("tab", { name: /Perakitan/ })).toBeEnabled();
   await expect(experiment).toBeDisabled();
@@ -222,7 +223,7 @@ test("desktop: explore five components, control the camera, observe a real safe 
       await expect(page.getByRole("heading", { name: heading, exact: true })).toBeVisible();
       await expect(page.locator(".revo-component-role")).toContainText("PERAN DALAM MESIN");
     }
-    await expect(page.getByText("5/5 komponen dijelajahi")).toBeVisible();
+    await expect(page.getByText("Eksplorasi selesai · 5/5 komponen", { exact: true })).toBeVisible();
     await finishAssembly(page);
     await expect(page.getByRole("tab", { name: /Eksperimen/ })).toHaveAttribute("aria-selected", "true");
   });
@@ -255,10 +256,10 @@ test("desktop: explore five components, control the camera, observe a real safe 
     // Reenter through the full journey so browser Back during reflection has
     // a real briefing destination; all five explored components must survive.
     await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
-    await page.getByRole("link", { name: "Mulai Jelajah", exact: true }).click();
+    await openEraSelection(page);
     await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click();
-    await page.getByRole("link", { name: "Mulai Simulasi", exact: true }).click();
-    await expect(page.getByText("5/5 komponen dijelajahi")).toBeVisible();
+    await page.getByRole("link", { name: "Mulai Eksplorasi", exact: true }).click();
+    await expect(page.getByText("Eksplorasi selesai · 5/5 komponen", { exact: true })).toBeVisible();
     await expect(page.getByRole("tab", { name: /Eksperimen/ })).toHaveAttribute("aria-selected", "true");
     await page.getByRole("button", { name: "Nyalakan mesin", exact: true }).click();
     await expect(page.getByRole("button", { name: "Hentikan mesin", exact: true })).toBeVisible();
@@ -306,9 +307,9 @@ test("desktop: explore five components, control the camera, observe a real safe 
         await expect(dialog).toHaveCount(0);
         await page.getByRole("link", { name: "Kembali ke Pilih Era", exact: true }).click();
         await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
-        await page.getByRole("link", { name: "Mulai Jelajah", exact: true }).click();
+        await openEraSelection(page);
         await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click();
-        await page.getByRole("link", { name: "Mulai Simulasi", exact: true }).click();
+        await page.getByRole("link", { name: "Mulai Eksplorasi", exact: true }).click();
         await expect(dialog).toBeVisible();
         await expect(dialog.getByText("Pertanyaan 1 dari 3", { exact: true })).toBeVisible();
         // After submission, the correct-answer icon joins the accessible name.
@@ -371,7 +372,7 @@ test("resource controls, depleted fuel, and excessive pressure produce honest sa
   await expect(page.getByTestId("pressure")).toHaveText("10/100");
   await expect(fuel).toHaveAttribute("aria-valuenow", "35");
   await expect(water).toHaveAttribute("aria-valuenow", "65");
-  await expect(page.getByText("5/5 komponen dijelajahi")).toBeVisible();
+  await expect(page.getByText("Eksplorasi selesai · 5/5 komponen", { exact: true })).toBeVisible();
   await expect(page.getByRole("tab", { name: /Eksperimen/ })).toHaveAttribute("aria-selected", "true");
   await expect(page.getByRole("tab", { name: /Refleksi/ })).toBeDisabled();
   await page.getByRole("button", { name: "Nyalakan mesin", exact: true }).click();

@@ -1,3 +1,4 @@
+import { openEraSelection } from "./helpers/revo-menu";
 import { expect, test as base, type Page } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 import { OrthographicCamera, Vector3 } from "three";
@@ -27,7 +28,7 @@ async function openExplore(page: Page) {
   await page.goto(briefing);
   await page.getByRole("link", { name: "Mulai Eksplorasi" }).click();
   await expect(page).toHaveURL(explore);
-  await expect(page.getByRole("heading", { name: "Pabrik era elektrifikasi" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Kenali Pabrik Listrik" })).toBeVisible();
 }
 
 async function expectFullscreen(page: Page) {
@@ -69,10 +70,12 @@ test("opens briefing from the menu; 3D pick and keyboard unlock Explore only aft
   await expect(page.getByRole("heading", { name: "Perakitan terkunci" })).toBeVisible();
   await expect(page.locator("canvas")).toHaveCount(0);
   await page.goto("/revo-lab");
-  await page.getByRole("link", { name: "Mulai Jelajah" }).click();
+  await openEraSelection(page);
   await page.getByRole("link", { name: "Buka Briefing 2.0" }).click();
-  await expect(page.getByRole("heading", { name: "The Age of Electricity." })).toBeVisible();
-  await expect(page.locator(".electric-objectives li")).toHaveCount(6);
+  await expect(page.getByRole("heading", { name: "Era Listrik & Produksi Massal" })).toBeVisible();
+  await page.getByRole("button", { name: "Lihat tujuan lengkap" }).click();
+  await expect(page.getByRole("dialog").locator(".revo-learning-objectives li")).toHaveCount(6);
+  await page.keyboard.press("Escape");
   await page.getByRole("link", { name: "Mulai Eksplorasi" }).click();
   await expect(page.getByText("0/7 dibuka")).toBeVisible();
   await pickSupplyInScene(page);
@@ -85,12 +88,13 @@ test("opens briefing from the menu; 3D pick and keyboard unlock Explore only aft
     await expect(page.locator("#electric-detail h3")).toHaveText(part.name);
     await expect(page.getByText(`${index + 2}/7 dibuka`)).toBeVisible();
     if (index < 5) {
-      await expect(page.getByText("Eksplorasi selesai.", { exact: false })).toHaveCount(0);
+      await expect(page.getByRole("region", { name: /Eksplorasi selesai/ })).toHaveCount(0);
       await expect(page.getByRole("link", { name: "Mulai Perakitan" })).toHaveCount(0);
     }
   }
-  await expect(page.getByText("Eksplorasi selesai. Perakitan terbuka.")).toBeVisible();
-  await page.getByRole("link", { name: "Mulai Perakitan" }).click();
+  await expect(page.locator(".revo-explore-count")).toHaveCount(0);
+  await expect(page.getByRole("region", { name: "Eksplorasi selesai · 7/7 komponen" })).toBeVisible();
+  await page.getByRole("link", { name: "Lanjut ke Perakitan", exact: true }).click();
   await expect(page).toHaveURL(assembly);
   await expect(page.getByRole("heading", { name: "Rakit penggerak konveyor" })).toBeVisible();
   await expect(page.locator("canvas")).toHaveCount(1);
@@ -112,9 +116,9 @@ test("reload, inter-era navigation, one canvas and reset preserve both independe
   await expect(page.getByText("2/7 dibuka")).toBeVisible();
   await page.getByRole("link", { name: "Pilih Era", exact: true }).click();
   await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
-  await page.getByRole("link", { name: "Mulai Jelajah" }).click();
+  await openEraSelection(page);
   await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click();
-  await page.getByRole("link", { name: "Mulai Simulasi" }).click();
+  await page.getByRole("link", { name: "Mulai Eksplorasi" }).click();
   await expect(page.locator("canvas")).toHaveCount(1);
   await page.getByRole("button", { name: "Jelajahi Ketel uap", exact: true }).click();
   await expect(page.getByText("1/5 komponen dijelajahi")).toBeVisible();
@@ -122,7 +126,7 @@ test("reload, inter-era navigation, one canvas and reset preserve both independe
   const steam = await saved(page, steamKey);
   expect(await saved(page, electricKey)).toBe(electric);
   await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
-  await page.getByRole("link", { name: "Mulai Jelajah" }).click();
+  await openEraSelection(page);
   await page.getByRole("link", { name: "Buka Briefing 2.0" }).click();
   await expect(page.locator("canvas")).toHaveCount(0);
   await page.getByRole("link", { name: "Lanjutkan Eksplorasi" }).click();
@@ -171,7 +175,7 @@ test("repairs fabricated readiness, duplicate and foreign part IDs", async ({ pa
   await page.goto(explore);
   await expect(page.getByText("1/7 dibuka")).toBeVisible();
   await expect(page.locator("#electric-detail h3")).toHaveText("Ikuti tiga jalur");
-  await expect(page.getByText("Eksplorasi selesai.", { exact: false })).toHaveCount(0);
+  await expect(page.getByRole("region", { name: /Eksplorasi selesai/ })).toHaveCount(0);
 });
 
 test("DOM fallback with WebGL blocked still teaches and records all seven parts", async ({ page }) => {
@@ -186,7 +190,7 @@ test("DOM fallback with WebGL blocked still teaches and records all seven parts"
   await expect(page.getByText(/Tampilan 3D tidak tersedia/)).toBeVisible();
   await expect(page.locator(".electric-canvas canvas")).toHaveCount(0);
   for (const part of PARTS) await partButton(page, part.name).click();
-  await expect(page.getByText("Eksplorasi selesai. Perakitan terbuka.")).toBeVisible();
+  await expect(page.getByRole("region", { name: "Eksplorasi selesai · 7/7 komponen" })).toBeVisible();
 });
 
 test.describe("touch controls", () => {
@@ -217,10 +221,12 @@ for (const [width, height] of [[1440, 900], [1366, 768], [1280, 720], [390, 844]
     await expect(start).toBeInViewport({ ratio: 1 });
     await expectFullscreen(page);
     await page.screenshot({ path: `${screenshots}/${width}-briefing.png`, animations: "disabled" });
-    const lastObjective = page.locator(".electric-objectives li").last();
+    await page.getByRole("button", { name: "Lihat tujuan lengkap" }).click();
+    const lastObjective = page.getByRole("dialog").locator(".revo-learning-objectives li").last();
     // Center within the reading panel to avoid subpixel clipping at its edge.
     await lastObjective.evaluate(element => element.scrollIntoView({ block: "center", behavior: "instant" }));
     await expect(lastObjective).toBeInViewport({ ratio: 1 });
+    await page.keyboard.press("Escape");
     await start.click();
     await expect(page.locator(".electric-canvas canvas")).toBeInViewport({ ratio: 1 });
     await partButton(page, "Motor listrik").click();
@@ -352,7 +358,11 @@ test("direct route denies forged V2 exploration; repairs malformed assembly evid
 test("migrates V1 with seven explored IDs and creates no Assembly evidence", async ({ page }) => {
   await seedElectric(page, { version: 1, stage: "explore", explored: allPartIds, selected: "belt", exploreComplete: true });
   await page.goto(explore);
-  await expect(page.getByText("7/7 dibuka")).toBeVisible();
+  await expect(page.locator(".revo-explore-count")).toHaveCount(0);
+  await expect(page.getByRole("region", { name: "Eksplorasi selesai · 7/7 komponen" })).toBeVisible();
+  await expect(page.locator("#electric-detail")).toHaveCount(0);
+  await expect(partButton(page, "Sabuk transmisi")).toHaveAttribute("aria-pressed", "true");
+  await partButton(page, "Sabuk transmisi").click();
   await expect(page.locator("#electric-detail h3")).toHaveText("Sabuk transmisi");
   expect(JSON.parse((await saved(page, electricKey))!)).toMatchObject({
     version: 3, stage: "explore", explored: allPartIds, selected: "belt", connections: [], conceptAnswers: {}, assemblyComplete: false,

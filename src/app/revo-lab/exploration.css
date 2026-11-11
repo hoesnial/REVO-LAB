@@ -1,0 +1,217 @@
+/* Exploration only: shared editorial workspace, floating inspector, no operation UI. */
+.revo-experience .revo-exploration {
+  --explore-inset: clamp(12px, 2.6vw, 40px);
+  background: var(--revo-editorial-ivory); color: var(--revo-text-ink);
+}
+.revo-experience .revo-exploration .revo-game-header { background: transparent; padding-inline: var(--explore-inset); }
+.revo-exploration .revo-game-header .revo-flow-back { display: none; }
+.revo-exploration .revo-hud-title h1 { display: none; }
+.revo-experience .revo-exploration .revo-stage-track { background: transparent; }
+.revo-experience .revo-exploration .revo-hud-workspace { grid-template-rows: 52px minmax(0,1fr) 36px; background: transparent; }
+.revo-experience .revo-exploration .revo-stage-bar { height: auto; padding-inline: var(--explore-inset); }
+.revo-exploration .revo-lab-tools { display: none; }
+.revo-experience .revo-exploration .revo-lab-grid {
+  display: block; min-height: 0; padding: 0; overflow: hidden; background: transparent;
+}
+.revo-experience .revo-exploration .revo-exhibit {
+  display: grid; grid-template-rows: auto minmax(0,1fr) 48px 58px;
+  height: 100%; min-height: 0; border: 0; padding: 0 var(--explore-inset); background: transparent;
+}
+.revo-experience .revo-exploration .revo-exhibit-title { padding: 20px 0 4px; min-height: 0; }
+.revo-exploration .revo-exhibit-title .revo-kicker { display: none; }
+.revo-experience .revo-exploration .revo-exhibit-title h2 { font-size: var(--revo-type-title); color: var(--revo-text-ink); letter-spacing: -.045em; }
+.revo-exploration .revo-exhibit-title p { margin-top: 4px; font-size: var(--revo-type-body); }
+.revo-experience .revo-exploration .revo-location, .revo-explore-count {
+  background: var(--revo-surface-subtle); padding: 10px 16px; border-radius: var(--revo-radius-panel);
+  font-size: var(--revo-type-label); color: var(--revo-text-ink); white-space: nowrap;
+}
+.revo-experience .revo-exploration .revo-scene { position: relative; inset: auto; min-height: 0; height: auto; border: 0; background: transparent; }
+.revo-experience .revo-exploration[data-inspector-open="true"] .revo-scene { margin-right: min(36%, 460px); }
+.revo-experience .revo-exploration .revo-scene-bottom { position: static; padding: 0; background: transparent; }
+.revo-exploration .revo-orbit-hint { color: var(--revo-text-muted); }
+.revo-experience .revo-exploration .revo-camera-tools { position: static; display: flex; gap: 8px; margin-left: auto; background: transparent; }
+.revo-experience .revo-exploration[data-inspector-open="true"] .revo-camera-tools { margin-right: min(36%, 460px); }
+.revo-experience .revo-exploration .revo-camera-tools button { width: 44px; height: 44px; background: var(--revo-surface-paper); color: var(--revo-text-ink); border: 1px solid var(--revo-border-default); border-radius: var(--revo-control-radius); }
+.revo-experience .revo-exploration .revo-component-list {
+  display: flex; height: 58px; min-height: 0; flex: none; overflow-x: auto; gap: 8px; border: 1px solid var(--revo-border-default);
+  background: transparent; border-radius: var(--revo-radius-panel); padding: 4px;
+}
+.revo-experience .revo-exploration .revo-component-list button { flex: 1 0 auto; min-height: 44px; font-size: 14px; background: transparent; color: var(--revo-text-ink); border: 0; }
+.revo-experience .revo-exploration .revo-component-list button[aria-pressed="true"] { background: var(--revo-action-learning); color: var(--revo-text-primary); }
+.revo-experience .revo-exploration .revo-hud-sidebar { display: none; }
+.revo-experience .revo-exploration :is(.revo-component-info,.electric-detail) {
+  position: absolute; inset: auto var(--explore-inset) auto auto; top: 48%; transform: translateY(-50%);
+  width: min(33%,420px); max-height: calc(100% - 150px); overflow-y: auto; margin: 0;
+  display: grid; grid-template-columns: auto minmax(0,1fr) auto; gap: 12px;
+  padding: var(--revo-panel-padding); background: var(--revo-surface-paper); color: var(--revo-text-ink);
+  border: 1px solid var(--revo-border-default); border-radius: var(--revo-radius-panel);
+  box-shadow: 0 10px 28px #26382e20; z-index: 3;
+}
+.revo-exploration :is(.revo-component-description,.revo-component-role) { grid-column: 1 / -1; }
+.revo-experience .revo-exploration .revo-component-role { padding: 12px 0 0; border: 0; border-top: 1px solid var(--revo-border-default); background: transparent; }
+.revo-experience .revo-exploration .revo-component-actions { position: static; display: flex; grid-column: 3; grid-row: 1 / 3; gap: 4px; }
+.revo-experience .revo-exploration .revo-component-actions button { width: 44px; height: 44px; font-size: 24px; border: 1px solid var(--revo-border-default); border-radius: 50%; color: var(--revo-text-ink); background: transparent; }
+.revo-exploration .revo-component-info-number { grid-row: 1; }
+.revo-exploration .revo-component-identification { grid-column: 2; grid-row: 1; }
+.revo-exploration .revo-component-info :is(h2,h3) { font-size: var(--revo-type-heading); }
+.revo-explore-sheet-toggle { display: none; }
+.revo-experience .revo-exploration .revo-learning-note { min-height: 0; padding: 4px var(--explore-inset); background: transparent; border-top: 1px solid var(--revo-border-default); }
+.revo-exploration .revo-learning-note :is(.revo-note-icon,div > span,.revo-live-feedback,button) { display: none; }
+.revo-experience .revo-exploration .revo-learning-note p { font-size: 12px; color: var(--revo-text-muted); }
+.revo-experience .revo-exploration[data-exploration-complete="true"] .revo-hud-workspace { grid-template-rows: 52px minmax(0,1fr) auto; }
+.revo-experience .revo-exploration[data-exploration-complete="true"] .revo-learning-note { display: none; }
+.revo-explore-completion {
+  display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: var(--revo-space-3);
+  min-width: 0; min-height: 62px; margin: 7px var(--explore-inset); padding: 8px 10px;
+  color: var(--revo-text-ink); background: color-mix(in srgb, var(--revo-state-success-border) 28%, var(--revo-surface-paper));
+  border: 1px solid var(--revo-state-success-border); border-radius: var(--revo-radius-panel);
+}
+.revo-explore-completion-status { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.revo-explore-completion-icon {
+  display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px;
+  color: var(--revo-text-primary); background: var(--revo-state-success); border-radius: 50%;
+}
+.revo-explore-completion-status p { min-width: 0; font-size: 16px; line-height: 1.35; }
+.revo-explore-completion-status strong { font-family: var(--revo-font-heading); font-weight: 800; }
+.revo-explore-completion-action { min-width: 250px; justify-content: space-between; font-size: 15px; font-weight: 800; text-decoration: none; }
+/* Electrical explorer keeps its seven items and path tools, but no persistent sidebar. */
+.revo-experience .electric-explore.revo-exploration { grid-template-rows: auto 50px minmax(0,1fr); }
+.revo-experience .electric-explore.revo-exploration[data-exploration-complete="true"] { grid-template-rows: auto 50px minmax(0,1fr) auto; }
+.revo-experience .electric-explore.revo-exploration .electric-workspace { display: block; position: relative; min-height: 0; padding-bottom: 66px; }
+.revo-experience .electric-explore.revo-exploration .electric-stage { height: 100%; display: grid; grid-template-rows: auto minmax(0,1fr) auto; border: 0; background: transparent; }
+.revo-experience .electric-explore.revo-exploration .electric-stage-title { position: relative; padding: 20px var(--explore-inset) 4px; }
+.revo-exploration .electric-stage-title .electric-kicker { display: none; }
+.revo-exploration .revo-explore-subtitle { margin-top: 4px; color: var(--revo-text-ink); font-size: var(--revo-type-body); line-height: 1.4; }
+.revo-explore-count { position: absolute; top: 20px; right: var(--explore-inset); }
+.revo-experience .electric-explore.revo-exploration .electric-canvas { min-height: 0; }
+.revo-experience .electric-explore.revo-exploration[data-inspector-open="true"] .electric-canvas { margin-right: min(36%,460px); }
+.revo-experience .electric-explore.revo-exploration .electric-scene-tools { padding: 4px var(--explore-inset); gap: 8px; }
+.revo-experience .electric-explore.revo-exploration[data-inspector-open="true"] .electric-camera-controls { margin-right: min(36%, 460px); }
+.revo-experience .electric-explore.revo-exploration .electric-inspector { display: contents; }
+.revo-exploration .electric-inspector > :not(.electric-parts,.electric-detail,.electric-swipe-hint) { display: none; }
+.revo-exploration .electric-parts { position: absolute; bottom: 8px; left: var(--explore-inset); right: var(--explore-inset); display: flex; overflow-x: auto; padding: 4px; height: 52px; border: 1px solid var(--revo-border-default); border-radius: var(--revo-radius-panel); }
+.revo-exploration .electric-parts li { flex: 1 0 auto; }
+.revo-exploration .electric-parts button { white-space: nowrap; }
+.revo-exploration .electric-detail .electric-secondary { display: none; }
+@media (max-width: 720px) {
+  .revo-experience .revo-exploration .revo-exhibit-title { padding-top: 8px; }
+  .revo-experience .revo-exploration .revo-exhibit-title h2 { font-size: 23px; }
+  .revo-experience .revo-exploration .revo-location, .revo-explore-count { padding: 4px 8px; font-size: 11px; }
+  .revo-experience .revo-exploration .revo-exhibit-title { display: block; }
+  .revo-exploration .revo-exhibit-title p { display: block; font-size: 12px; line-height: 1.35; }
+  .revo-experience .revo-exploration .revo-location { display: inline-block; margin-top: 4px; }
+  .revo-experience .revo-exploration .revo-lab-grid:has(.revo-component-info) { display: block; grid-template: none; }
+  .revo-experience .revo-exploration .revo-hud-dock { display: contents; }
+  .revo-experience .revo-exploration :is(.revo-component-info,.electric-detail) {
+    position: absolute; inset: auto 0 0; top: auto; transform: none; width: 100%; max-height: 170px; height: auto;
+    border-radius: 20px 20px 0 0; padding: 8px 12px 12px; gap: 6px;
+  }
+  .revo-experience .revo-exploration[data-sheet-expanded="true"] :is(.revo-component-info,.electric-detail) { max-height: 45%; }
+  .revo-experience .revo-exploration .revo-exhibit { grid-template-rows: auto minmax(0,1fr) 44px 50px; }
+  .revo-experience .revo-exploration[data-inspector-open="true"] .revo-exhibit { padding-bottom: 170px; }
+  .revo-experience .revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .revo-exhibit { padding-bottom: var(--sheet-space); }
+  .revo-experience .revo-exploration[data-inspector-open="true"] .revo-scene { margin-right: 0; }
+  .revo-experience .revo-exploration[data-inspector-open="true"] .revo-scene-bottom { position: static; padding: 0; }
+  .revo-experience .revo-exploration[data-inspector-open="true"] .revo-component-list { height: 50px; }
+  .revo-exploration .revo-orbit-hint { display: none; }
+  .revo-exploration .revo-exhibit-title .revo-location { font-size: 11px; }
+  .revo-experience .revo-exploration .revo-component-actions { grid-row: 2; }
+  .revo-exploration .revo-component-identification { grid-row: 2; }
+  .revo-exploration .revo-component-info-number { grid-row: 2; }
+  .revo-explore-sheet-toggle { display: flex; grid-column: 1 / -1; justify-content: center; align-items: center; gap: 8px; min-height: 28px; font-size: 12px; color: var(--revo-text-muted); }
+  .revo-explore-sheet-toggle > span { width: 32px; height: 4px; background: var(--revo-border-default); border-radius: 4px; }
+  .revo-experience .revo-exploration .revo-component-identification .revo-kicker { display: none; }
+  .revo-experience .revo-exploration .revo-component-role p, .revo-experience .revo-exploration .revo-component-description { font-size: 15px; }
+  .revo-experience .electric-explore.revo-exploration .electric-stage-title { padding: 8px 12px 0; }
+  .revo-explore-count { position: static; display: inline-block; }
+  .revo-experience .electric-explore.revo-exploration .electric-stage-title h1 { font-size: 22px; }
+  .revo-exploration .revo-explore-subtitle { display: block; font-size: 12px; line-height: 1.35; }
+  .revo-exploration .electric-flow-caption { display: none; }
+  .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"] .electric-canvas { margin-right: 0; }
+  .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"] .electric-workspace { padding-bottom: 230px; }
+  .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .electric-workspace { padding-bottom: calc(var(--sheet-space) + 64px); }
+  .revo-exploration[data-inspector-open="true"] .electric-parts { bottom: 174px; }
+  .revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .electric-parts { bottom: calc(var(--sheet-space) + 6px); }
+  .revo-experience .electric-explore.revo-exploration .electric-detail { max-height: 170px; }
+  .revo-experience .electric-explore.revo-exploration[data-sheet-expanded="true"] .electric-detail { max-height: 45vh; }
+}
+@media (max-width: 720px) {
+  .revo-explore-completion { gap: 6px; min-height: 58px; margin: 5px 8px; padding: 6px 8px; }
+  .revo-explore-completion-status { gap: 6px; }
+  .revo-explore-completion-icon { width: 30px; height: 30px; flex-basis: 30px; }
+  .revo-explore-completion-icon svg { width: 16px; height: 16px; }
+  .revo-explore-completion-status p { font-size: 12px; line-height: 1.25; }
+  .revo-explore-completion-action { min-width: 0; min-height: 44px; padding: 8px 10px; gap: 5px; font-size: 12px; white-space: nowrap; }
+  .revo-explore-completion-action svg { width: 16px; height: 16px; }
+}
+.revo-experience .revo-exploration .revo-exhibit-title { position: static; inset: auto; grid-row: 1; }
+.revo-experience .revo-exploration .revo-scene { grid-row: 2; }
+.revo-experience .revo-exploration .revo-scene-bottom { grid-row: 3; }
+.revo-experience .revo-exploration .revo-component-list { grid-row: 4; }
+.revo-experience .revo-exploration :is(.revo-component-info,.electric-detail) > .revo-component-info-number { grid-column: 1; }
+.revo-experience .revo-exploration :is(.revo-component-info,.electric-detail) > .revo-component-identification { grid-column: 2; }
+.revo-experience .revo-exploration .revo-component-info .revo-kicker { margin: 0; }
+.revo-experience .revo-exploration .revo-component-info h2 { padding: 0; }
+@media (max-width:720px) {
+  .revo-exploration { --sheet-space: min(28vh,170px); }
+  .revo-exploration[data-sheet-expanded="true"] { --sheet-space: min(35vh,250px); }
+  .revo-experience .revo-exploration #revo-workspace .revo-component-info,
+  .revo-experience .electric-explore.revo-exploration .electric-detail {
+    position: absolute; inset: auto 0 0; transform: none; width: 100%; height: var(--sheet-space);
+    max-height: var(--sheet-space); overflow-y: auto; margin: 0; animation: none;
+    padding: 6px 12px 12px; grid-template-columns: auto minmax(0,1fr) auto;
+  }
+  .revo-experience .revo-exploration #revo-workspace .revo-component-info .revo-component-info-number { grid-column: 1; grid-row: 2; }
+  .revo-experience .revo-exploration #revo-workspace .revo-component-info .revo-component-identification { grid-column: 2; grid-row: 2; }
+  .revo-experience .revo-exploration[data-inspector-open="true"] .revo-exhibit { padding-bottom: var(--sheet-space); }
+  .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"] .electric-workspace { padding-bottom: calc(var(--sheet-space) + 64px); }
+  .revo-exploration[data-inspector-open="true"] .electric-parts { bottom: calc(var(--sheet-space) + 6px); }
+  .revo-experience .electric-explore.revo-exploration .electric-scene-tools { display: flex; flex-wrap: wrap; gap: 2px; padding: 0 12px; }
+  .revo-exploration .electric-paths { flex: 1 0 100%; }
+  .revo-experience .revo-exploration .revo-component-info :is(.revo-component-description,.revo-component-role) { grid-column: 1 / -1; }
+}
+@media (max-width:360px) and (max-height:620px) {
+ .revo-exploration { --sheet-space: 100px; }
+ .revo-exploration[data-sheet-expanded="true"] { --sheet-space: min(46vh,260px); }
+ .revo-experience .revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .revo-exhibit { grid-template-rows: auto 0 0 50px; }
+ .revo-experience .revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .revo-scene,
+ .revo-experience .revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .revo-scene-bottom { display: none; }
+ .revo-experience .revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .revo-component-info { max-height: var(--sheet-space); }
+ .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .electric-workspace { padding-bottom: calc(var(--sheet-space) + 64px); }
+ .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .electric-stage { grid-template-rows: auto 0 0; }
+ .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] :is(.electric-canvas,.electric-scene-tools) { display: none; }
+ .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .electric-detail { max-height: var(--sheet-space); }
+ .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .electric-parts { bottom: calc(var(--sheet-space) + 6px); }
+ .revo-explore-completion { min-height: 52px; margin: 4px 6px; padding: 4px 6px; gap: 4px; }
+ .revo-explore-completion-status { gap: 4px; }
+ .revo-explore-completion-icon { width: 26px; height: 26px; flex-basis: 26px; }
+ .revo-explore-completion-status p { font-size: 11px; }
+ .revo-explore-completion-action { min-height: 42px; padding: 6px 7px; font-size: 11px; }
+}
+@media (max-width:720px) {
+ .revo-experience .revo-exploration #revo-workspace .revo-component-info .revo-explore-sheet-toggle {
+   display:flex; grid-column: 1 / -1; grid-row: 1; width:100%; height:28px; min-height:28px; padding:0;
+   justify-content:center; align-items:center; background:transparent; border:0; font-size:12px;
+ }
+}
+.revo-experience .electric-explore.revo-exploration .electric-canvas { width: auto; }
+.revo-experience .revo-exploration .revo-exhibit-title h1 {
+ font-size: var(--revo-type-title); color: var(--revo-text-ink); letter-spacing: -.045em; font-weight: 800; line-height:1.2;
+}
+.revo-exploration .revo-exhibit-title h1:focus { outline: none; }
+@media (max-width:720px) { .revo-experience .revo-exploration .revo-exhibit-title h1 { font-size:23px; } }
+
+/* Shared information text retains contrast on the light floating surface. */
+.revo-experience .revo-exploration .revo-component-role { border-radius: 0; }
+.revo-experience .revo-exploration :is(.revo-component-description,.revo-component-role p) {
+  color: var(--revo-text-ink); font-size: var(--revo-type-body); line-height: 1.65;
+}
+@media (max-width:720px) {
+  .revo-experience .revo-exploration :is(.revo-component-description,.revo-component-role p) { font-size: 15px; }
+  .revo-experience .electric-explore.revo-exploration .electric-scene-tools { flex-wrap: nowrap; gap: 4px; padding-inline: 8px; }
+  .revo-exploration .electric-paths { flex: 1 1 auto; gap: 2px; }
+  .revo-experience .electric-explore.revo-exploration .electric-path { padding-inline: 3px; font-size: 12px; min-width: 44px; }
+  .revo-exploration .electric-camera-controls { gap: 2px; }
+  .revo-exploration .electric-camera-controls button { width: 44px; min-width: 44px; padding: 0; }
+  .revo-exploration[data-path-active="true"] .electric-flow-caption { display: block; font-size: 12px; line-height: 1.35; margin-top: 4px; }
+}

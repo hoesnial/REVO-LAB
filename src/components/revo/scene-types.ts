@@ -6,6 +6,7 @@ import type { ResourceSceneProps } from "./ResourceFilling";
 export type SceneVector = [number, number, number];
 
 export interface FactorySceneProps {
+  exploration?: boolean;
   speed: number;
   heat: number;
   pressure: number;

@@ -1,8 +1,6 @@
-import type { Metadata } from "next";
-import RevoEraSelection from "@/components/revo/RevoEraSelection";
+import { redirect } from "next/navigation";
+import { REVO_ROUTES } from "@/lib/revo/routes";
 
-export const metadata: Metadata = { title: "Pilih Era — REVO", description: "Mainkan Industry 1.0 atau buka briefing dan eksplorasi Industry 2.0." };
-
-export default function EraSelectionPage() {
-  return <RevoEraSelection />;
+export default function LegacyEraSelectionPage(): never {
+  redirect(REVO_ROUTES.menu);
 }

@@ -2,12 +2,14 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { ArrowLeft, Check, List, MoveHorizontal, ScanLine } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, X, MoveHorizontal } from "lucide-react";
 import { useRef, useState } from "react";
 import { PARTS, PATHS, type ElectricPartId, type PathKind } from "@/lib/revo/industry-2/content";
 import { REVO_ROUTES } from "@/lib/revo/routes";
 import RevoScreenHeader from "../RevoScreenHeader";
+import ExplorationSheetToggle from "../ExplorationSheetToggle";
 import RevoComponentInfo from "../RevoComponentInfo";
+import RevoExplorationComplete from "../RevoExplorationComplete";
 import ElectricDiagram from "./ElectricDiagram";
 import ElectricCameraControls from "./ElectricCameraControls";
 import ElectricHud from "./ElectricHud";
@@ -22,11 +24,14 @@ export default function ElectricExplore() {
   const [path, setPath] = useState<PathKind | null>(null);
   const [focus, setFocus] = useState<ElectricPartId | null>(null);
   const [reset, setReset] = useState(0);
+  const [cardOpen, setCardOpen] = useState(false);
+  const [sheetExpanded, setSheetExpanded] = useState(false);
+  const [cameraCommand, setCameraCommand] = useState({ kind: "reset", serial: 0 });
   const detail = useRef<HTMLElement>(null);
   const partButtons = useRef<Partial<Record<ElectricPartId, HTMLButtonElement | null>>>({});
 
   if (!progress || progress.stage === "briefing") return <main className="electric-shell electric-gate" lang="id" aria-busy={!progress}>
-    <RevoScreenHeader step="02 / INDUSTRI 2.0" back={{ href: REVO_ROUTES.eraSelect, label: "Pilih Era" }} />
+    <RevoScreenHeader step="02 / INDUSTRI 2.0" back={{ href: REVO_ROUTES.menu, label: "Pilih Era" }} />
     <section>
       <p className="electric-kicker">INDUSTRI 2.0</p>
       <h1>{progress ? "Mulai dari briefing" : "Memuat eksplorasi…"}</h1>
@@ -38,31 +43,35 @@ export default function ElectricExplore() {
   const selected = PARTS.find(part => part.id === progress.selected);
   const inspect = (id: ElectricPartId) => {
     dispatch({ type: "inspect", id });
+    setCardOpen(true); setSheetExpanded(false);
     const compact = window.matchMedia("(max-width: 720px)").matches;
     requestAnimationFrame(() => {
+      if (detail.current) detail.current.scrollTop = 0;
       detail.current?.scrollIntoView({ block: compact ? "start" : "nearest", behavior: "instant" });
       if (compact) detail.current?.focus({ preventScroll: true });
     });
   };
   const returnToParts = () => {
-    if (selected) partButtons.current[selected.id]?.focus();
+    setCardOpen(false);
+    if (selected) partButtons.current[selected.id]?.focus({ preventScroll: true });
   };
   const fallback = <div className="electric-fallback">
     <ElectricDiagram selected={progress.selected} path={path} />
     <p role="status">Tampilan 3D tidak tersedia. Gunakan daftar komponen untuk melanjutkan.</p>
   </div>;
 
-  return <main className="electric-shell electric-explore" lang="id">
+  return <main className="electric-shell electric-explore revo-exploration" data-inspector-open={cardOpen && Boolean(selected)} data-sheet-expanded={sheetExpanded} data-path-active={Boolean(path)} data-exploration-complete={progress.exploreComplete || undefined} lang="id">
     <ElectricHud stage="explore" progress={progress} />
     <div className="electric-workspace">
       <section className="electric-stage" aria-label="Diorama pabrik elektrifikasi">
         <div className="electric-stage-title">
           <p className="electric-kicker">LABORATORIUM INTERAKTIF / 02</p>
-          <h1>Pabrik era elektrifikasi</h1>
-          <p className="electric-flow-caption" aria-live="polite">{path ? PATHS[path].flow : "Model edukatif · Awal abad ke-20"}</p>
+          <h1>Kenali Pabrik Listrik</h1>{!progress.exploreComplete && <strong className="revo-explore-count">{progress.explored.length}/7 dibuka</strong>}
+          <p className="revo-explore-subtitle">Pilih titik pada model untuk mempelajari komponen dan fungsinya.</p>
+          {path && <p className="electric-flow-caption" aria-live="polite">{PATHS[path].flow}</p>}
         </div>
         <div className="electric-canvas">
-          <ElectricScene focus={focus} selected={progress.selected} path={path} inspect={inspect} fallback={fallback} reset={reset} />
+          <ElectricScene explorationCamera={cameraCommand} focus={focus} selected={progress.selected} path={path} inspect={inspect} fallback={fallback} reset={reset} />
         </div>
         <div className="electric-scene-tools">
           <div className="electric-paths" role="group" aria-label="Sorot jalur dalam diorama">
@@ -70,18 +79,17 @@ export default function ElectricExplore() {
               <span aria-hidden="true">{PATHS[kind].symbol}</span>{PATHS[kind].name}
             </button>)}
           </div>
-          <ElectricCameraControls focus={focus} onFocus={setFocus} onReset={() => { setFocus(null); setReset(old => old + 1); }} />
+          <ElectricCameraControls onZoom={kind => setCameraCommand(old => ({ kind, serial: old.serial + 1 }))} focus={focus} onFocus={setFocus} onReset={() => { setFocus(null); setReset(old => old + 1); setCameraCommand(old => ({ kind: "reset", serial: old.serial + 1 })); }} />
         </div>
       </section>
-      <section className="electric-inspector" id="electric-controls" tabIndex={-1} aria-labelledby="electric-inspector-title">
+      <section className="electric-inspector" aria-labelledby="electric-inspector-title">
         <div className="electric-inspector-heading">
           <h2 id="electric-inspector-title">Komponen pabrik</h2>
-          <strong role="status">{progress.explored.length}/{PARTS.length} dibuka</strong>
         </div>
         <progress className="electric-progress" max={PARTS.length} value={progress.explored.length} aria-label="Progres eksplorasi" />
         <p className="electric-hint">Pilih dari diorama atau daftar berikut.</p>
         <p className="electric-swipe-hint"><MoveHorizontal size={14} aria-hidden="true" /> Geser daftar untuk melihat semua komponen</p>
-        <ul className="electric-parts">
+        <ul className="electric-parts" id="electric-controls" tabIndex={-1}>
           {PARTS.map((part, index) => {
             const visited = progress.explored.includes(part.id);
             return <li key={part.id}>
@@ -92,25 +100,24 @@ export default function ElectricExplore() {
             </li>;
           })}
         </ul>
-        <article ref={detail} id="electric-detail" className="electric-detail revo-component-card" role={selected ? "region" : undefined}
+        {cardOpen && selected && <article ref={detail} id="electric-detail" className="electric-detail revo-component-card" role={selected ? "region" : undefined}
           aria-label={selected ? "Informasi komponen" : undefined} tabIndex={selected ? 0 : undefined} aria-live="polite" aria-atomic="true"
           onKeyDown={event => { if (event.key === "Escape") returnToParts(); }}>
-          {selected ? <>
+          <>
+            <ExplorationSheetToggle expanded={sheetExpanded} onToggle={() => setSheetExpanded(value => !value)} />
             <RevoComponentInfo heading="h3" number={String(PARTS.indexOf(selected) + 1).padStart(2, "0")} subtitle={`Jalur ${PATHS[selected.kind].name}`} name={selected.name} description={selected.function} relationship={selected.relationship}
-              actions={<button aria-label="Kembali ke daftar komponen" title="Kembali ke daftar komponen" onClick={returnToParts}><List size={18} aria-hidden="true" /></button>} />
+              actions={<><button aria-label="Tutup informasi komponen" title="Tutup informasi komponen" onClick={returnToParts}><X size={18} aria-hidden="true" /></button><button aria-label="Jelajahi komponen berikutnya" onClick={() => inspect(PARTS[(PARTS.indexOf(selected) + 1) % PARTS.length].id)}><ArrowRight size={18} aria-hidden="true" /></button></>} />
             <p className="electric-detail-feedback"><Check size={14} aria-hidden="true" /> Komponen sudah dijelajahi</p>
             <button className="electric-secondary" onClick={() => setFocus(selected.id)}>Fokus ke komponen</button>
-          </> : <>
-            <ScanLine size={20} aria-hidden="true" />
-            <h3>Ikuti tiga jalur</h3>
-            <p>Listrik memasok motor. Putaran diteruskan lewat poros dan sabuk. Konveyor membawa benda kerja ke tiap stasiun.</p>
-          </>}
-        </article>
-        {progress.exploreComplete && <p className="electric-complete" role="status"><Check size={17} aria-hidden="true" /> Eksplorasi selesai. Perakitan terbuka.</p>}
+          </>
+        </article>}
         <div className="electric-inspector-footer">
           <p role="status">{status === "unavailable" ? "Progres bertahan selama sesi ini. Penyimpanan tidak tersedia." : "Progres era 2.0 tersimpan di perangkat."}</p>
         </div>
       </section>
     </div>
+    {progress.exploreComplete && <RevoExplorationComplete total={PARTS.length} action={
+      <Link className="revo-primary-button revo-explore-completion-action" href={REVO_ROUTES.electricAssembly} onNavigate={() => dispatch({ type: "enter-assembly" })}>Lanjut ke Perakitan<ArrowRight size={18} aria-hidden="true" /></Link>
+    } />}
   </main>;
 }

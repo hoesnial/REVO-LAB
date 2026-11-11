@@ -67,3 +67,26 @@ Pada 320 px, pertahankan ukuran teks pembelajaran 15 px dan kontrol utama 44 × 
 Model diorama tetap stilistis: bahan berroughness sedang, hijau cat/metal, kuningan untuk mekanisme dan krim untuk bangunan. Satu shadow light; tanpa tekstur eksternal atau efek pascaproses. Detail memperjelas dudukan dan hubungan mekanis. Kamera overview harus memperlihatkan mesin dan lantai; kamera detail boleh memotong bangunan untuk inspeksi. Reset selalu mengembalikan overview.
 
 Jaga alternatif daftar/keyboard/sentuh, SVG saat WebGL gagal, reduced motion, dan stop ketika tab tersembunyi. Jangan menghapus mekanika karena penyederhanaan visual. Uji viewport 1920×1080, 1440×900, 1366×768, 1280×720, 390×844, 320×568. Audit ini bukan sertifikasi WCAG atau pengujian perangkat sekolah.
+
+## Menu Utama
+
+- Gunakan `--revo-menu-ivory` (#faf4ec) untuk kanvas editorial Menu Utama. Turunkan gradasi tipis dari token tinta dan palet permukaan yang ada. Siluet industri bersifat dekoratif: satu SVG sebagai mask, warna teks sekunder pada opasitas rendah, di belakang konten, tanpa animasi atau interaksi.
+- Kartu era aktif memakai CTA kuning, label ketersediaan hijau, dan WebP diorama asli yang ditampilkan utuh dengan skala setara. Era yang belum tersedia memakai SVG konsep, label kunci, dan tidak punya tautan. Teks maupun warna membedakan statusnya.
+- Empat kartu sejajar pada desktop; pada ≤700 px, dua kartu per halaman dengan tombol Sebelumnya/Berikutnya dan pengumuman halaman. Area kartu boleh menggulir sendiri jika viewport sangat pendek. Pager dan footer memiliki ruang sendiri dalam grid, tanpa menutupi kartu.
+- Tombol header dan pager tetap minimal 44 px. Header ponsel menampilkan ikon dengan nama aksesibel. Gunakan `RevoDialog` untuk Progres Saya, Cara Bermain, Pengaturan, dan Tentang REVO. Kontrol kurangi gerakan antarmuka berlaku selama sesi dan melengkapi preferensi perangkat; pengaturan ini tidak mengubah simulasi. Lanjutkan Belajar hanya muncul untuk simpanan yang dikenali.
+
+## Briefing
+
+- Kedua era menggunakan `RevoBriefing` dan permukaan editorial `--revo-editorial-ivory` (warna yang juga dipakai Menu Utama). Header memakai satu aksi kembali ke Pilih Era. Desktop menempatkan pengantar dan ringkasan di kiri serta diorama utuh di kanan. Ponsel menempatkan pengantar, diorama, lalu ringkasan dalam satu area yang boleh bergulir. Footer tetap mempunyai baris sendiri untuk status simpan dan CTA.
+- Ringkasan bernomor membantu pemindaian. **Lihat tujuan lengkap** membuka `RevoDialog` dengan `RevoLearningObjectives` dan materi asli; badan dialog boleh bergulir. Gunakan **Mulai Eksplorasi** untuk sesi baru dan pertahankan aturan melanjutkan progres milik masing-masing era.
+- Tampilkan WebP saat masuk. Muat model 3D kanonis setelah pengguna mengaktifkannya. Kontrol putar, zoom, reset dan kembali ke gambar memiliki sasaran sentuh minimal 44 × 44 px dan nama aksesibel. Semua berada dalam panel diorama tanpa menutupi informasi. Kamera Briefing tidak menjalankan mekanika; saat WebGL tidak tersedia, gambar dan navigasi tetap berfungsi.
+
+## Eksplorasi (REVO-010C)
+
+Pada tahap Eksplorasi, gunakan satu area diorama yang dominan dan daftar komponen di bawahnya. Kartu informasi desktop adalah flying card yang dapat ditutup; kanvas menyisakan ruang di kanan agar model tidak tertutup kartu. Jangan menampilkan panel pengoperasian mesin saat tahap ini. Aturan ini menggantikan inspector permanen Eksplorasi 2.0 pada iterasi sebelumnya, tanpa mengubah panel Assembly/Experiment.
+
+Pada ≤720 px, informasi menjadi bottom sheet ringkas, dengan tombol perluas/ringkas, tutup dan komponen berikutnya. Sheet menggulir internal. Gunakan satu nilai ruang sheet untuk tinggi panel dan ruang yang disisihkan pada workspace, termasuk saat diperluas; jangan menambahkan padding cadangan dari breakpoint lain. Kanvas, tombol kamera dan daftar memiliki ruang tersendiri di atas sheet; footer tidak menumpuk di atas kontrol. Escape menutup informasi dan fokus kembali ke tombol komponen. Pertahankan ukuran sentuh 44 px untuk close/next dan kendali kamera, teks materi 15–16 px, serta token krim/hijau/kuning yang sama.
+
+Kamera Eksplorasi mempertahankan arah orbit saat kartu atau sheet dibuka/ditutup dan ketika viewport berubah. Framing menyesuaikan ruang tersisa dengan batas zoom overview yang aman. Penanda boleh berpindah sedikit dalam layar untuk menjaga target klik berbeda pada ponsel pendek; ID dan hubungan ke komponen tetap sama. Pemilihan terjadi dengan klik/tap atau daftar keyboard. Fallback tetap menyediakan materi dan progres melalui daftar.
+
+Pada eksplorasi listrik ponsel, tiga pemilih jalur dan kontrol kamera berbagi satu baris tanpa overlap. Saat jalur aktif, penjelasan aliran tetap terlihat. Teks fungsi dan peran menggunakan token tinta pada permukaan terang; jangan mewarisi warna teks panel gelap. Skip link eksplorasi menuju daftar komponen yang dapat menerima fokus.

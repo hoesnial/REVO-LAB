@@ -42,13 +42,13 @@ async function shots(page:Page,name:string) {
         return { position: getComputedStyle(card).position, top: bounds.top, right: bounds.right, scene, camera, components };
       });
       if (width <= 720) {
-        expect(layout.position).toBe("static");
+        expect(layout.position).toBe("absolute");
         expect(layout.top).toBeGreaterThanOrEqual(Math.max(layout.scene.bottom, layout.camera.bottom, layout.components.bottom));
         expect(layout.scene.height).toBeGreaterThan(95);
       } else {
         expect(layout.position).toBe("absolute");
         expect(layout.top).toBeLessThan(layout.scene.bottom);
-        expect(layout.right).toBeLessThan(layout.scene.right);
+        expect(layout.scene.right).toBeLessThanOrEqual(layout.right);
       }
     }
     if(name.startsWith("info-2")) await page.locator("#electric-detail").evaluate(el=>el.scrollIntoView({block:"start"}));
@@ -100,7 +100,7 @@ test.describe("compact component inspectors", () => {
     const boiler = picker.getByRole("button", { name: /Ketel uap/ });
     const wheel = picker.getByRole("button", { name: /Roda gila/ });
     const inspector = page.getByRole("region", { name: "Informasi komponen" });
-    const dock = page.locator(".revo-hud-dock");
+    const scrollPanel = inspector;
     const next = inspector.getByRole("button", { name: "Jelajahi komponen berikutnya" });
     const close = inspector.getByRole("button", { name: "Tutup informasi komponen" });
     const saved = () => page.evaluate(() => localStorage.getItem("revo:industry-1:progress"));
@@ -112,11 +112,12 @@ test.describe("compact component inspectors", () => {
     const initialProgress = await saved();
 
     await page.keyboard.press("PageDown");
-    await expect.poll(() => dock.evaluate(el => el.scrollTop)).toBeGreaterThan(0);
+    await expect.poll(() => scrollPanel.evaluate(el => el.scrollTop)).toBeGreaterThan(0);
+    await page.getByRole("button", { name: "Perluas informasi komponen" }).tap();
     await inspector.locator(".revo-component-role p").scrollIntoViewIfNeeded();
     await expect(inspector.locator(".revo-component-role p")).toBeInViewport({ ratio: 1 });
     await page.keyboard.press("Home");
-    await expect.poll(() => dock.evaluate(el => el.scrollTop)).toBe(0);
+    await expect.poll(() => scrollPanel.evaluate(el => el.scrollTop)).toBe(0);
 
     await page.getByRole("button", { name: "Perkecil tampilan" }).tap();
     await expect(inspector).toBeVisible();
@@ -129,6 +130,8 @@ test.describe("compact component inspectors", () => {
     await boiler.press("Enter");
     await expect(inspector).toBeFocused();
     await page.keyboard.press("Tab");
+    await expect(page.getByRole("button", { name: "Perluas informasi komponen" })).toBeFocused();
+    await page.keyboard.press("Tab");
     await expect(close).toBeFocused();
     await page.keyboard.press("Tab");
     await expect(next).toBeFocused();
@@ -137,7 +140,7 @@ test.describe("compact component inspectors", () => {
     await expect(wheel).toHaveAttribute("aria-pressed", "true");
     await page.keyboard.press("Escape");
     await expect(inspector).toHaveCount(0);
-    await expect(boiler).toBeFocused();
+    await expect(wheel).toBeFocused();
     await expect(picker.getByRole("button", { name: /Roda gila/ })).toBeInViewport();
     expect(JSON.parse((await saved())!).explored).toEqual(["boiler", "flywheel"]);
     expect(await page.evaluate(() => [scrollX, scrollY, document.documentElement.scrollWidth, document.documentElement.scrollHeight]))
@@ -151,7 +154,7 @@ test.describe("compact component inspectors", () => {
     await motor.tap();
     await expect(detail).toBeFocused();
     await expect(detail.getByRole("heading", { name: "Motor listrik" })).toBeInViewport();
-    await page.getByRole("button", { name: "Kembali ke daftar komponen" }).tap();
+    await page.getByRole("button", { name: "Tutup informasi komponen" }).tap();
     await expect(motor).toBeFocused();
     await expect(motor).toBeInViewport();
     await expect(motor).toHaveAttribute("aria-pressed", "true");

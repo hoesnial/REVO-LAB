@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 148">
+  <defs>
+    <path id="stack" d="M0 0h10l3 93H-3zM-2-4h14v5H-2z"/>
+    <path id="sheds" d="M0 78 29 59v13l31-19v15l32-19v29h31v43H0z"/>
+    <path id="smoke" d="M0 31c0-5 6-7 11-6 3-7 11-10 18-8 6-8 14-11 22-9 5-7 15-8 23-5 8-6 20-5 23 1-1 6-12 10-21 11-5 6-14 8-23 7-6 6-15 7-22 6-8 5-16 5-22 4-4 2-9 2-9-1z"/>
+  </defs>
+  <g transform="translate(0 25) scale(1 .84)">
+    <path opacity=".35" d="M0 135h60l14-8 34 2 19-9 42 1 20-11 14 6h49l12-12 26-5v8h27v-8l20-9 14 8h32v-9h53l18 15 32 1v-13h30v10l37-1 21 8h24v-14l30-15 43 19h67l18-10 43 3 23 17 53-5 14 14 34-2 21 9 28-2 27 8h24v16H0z"/>
+    <use href="#sheds" x="145" y="27" opacity=".53"/>
+    <use href="#stack" transform="translate(194 91) scale(.46 .62)" opacity=".59"/>
+    <use href="#stack" transform="translate(253 79) scale(.59 .74)" opacity=".62"/>
+    <use href="#smoke" transform="translate(253 68) scale(.49 .45)" opacity=".38"/>
+    <path d="M320 109h17v-9l55-27 56 25v50H320z M344 102h98v46h-98z" opacity=".73"/>
+    <use href="#stack" transform="translate(397 56) scale(.76 1)" opacity=".82"/>
+    <use href="#smoke" transform="translate(398 32) scale(.83 .73)" opacity=".51"/>
+    <use href="#stack" transform="translate(420 88) scale(.48 .65)" opacity=".78"/>
+    <use href="#sheds" x="457" y="27" opacity=".72"/>
+    <path fill-rule="evenodd" d="M551 148V94h21V79l53-26 54 26v20h19v49zm44-65v12h7V83zm15 0v12h7V83zm15 0v12h7V83zm15 0v12h7V83zm15 0v12h7V83zm-60 20v13h7v-13zm15 0v13h7v-13zm15 0v13h7v-13zm15 0v13h7v-13zm15 0v13h7v-13zm-65 29v16h18v-16z" opacity=".92"/>
+    <use href="#stack" transform="translate(653 35) scale(.76 1.22)" opacity=".82"/>
+    <use href="#stack" transform="translate(711 28) scale(.92 1.30)" opacity=".95"/>
+    <use href="#smoke" transform="translate(713 3) scale(1.02 .76)" opacity=".57"/>
+    <use href="#stack" transform="translate(790 76) scale(.68 .79)" opacity=".83"/>
+    <use href="#stack" transform="translate(811 66) scale(.44 .91)" opacity=".69"/>
+    <use href="#sheds" x="760" y="27" opacity=".78"/>
+    <path opacity=".57" d="M866 148v-21h31l19-12 27 4 12 11 25-2v20z"/>
+  </g>
+</svg>

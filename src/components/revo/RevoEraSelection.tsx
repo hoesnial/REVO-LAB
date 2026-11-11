@@ -1,10 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, LockKeyhole } from "lucide-react";
 import { ERAS } from "@/lib/revo/eras";
 import { REVO_ROUTES } from "@/lib/revo/routes";
-import factoryPreview from "../../../public/revo/factory-preview.png";
-import EraIllustration from "./EraIllustration";
+import RevoEraPreview from "./RevoEraPreview";
 import EraGridKeyboard from "./EraGridKeyboard";
 import RevoScreenHeader from "./RevoScreenHeader";
 
@@ -17,9 +15,9 @@ export default function RevoEraSelection() {
     </div>
     <EraGridKeyboard>
       {ERAS.map(era => <article key={era.id} className={`revo-era-card ${era.briefingHref ? "is-playable" : "is-upcoming"}`} aria-labelledby={`${era.id}-title`} data-era={era.id}>
-        <div className="revo-era-card-top"><div><span className="revo-era-label">{era.label}</span><span className="revo-era-availability">{era.briefingHref ? <><i />{era.id === "industry-2" ? "EKSPLORASI TERSEDIA" : "TERSEDIA"}</> : <><LockKeyhole size={10} />SEGERA HADIR</>}</span></div><span className="revo-era-number" aria-hidden="true">{era.number}</span></div>
+        <div className="revo-era-card-top"><div><span className="revo-era-label">{era.label}</span><span className="revo-era-availability">{era.briefingHref ? <><i />{era.id === "industry-2" ? "EKSPLORASI TERSEDIA" : "TERSEDIA"}</> : <><LockKeyhole size={10} />PRATINJAU KONSEP</>}</span></div><span className="revo-era-number" aria-hidden="true">{era.number}</span></div>
         <h2 id={`${era.id}-title`}>{era.title}</h2>
-        <div className="revo-era-art">{era.id === "industry-1" ? <Image src={factoryPreview} alt="Pabrik tekstil dengan ketel uap dan roda gila." fill sizes="(max-width: 600px) 130px, (max-width: 1000px) 45vw, 23vw" loading="eager" /> : <EraIllustration era={era.id} />}</div>
+        <div className="revo-era-art"><RevoEraPreview era={era.id} sizes="(max-width: 600px) 130px, (max-width: 1000px) 45vw, 23vw" /></div>
         <p className="revo-era-description">{era.description}</p>
         <div className="revo-era-card-bottom">{era.briefingHref ? <Link href={era.briefingHref} className="revo-era-enter">{era.id === "industry-2" ? "Buka Briefing 2.0" : "Jelajahi Era"}<ArrowRight size={17} aria-hidden="true" /></Link> : <><button className="revo-era-locked" disabled aria-describedby={`${era.id}-availability`}><LockKeyhole size={13} />Dalam Pengembangan</button><span id={`${era.id}-availability`} className="revo-sr-only">{era.label} belum dapat dimainkan.</span></>}</div>
       </article>)}

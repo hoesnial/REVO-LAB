@@ -6,7 +6,7 @@ const localChrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrom
 // Reuse an already-running REVO server; browser tests need no database.
 export default defineConfig({
   testDir: "./tests",
-  testMatch: ["revo.e2e.spec.ts", "revo-menu.e2e.spec.ts", "revo-journey.e2e.spec.ts", "revo-assembly.e2e.spec.ts", "revo-filling.e2e.spec.ts", "revo-progress.e2e.spec.ts", "revo-polish.e2e.spec.ts", "revo-learning.e2e.spec.ts", "revo-ui.e2e.spec.ts", "revo-industry-2.e2e.spec.ts", "revo-cross-era.e2e.spec.ts", "revo-electric-experiment.e2e.spec.ts", "revo-design.e2e.spec.ts"],
+  testMatch: ["revo-exploration.e2e.spec.ts", "revo-briefing.e2e.spec.ts", "revo-menu-routing.e2e.spec.ts", "revo.e2e.spec.ts", "revo-menu.e2e.spec.ts", "revo-journey.e2e.spec.ts", "revo-assembly.e2e.spec.ts", "revo-filling.e2e.spec.ts", "revo-progress.e2e.spec.ts", "revo-polish.e2e.spec.ts", "revo-learning.e2e.spec.ts", "revo-ui.e2e.spec.ts", "revo-industry-2.e2e.spec.ts", "revo-cross-era.e2e.spec.ts", "revo-electric-experiment.e2e.spec.ts", "revo-design.e2e.spec.ts"],
   fullyParallel: false,
   workers: 1,
   timeout: 180_000,

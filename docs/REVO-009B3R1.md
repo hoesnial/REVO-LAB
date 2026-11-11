@@ -1,6 +1,6 @@
 # REVO-009B.3R.1 — Konsistensi UI dan inspector responsif
 
-Status verifikasi: berlangsung. Lingkup berhenti pada tinjauan PM.
+Status: selesai untuk tinjauan PM. Lingkup berhenti pada tinjauan PM.
 
 Pada build REVO-009B.3R, kartu informasi mesin uap berada di atas kanvas pada semua ukuran. Di 390 × 844 dan 320 × 568, kartu menutup mesin dan hanya memperlihatkan sebagian penjelasan. Industri 2.0 sudah membaca informasi di panel terpisah, tetapi posisi fokus keyboard dapat tertinggal di daftar saat panel bergulir ke penjelasan.
 
@@ -38,6 +38,6 @@ Di Chrome dengan WebGL, komponen Ketel uap dan Motor listrik dibuka dari daftar 
 - `npm run typecheck`, `npm run lint`, `npm run build`: lulus.
 - `npm test`: **104/104** lulus.
 - Pemeriksaan browser tambahan: pada 320 × 568 tanpa WebGL, Nyalakan Mesin dan Jeda mesin uap tetap dapat dijangkau melalui dock ketika informasi terbuka; tidak ada gulir dokumen.
-- Regresi Playwright penuh: sedang berjalan.
+- Regresi Playwright penuh: **87/87** lulus pada percobaan pertama (14,4 menit), sebelum perubahan preview menu di checkpoint berikutnya.
 
 Panel sempit menampilkan bagian awal penjelasan; sisa isi, progres dan kendali dapat digulir di panel. Pengujian menggunakan Chrome dan emulasi ponsel; perangkat fisik sekolah belum diuji. Checkpoint ini tidak mencakup Refleksi Industri 2.0 atau era baru.

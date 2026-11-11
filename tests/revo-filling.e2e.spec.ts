@@ -133,8 +133,9 @@ test("pause and help suspend filling; navigation cancels it without granting res
   await expect(progress(page, "coal")).toHaveCount(0); await expect(fuel(page)).toHaveAttribute("aria-valuenow", "50");
   await page.getByRole("button", { name: "Tambah air", exact: true }).click();
   await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
-  await page.waitForTimeout(500); await page.getByRole("link", { name: "Mulai Jelajah", exact: true }).click();
-  await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click(); await page.getByRole("link", { name: "Mulai Simulasi", exact: true }).click();
+  await expect(page).toHaveURL(/\/revo-lab$/);
+  await page.getByRole("link", { name: "Jelajahi Industri 1.0", exact: true }).click();
+  await page.getByRole("link", { name: "Mulai Eksplorasi", exact: true }).click();
   await expect(water(page)).toHaveAttribute("aria-valuenow", "80"); await expect(progress(page, "water")).toHaveCount(0);
 });
 

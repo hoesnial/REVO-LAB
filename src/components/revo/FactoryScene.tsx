@@ -2,6 +2,7 @@
 
 import { Component, useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import ExplorationCamera from "./ExplorationCamera";
 import { OrbitControls } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
@@ -33,7 +34,7 @@ type HotspotElements = RefObject<Record<ComponentId, HTMLButtonElement | null>>;
 
 // Keep labels in the page's React root. Separate DOM roots inside the R3F tree
 // cannot be unmounted synchronously during React 19 Strict Mode reconciliation.
-function HotspotProjector({ elements }: { elements: HotspotElements }) {
+function HotspotProjector({ elements, exploration }: { elements: HotspotElements; exploration?: boolean }) {
   const projected = useRef(HOTSPOTS.map((hotspot) => ({ ...hotspot, vector: new THREE.Vector3(), x: 0, y: 0, transform: "" })));
   useFrame(({ camera, size }) => {
     projected.current.forEach((hotspot, index) => {
@@ -41,13 +42,15 @@ function HotspotProjector({ elements }: { elements: HotspotElements }) {
       if (!button) return;
       hotspot.vector.set(...hotspot.position).project(camera);
       hotspot.x = THREE.MathUtils.clamp((hotspot.vector.x + 1) * size.width / 2, 24, size.width - 24);
-      hotspot.y = THREE.MathUtils.clamp((1 - hotspot.vector.y) * size.height / 2, 75, size.height - 60);
-      // Preserve a usable target when orbiting or zooming projects labels together.
-      for (let previous = 0; previous < index; previous++) {
-        const other = projected.current[previous];
-        if (Math.hypot(hotspot.x - other.x, hotspot.y - other.y) < 43) {
-          hotspot.y = other.y + 43 < size.height - 60 ? other.y + 43 : other.y - 43;
-        }
+      hotspot.y = THREE.MathUtils.clamp((1 - hotspot.vector.y) * size.height / 2, exploration ? 20 : 75, size.height - (exploration ? 20 : 60));
+      // Keep click targets distinct on short mobile canvases.
+      const x = hotspot.x, y = hotspot.y;
+      for (let attempt = 0; attempt < 80; attempt++) {
+        if (projected.current.slice(0, index).every(other => Math.hypot(hotspot.x-other.x, hotspot.y-other.y) >= 43)) break;
+        const radius = 24 + Math.floor(attempt / 8) * 18;
+        const angle = attempt * Math.PI / 4;
+        hotspot.x = THREE.MathUtils.clamp(x + Math.cos(angle)*radius, 22, size.width-22);
+        hotspot.y = THREE.MathUtils.clamp(y + Math.sin(angle)*radius, 20, Math.max(20,size.height-20));
       }
       const transform = `translate3d(${Math.round(hotspot.x)}px, ${Math.round(hotspot.y)}px, 0) translate(-50%, -50%)`;
       if (transform !== hotspot.transform) {
@@ -195,7 +198,7 @@ function CameraController({ selected, cameraCommand, reducedMotion, assembly }: 
   return <OrbitControls ref={controls} makeDefault target={[0, 1.12, 0]} enablePan={false} minZoom={defaultZoom * 0.7} maxZoom={defaultZoom * 2.6} minPolarAngle={0.35} maxPolarAngle={Math.PI / 2.18} enableDamping={!reducedMotion} dampingFactor={0.09} rotateSpeed={0.6} onStart={() => { transition.current = false; }} />;
 }
 
-function Diorama(props: FactorySceneProps & { hotspotElements: HotspotElements; transmissionElement: RefObject<HTMLButtonElement | null>; resourceElements: ResourceMarkers; highlighted: ComponentId | null; assemblyElements: AssemblyMarkers; candidate: ComponentId | null; onCandidate: (id: ComponentId | null) => void; onDragging: (dragging: boolean) => void }) {
+function Diorama(props: FactorySceneProps & { hotspotElements: HotspotElements; transmissionElement: RefObject<HTMLButtonElement | null>; resourceElements: ResourceMarkers; highlighted: ComponentId | null; assemblyElements: AssemblyMarkers; candidate: ComponentId | null; onCandidate: (id: ComponentId | null) => void; onDragging: (dragging: boolean) => void; preview?: boolean }) {
   const controls = useThree(state => state.controls) as OrbitControlsImpl | null;
   const motion = useRef<EngineMotion>({ angle: 0, velocity: 0 });
   useFrame((_, delta) => {
@@ -214,17 +217,19 @@ function Diorama(props: FactorySceneProps & { hotspotElements: HotspotElements; 
   }
   function piece(id: ComponentId, children: ReactNode) {
     return props.assembly ? <AssemblyPiece key={id} id={id} assembly={props.assembly} reducedMotion={props.reducedMotion} onDragging={dragging} onCandidate={props.onCandidate}>{children}</AssemblyPiece>
-      : <Inspectable key={id} id={id} {...interactions}>{children}</Inspectable>;
+      : props.preview ? <group key={id}>{children}</group> : <Inspectable key={id} id={id} {...interactions}>{children}</Inspectable>;
   }
   return <>
-    <color attach="background" args={["#e7e3d8"]} />
-    <ambientLight intensity={1.15} color="#fff8e7" />
-    <hemisphereLight args={["#eef4ff", "#91856e", 1.15]} />
-    <directionalLight position={[-3, 10, 7]} intensity={3.25} color="#fff5da" castShadow shadow-mapSize={[2048, 2048]} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={8} shadow-camera-bottom={-8} shadow-bias={-0.0002} shadow-normalBias={0.035} />
-    <directionalLight position={[7, 5, -4]} intensity={1.7} color="#e0e8f3" />
-    <mesh position={[0, -0.421, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-      <planeGeometry args={[200, 200]} /><meshStandardMaterial color="#e7e3d8" roughness={1} />
-    </mesh>
+    {!props.preview && <>
+      <color attach="background" args={["#e7e3d8"]} />
+      <ambientLight intensity={1.15} color="#fff8e7" />
+      <hemisphereLight args={["#eef4ff", "#91856e", 1.15]} />
+      <directionalLight position={[-3, 10, 7]} intensity={3.25} color="#fff5da" castShadow shadow-mapSize={[2048, 2048]} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={8} shadow-camera-bottom={-8} shadow-bias={-0.0002} shadow-normalBias={0.035} />
+      <directionalLight position={[7, 5, -4]} intensity={1.7} color="#e0e8f3" />
+      <mesh position={[0, -0.421, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <planeGeometry args={[200, 200]} /><meshStandardMaterial color="#e7e3d8" roughness={1} />
+      </mesh>
+    </>}
     <FactoryEnvironment onCoalSelect={props.resources?.enabled ? () => props.resources?.onSelect("coal") : undefined} />
     {!props.assembly && <WaterSupply resources={props.resources} reducedMotion={props.reducedMotion} />}
     {props.resources && <><CoalFeeding filling={props.resources.filling} reducedMotion={props.reducedMotion} /><ResourceProjector elements={props.resourceElements} /></>}
@@ -234,13 +239,26 @@ function Diorama(props: FactorySceneProps & { hotspotElements: HotspotElements; 
     {piece("pipe", <SteamPipes />)}
     {piece("textile", <TextileMachine motion={motion} />)}
     {(!props.assembly || props.assembly.state.placed.includes("flywheel") && props.assembly.state.placed.includes("textile")) && <PowerTransmission motion={motion} active={props.animationActive && !props.assembly} />}
-    {props.assembly ? <>
+    {!props.preview && (props.assembly ? <>
       <AssemblySockets assembly={props.assembly} candidate={props.candidate} />
       <AssemblyConnections state={props.assembly.state} animate={props.assembly.enabled && !props.reducedMotion} />
       <AssemblyProjector elements={props.assemblyElements} state={props.assembly.state} />
-    </> : <><Steam heat={props.heat} pressure={props.pressure} reducedMotion={props.reducedMotion} animationActive={props.animationActive} /><HotspotProjector elements={props.hotspotElements} /><TransmissionHotspotProjector element={props.transmissionElement} /></>}
-    <CameraController selected={props.selected} cameraCommand={props.cameraCommand} reducedMotion={props.reducedMotion} assembly={props.assembly} />
+    </> : <><Steam heat={props.heat} pressure={props.pressure} reducedMotion={props.reducedMotion} animationActive={props.animationActive} /><HotspotProjector elements={props.hotspotElements} exploration={props.exploration} /><TransmissionHotspotProjector element={props.transmissionElement} /></>)}
+    {!props.preview && props.exploration && <ExplorationCamera command={props.cameraCommand} />}
+    {!props.preview && !props.exploration && <CameraController selected={props.selected} cameraCommand={props.cameraCommand} reducedMotion={props.reducedMotion} assembly={props.assembly} />}
   </>;
+}
+
+/** Canonical diorama in its idle, non-interactive mode for Briefing and asset capture. */
+export function SteamPreviewModel() {
+  const hotspots = useRef({ boiler: null, flywheel: null, piston: null, pipe: null, textile: null });
+  const transmission = useRef(null);
+  const resources = useRef({ coal: null, water: null });
+  const assembly = useRef({});
+  return <Diorama preview heat={22} pressure={10} water={65} speed={0} running={false} animationActive={false}
+    safety="safe" selected={null} highlighted={null} reducedMotion cameraCommand={{ kind: "reset", serial: 0 }}
+    hotspotElements={hotspots} transmissionElement={transmission} resourceElements={resources} assemblyElements={assembly}
+    candidate={null} onSelect={() => {}} onTransmissionInfo={() => {}} onCandidate={() => {}} onDragging={() => {}} />;
 }
 
 function SceneFallback() {

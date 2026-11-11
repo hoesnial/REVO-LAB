@@ -76,7 +76,7 @@ test("unsafe history survives reload and machine reset; explicit experiment retr
   await page.getByRole('button',{name:'Reset mesin',exact:true}).click(); await expect(page.getByRole('button',{name:'Lanjut ke Refleksi',exact:true})).toBeDisabled();
   await page.reload(); await expect(page.getByRole('button',{name:'Lanjut ke Refleksi',exact:true})).toBeDisabled();
   await page.getByRole('button',{name:'Ulangi eksperimen',exact:true}).click();
-  await expect(page.getByText('5/5 komponen dijelajahi')).toBeVisible();
+  await expect(page.getByText('Eksplorasi selesai · 5/5 komponen', { exact: true })).toBeVisible();
   await expect(page.getByRole('button',{name:'Nyalakan mesin',exact:true})).toBeEnabled();
   await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('revo:industry-1:progress')!).observations.unsafeCount)).toBe(0);
 });
