@@ -44,6 +44,13 @@ for (const era of [1, 2]) {
       await parts(page, era).first().press("Enter");
       await expect(card(page)).toBeVisible();
       await separated(page, width < 721);
+      if (width === 1280 && height === 720) {
+        const controls = page.locator(era === 1 ? ".revo-camera-tools" : ".electric-camera-controls");
+        const cardBounds = (await card(page).boundingBox())!;
+        const controlBounds = (await controls.boundingBox())!;
+        const overlaps = controlBounds.x < cardBounds.x + cardBounds.width && controlBounds.x + controlBounds.width > cardBounds.x && controlBounds.y < cardBounds.y + cardBounds.height && controlBounds.y + controlBounds.height > cardBounds.y;
+        expect(overlaps).toBe(false);
+      }
       if (era === 2) {
         for (const name of ["Listrik", "Mekanis", "Material"]) {
           const path = page.getByRole("button", { name, exact: true });
@@ -69,7 +76,6 @@ for (const era of [1, 2]) {
         await expect.poll(() => card(page).evaluate(el => el.scrollTop)).toBe(0);
         await expect(card(page).getByRole("heading")).toBeInViewport();
         if (width <= 360 && height <= 620) {
-          await page.getByRole("button", { name: "Ringkas informasi komponen" }).click();
           await expect(canvas(page)).toBeVisible();
           await expect(async () => expect((await canvas(page).boundingBox())!.height).toBeGreaterThan(100)).toPass();
         }

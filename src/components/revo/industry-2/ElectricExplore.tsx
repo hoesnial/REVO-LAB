@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, X, MoveHorizontal } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PARTS, PATHS, type ElectricPartId, type PathKind } from "@/lib/revo/industry-2/content";
 import { REVO_ROUTES } from "@/lib/revo/routes";
 import RevoScreenHeader from "../RevoScreenHeader";
@@ -29,6 +29,10 @@ export default function ElectricExplore() {
   const [cameraCommand, setCameraCommand] = useState({ kind: "reset", serial: 0 });
   const detail = useRef<HTMLElement>(null);
   const partButtons = useRef<Partial<Record<ElectricPartId, HTMLButtonElement | null>>>({});
+
+  useEffect(() => {
+    if (progress?.stage === "explore" && progress.selected) setCardOpen(true);
+  }, [progress?.stage, progress?.selected]);
 
   if (!progress || progress.stage === "briefing") return <main className="electric-shell electric-gate" lang="id" aria-busy={!progress}>
     <RevoScreenHeader step="02 / INDUSTRI 2.0" back={{ href: REVO_ROUTES.menu, label: "Pilih Era" }} />

@@ -144,7 +144,7 @@ function AssemblyLinks({ installed, experiment }: { installed: readonly Connecti
 
 function Camera({ reset, focus }: { reset: number; focus?: ElectricPartId | null }) {
   const { camera, size, invalidate } = useThree();
-  const overview = Math.min(size.width / 14, size.height / 6.6);
+  const overview = Math.min(size.width / 14, size.height / 6.6) * (size.width <= 360 ? 1.25 : 1);
   const target: Vec = focus ? focus === "conveyor" ? [1.1,.7,.1] : focus === "shaft" ? [-3.15,.65,1.5] : labels[focus] : [0,1.02,0];
   const zoom = focus ? overview * (focus === "conveyor" || focus === "stations" ? 1.35 : 2.05) : overview;
   const [tx,ty,tz] = target;
