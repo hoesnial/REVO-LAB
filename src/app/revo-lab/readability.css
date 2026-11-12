@@ -55,7 +55,9 @@
 .revo-hud .revo-learning-note :is(p, .revo-live-feedback) { color: #394d33; font-size: 14px; line-height: 1.5; }
 .revo-hud .revo-learning-note > div:nth-child(2) > span { color: #4b5945; font-size: 12px; }
 .revo-hud :is(.revo-hud-history > summary, .revo-history p, .revo-history article > p) { font-size: 16px; }
-.revo-learning-progress { flex: none; order: -1; padding: 20px; background: #e8eedb; color: #29372c; border-bottom: 1px solid #7e8e6d; }
+.revo-learning-progress { flex: 0 1 auto; min-height: 0; order: -1; display: flex; flex-direction: column; padding: 20px; background: #e8eedb; color: #29372c; border-bottom: 1px solid #7e8e6d; }
+.revo-learning-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-color: #7d8c73 #e8eedb; }
+.revo-learning-actions { flex: none; display: grid; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #b8c3a9; }
 .revo-learning-progress h2 { font-size: 20px; margin-bottom: 8px; }
 .revo-learning-progress :is(p, li, summary) { font-size: 16px; }
 .revo-learning-progress details { margin: 14px 0; }
@@ -63,7 +65,7 @@
 .revo-learning-progress ul { list-style: none; padding: 0; margin: 12px 0; display: grid; gap: 10px; }
 .revo-learning-progress li { display: flex; gap: 8px; align-items: baseline; }
 .revo-learning-progress li svg { flex: none; }
-.revo-learning-progress > button { width: 100%; margin-top: 12px; font-size: 16px; min-height: 44px; }
+.revo-learning-actions > button { width: 100%; font-size: 16px; min-height: 44px; }
 .revo-learning-progress button:disabled { opacity: 1; background: #d2d7c9; color: #4b5545; cursor: not-allowed; }
 .revo-observation-output { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 15px; }
 .revo-observation-output strong { font-size: 24px; }

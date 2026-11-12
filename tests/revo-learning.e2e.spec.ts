@@ -17,20 +17,28 @@ async function noScroll(page: Page) {
 }
 function contrast(a: string, b: string) {
   const luminance = (color: string) => {
-    const [r,g,b] = color.match(/[\d.]+/g)!.slice(0,3).map(Number).map(n => { const s=n/255; return s<=0.04045?s/12.92:((s+0.055)/1.055)**2.4; });
+    const srgb=color.startsWith('color(srgb');
+    const [r,g,b] = color.match(/[\d.]+/g)!.slice(0,3).map(Number).map(n => { const s=srgb?n:n/255; return s<=0.04045?s/12.92:((s+0.055)/1.055)**2.4; });
     return .2126*r+.7152*g+.0722*b;
   };
   const x=luminance(a),y=luminance(b); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);
 }
 
-test("objectives use readable green cards in briefing and a keyboard accessible pausing dialog", async ({ page }) => {
+test("objectives use readable briefing cards and a keyboard accessible pausing dialog", async ({ page }) => {
   await page.goto("/revo-lab/industry-1/briefing");
   const card=page.getByRole("region",{name:"Tujuan Pembelajaran",exact:true});
-  await expect(card.getByRole("heading",{name:"TUJUAN PEMBELAJARAN",exact:true})).toBeVisible();
+  await expect(card.getByRole("heading",{name:"Tujuan Pembelajaran",exact:true})).toBeVisible();
   await expect(card.locator("li")).toHaveCount(4);
-  const styles=await card.evaluate(el=>({background:getComputedStyle(el).backgroundColor, text:getComputedStyle(el.querySelector("li")!).color, highlight:getComputedStyle(el.querySelector("strong")!).color, size:parseFloat(getComputedStyle(el.querySelector("li")!).fontSize)}));
-  expect(styles.background).toBe("rgb(32, 62, 50)"); expect(styles.size).toBeGreaterThanOrEqual(16);
-  expect(contrast(styles.background,styles.text)).toBeGreaterThanOrEqual(4.5); expect(contrast(styles.background,styles.highlight)).toBeGreaterThanOrEqual(4.5);
+  const styles=await card.evaluate(el=>{
+    const background=getComputedStyle(el).backgroundImage.match(/color\(srgb [^)]+\)/)?.[0] ?? '';
+    const item=el.querySelector('li')!;
+    const number=item.querySelector('span')!;
+    return {background,text:getComputedStyle(item).color,heading:getComputedStyle(el.querySelector('h2')!).color,numberBackground:getComputedStyle(number).backgroundColor,numberText:getComputedStyle(number).color,size:parseFloat(getComputedStyle(item).fontSize)};
+  });
+  expect(styles.size).toBeGreaterThanOrEqual(16);
+  expect(contrast(styles.background,styles.text)).toBeGreaterThanOrEqual(4.5);
+  expect(contrast(styles.background,styles.heading)).toBeGreaterThanOrEqual(4.5);
+  expect(contrast(styles.numberBackground,styles.numberText)).toBeGreaterThanOrEqual(4.5);
   await expect(page.getByText(/MISIMU|100 unit/)).toHaveCount(0);
   await seed(page,save());
   await page.getByRole("button",{name:"Nyalakan mesin",exact:true}).click();
@@ -76,7 +84,9 @@ test("unsafe history survives reload and machine reset; explicit experiment retr
   await page.getByRole('button',{name:'Reset mesin',exact:true}).click(); await expect(page.getByRole('button',{name:'Lanjut ke Refleksi',exact:true})).toBeDisabled();
   await page.reload(); await expect(page.getByRole('button',{name:'Lanjut ke Refleksi',exact:true})).toBeDisabled();
   await page.getByRole('button',{name:'Ulangi eksperimen',exact:true}).click();
-  await expect(page.getByText('Eksplorasi selesai · 5/5 komponen', { exact: true })).toBeVisible();
+  await expect(page.getByRole('tab',{name:/Eksperimen/})).toHaveAttribute('aria-selected','true');
+  await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('revo:industry-1:progress')!).explored.length)).toBe(5);
+  await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('revo:industry-1:progress')!).assembly.placed.length)).toBe(5);
   await expect(page.getByRole('button',{name:'Nyalakan mesin',exact:true})).toBeEnabled();
   await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('revo:industry-1:progress')!).observations.unsafeCount)).toBe(0);
 });
@@ -85,7 +95,7 @@ test("six lecturer viewports preserve readable objectives and fullscreen workspa
   test.setTimeout(120_000); const folder='test-results/revo/revo-008r1/after';await mkdir(folder,{recursive:true});
   for(const [width,height] of [[1920,1080],[1440,900],[1366,768],[1280,720],[390,844],[320,568]]){
     await page.setViewportSize({width,height});await page.goto('/revo-lab/industry-1/briefing'); await noScroll(page);
-    const objectives=page.getByRole('heading',{name:'TUJUAN PEMBELAJARAN',exact:true});await objectives.scrollIntoViewIfNeeded();await expect(objectives).toBeInViewport();
+    const objectives=page.getByRole('heading',{name:'Tujuan Pembelajaran',exact:true});await objectives.scrollIntoViewIfNeeded();await expect(objectives).toBeInViewport();
     await page.screenshot({path:`${folder}/${width}-briefing.png`});
     await seed(page,save()); await expect(page.locator('.revo-scene canvas')).toBeVisible(); await expect(page.getByRole('button',{name:'Jelajahi Ketel uap',exact:true})).toBeVisible(); await page.waitForTimeout(300); await noScroll(page);
     const scene=await page.locator('.revo-scene canvas').boundingBox();expect(scene!.height).toBeGreaterThan(110);

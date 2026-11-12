@@ -46,13 +46,23 @@ async function pickSupplyInScene(page: Page, touch = false, inAssembly = false) 
     // R3F's canvas initially has the browser's default dimensions before resize.
     expect(Math.abs(surface.width - box.width) + Math.abs(surface.height - box.height)).toBeLessThan(2);
     const camera = new OrthographicCamera(-box.width / 2, box.width / 2, box.height / 2, -box.height / 2, .1, 70);
-    camera.position.set(7.2, 7.52, 14);
-    camera.lookAt(0, 1.02, 0);
-    camera.zoom = Math.min(box.width / 14, box.height / 6.6);
+    if (inAssembly) {
+      camera.position.set(7.2, 7.52, 14);
+      camera.lookAt(0, 1.02, 0);
+      camera.zoom = Math.min(box.width / 14, box.height / 6.6);
+    } else {
+      camera.position.set(11, 11, 14);
+      camera.lookAt(0, 2, 0);
+      camera.updateMatrixWorld();
+      const right = new Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+      const up = new Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
+      const span = (axis: Vector3) => Math.abs(axis.x) * 6 + Math.abs(axis.y) * 2.8 + Math.abs(axis.z) * 3.65;
+      camera.zoom = Math.min(box.width / (2 * span(right)), box.height / (2 * span(up))) * .92 * .94 * (box.width <= 360 ? 1.25 : 1);
+    }
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
     // Click geometry on the WebGL canvas, not the parallel DOM control.
-    const hit = new Vector3(-4.15, .96, -1.08).project(camera);
+    const hit = new Vector3(-4.15, inAssembly ? .96 : .82, inAssembly ? -1.08 : -1.55).project(camera);
     const x = box.x + (hit.x + 1) * box.width / 2;
     const y = box.y + (1 - hit.y) * box.height / 2;
     if (touch) await page.touchscreen.tap(x, y);
@@ -71,7 +81,8 @@ test("opens briefing from the menu; 3D pick and keyboard unlock Explore only aft
   await expect(page.locator("canvas")).toHaveCount(0);
   await page.goto("/revo-lab");
   await openEraSelection(page);
-  await page.getByRole("link", { name: "Buka Briefing 2.0" }).click();
+  await page.getByRole("link", { name: "Jelajahi Industri 2.0" }).click();
+  await expect(page).toHaveURL(briefing);
   await expect(page.getByRole("heading", { name: "Era Listrik & Produksi Massal" })).toBeVisible();
   await page.getByRole("button", { name: "Lihat tujuan lengkap" }).click();
   await expect(page.getByRole("dialog").locator(".revo-learning-objectives li")).toHaveCount(6);
@@ -86,10 +97,13 @@ test("opens briefing from the menu; 3D pick and keyboard unlock Explore only aft
     await partButton(page, part.name).focus();
     await page.keyboard.press("Enter");
     await expect(page.locator("#electric-detail h3")).toHaveText(part.name);
-    await expect(page.getByText(`${index + 2}/7 dibuka`)).toBeVisible();
     if (index < 5) {
+      await expect(page.getByText(`${index + 2}/7 dibuka`, { exact: true })).toBeVisible();
       await expect(page.getByRole("region", { name: /Eksplorasi selesai/ })).toHaveCount(0);
       await expect(page.getByRole("link", { name: "Mulai Perakitan" })).toHaveCount(0);
+    } else {
+      await expect(page.locator(".revo-explore-count")).toHaveCount(0);
+      await expect(page.getByRole("region", { name: "Eksplorasi selesai · 7/7 komponen" })).toBeVisible();
     }
   }
   await expect(page.locator(".revo-explore-count")).toHaveCount(0);
@@ -114,20 +128,22 @@ test("reload, inter-era navigation, one canvas and reset preserve both independe
   await page.reload();
   await expect(page.locator("#electric-detail h3")).toHaveText("Konveyor");
   await expect(page.getByText("2/7 dibuka")).toBeVisible();
-  await page.getByRole("link", { name: "Pilih Era", exact: true }).click();
   await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
+  await expect(page).toHaveURL(/\/revo-lab$/);
   await openEraSelection(page);
-  await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click();
+  await page.getByRole("link", { name: "Jelajahi Industri 1.0" }).click();
+  await expect(page).toHaveURL(/\/revo-lab\/industry-1\/briefing$/);
   await page.getByRole("link", { name: "Mulai Eksplorasi" }).click();
   await expect(page.locator("canvas")).toHaveCount(1);
   await page.getByRole("button", { name: "Jelajahi Ketel uap", exact: true }).click();
-  await expect(page.getByText("1/5 komponen dijelajahi")).toBeVisible();
+  await expect(page.getByText("1/5 komponen dijelajahi", { exact: true })).toBeVisible();
   await expect.poll(() => saved(page, steamKey)).not.toBeNull();
   const steam = await saved(page, steamKey);
   expect(await saved(page, electricKey)).toBe(electric);
   await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
   await openEraSelection(page);
-  await page.getByRole("link", { name: "Buka Briefing 2.0" }).click();
+  await page.getByRole("link", { name: "Jelajahi Industri 2.0" }).click();
+  await expect(page).toHaveURL(briefing);
   await expect(page.locator("canvas")).toHaveCount(0);
   await page.getByRole("link", { name: "Lanjutkan Eksplorasi" }).click();
   await expect(page.locator("canvas")).toHaveCount(1);
@@ -151,7 +167,7 @@ test("reload, inter-era navigation, one canvas and reset preserve both independe
   await expect(page.getByText("0/7 dibuka")).toBeVisible();
   await page.getByRole("link", { name: "REVO — Menu utama" }).click();
   await page.getByRole("link", { name: "Lanjutkan", exact: true }).click();
-  await expect(page.getByText("1/5 komponen dijelajahi")).toBeVisible();
+  await expect(page.getByText("1/5 komponen dijelajahi", { exact: true })).toBeVisible();
 });
 
 for (const [label, raw] of [["JSON rusak", "{"], ["versi tidak didukung", '{"version":4,"stage":"explore","explored":[]}'], ["tahap palsu", '{"version":1,"stage":"assembly","explored":["motor"]}']]) {
@@ -174,8 +190,13 @@ test("repairs fabricated readiness, duplicate and foreign part IDs", async ({ pa
   })), electricKey);
   await page.goto(explore);
   await expect(page.getByText("1/7 dibuka")).toBeVisible();
-  await expect(page.locator("#electric-detail h3")).toHaveText("Ikuti tiga jalur");
+  await expect.poll(async () => JSON.parse((await saved(page, electricKey))!).selected).toBeNull();
+  await expect.poll(async () => JSON.parse((await saved(page, electricKey))!).explored).toEqual(["motor"]);
+  await expect(page.locator("#electric-detail")).toHaveCount(0);
+  await expect(page.getByText("Pilih titik pada model untuk mempelajari komponen dan fungsinya.", { exact: true })).toBeVisible();
   await expect(page.getByRole("region", { name: /Eksplorasi selesai/ })).toHaveCount(0);
+  await pickSupplyInScene(page);
+  await expect(page.locator("#electric-detail h3")).toHaveText("Pasokan listrik");
 });
 
 test("DOM fallback with WebGL blocked still teaches and records all seven parts", async ({ page }) => {

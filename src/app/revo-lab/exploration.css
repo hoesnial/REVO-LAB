@@ -94,6 +94,9 @@
 .revo-exploration .electric-parts button { white-space: nowrap; }
 .revo-exploration .electric-detail .electric-secondary { display: none; }
 @media (max-width: 720px) {
+  .revo-experience .electric-explore.revo-exploration .electric-swipe-hint {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
   .revo-experience .revo-exploration[data-inspector-open="true"] .revo-camera-tools,
   .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"] .electric-camera-controls { margin-right: 0; }
   .revo-experience .revo-exploration .revo-exhibit-title { padding-top: 8px; }
@@ -174,7 +177,6 @@
 }
 @media (max-width:360px) and (max-height:620px) {
  .revo-exploration { --sheet-space: 80px; }
- .revo-experience .electric-explore.revo-exploration .electric-swipe-hint { display: none; }
  .revo-exploration[data-sheet-expanded="true"] { --sheet-space: min(46vh,260px); }
  .revo-experience .revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .revo-exhibit { grid-template-rows: auto 0 0 50px; }
  .revo-experience .revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .revo-scene,

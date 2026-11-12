@@ -119,6 +119,7 @@ test.describe("compact component inspectors", () => {
     await page.keyboard.press("Home");
     await expect.poll(() => scrollPanel.evaluate(el => el.scrollTop)).toBe(0);
 
+    await page.getByRole("button", { name: "Ringkas informasi komponen" }).tap();
     await page.getByRole("button", { name: "Perkecil tampilan" }).tap();
     await expect(inspector).toBeVisible();
     await close.tap();

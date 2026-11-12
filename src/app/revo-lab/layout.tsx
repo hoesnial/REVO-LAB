@@ -12,6 +12,7 @@ import "./cross-era.css";
 import "./design-system.css";
 import "./briefing.css";
 import "./exploration.css";
+import "./gameplay-hud.css";
 
 export default function RevoLayout({ children }: { children: React.ReactNode }) {
   return <RevoExperience>{children}</RevoExperience>;

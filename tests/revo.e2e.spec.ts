@@ -21,11 +21,11 @@ const test = base.extend<{ browserErrors: string[] }>({
 
 async function openLab(page: Page) {
   await page.goto("/revo-lab/industry-1");
-  await expect(page.getByRole("heading", { name: "THE AGE OF STEAM." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Kenali Mesin Uap", exact: true })).toBeVisible();
   await expect(page.locator(".revo-scene canvas")).toBeVisible();
   await expect(page.getByRole("button", { name: "Jelajahi Ketel uap", exact: true })).toBeVisible();
   await expect(page.getByText("Tampilan 3D belum tersedia")).not.toBeVisible();
-  await expect(page.getByTestId("production")).toHaveText("0");
+  await expect(page.getByTestId("production")).toBeHidden();
 }
 
 async function resetLab(page: Page) {
@@ -36,8 +36,8 @@ async function resetLab(page: Page) {
   await expect(dialog).toBeVisible();
   await dialog.getByRole("button", { name: "Ulangi Level", exact: true }).click();
   await expect(dialog).toHaveCount(0);
-  await expect(page.getByTestId("production")).toHaveText("0");
-  await expect(page.getByRole("meter", { name: "Bahan bakar", exact: true })).toHaveAttribute("aria-valuenow", "35");
+  await expect(page.getByTestId("production")).toBeHidden();
+  await expect(page.getByText("0/5 komponen dijelajahi", { exact: true })).toBeVisible();
   await expect(page.getByRole("tab", { name: /Refleksi/ })).toBeDisabled();
 }
 
@@ -142,29 +142,29 @@ test("exploration counts unique inspections and unlocks Assembly after all five 
   const componentList = page.getByLabel("Pilih komponen mesin", { exact: true });
 
   await expect(page.getByRole("tab", { name: /Eksplorasi/ })).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByText("0/5 komponen dijelajahi")).toBeVisible();
+  await expect(page.getByText("0/5 komponen dijelajahi", { exact: true })).toBeVisible();
   await expect(experiment).toBeDisabled();
   await expect(reflection).toBeDisabled();
-  await expect(start).toBeDisabled();
+  await expect(start).toBeHidden();
 
   const boiler = componentList.getByRole("button", { name: /Ketel uap/ });
   await boiler.click();
   await expect(page.getByRole("heading", { name: "Ketel uap", exact: true })).toBeVisible();
   await expect(page.locator(".revo-component-role")).toContainText("Mengubah panas pembakaran");
-  await expect(page.getByText("1/5 komponen dijelajahi")).toBeVisible();
+  await expect(page.getByText("1/5 komponen dijelajahi", { exact: true })).toBeVisible();
   await boiler.click();
-  await expect(page.getByText("1/5 komponen dijelajahi")).toBeVisible();
+  await expect(page.getByText("1/5 komponen dijelajahi", { exact: true })).toBeVisible();
   await expect(experiment).toBeDisabled();
 
   for (const name of ["Roda gila", "Piston", "Pipa uap", "Mesin tekstil"]) {
     await componentList.getByRole("button", { name: new RegExp(name) }).click();
   }
   await expect(page.getByText("Eksplorasi selesai · 5/5 komponen", { exact: true })).toBeVisible();
-  await expect(page.locator(".revo-learning-note")).toContainText("Seluruh komponen");
+  await expect(page.getByRole("region", { name: "Eksplorasi selesai · 5/5 komponen" })).toBeVisible();
   await expect(page.getByRole("tab", { name: /Perakitan/ })).toBeEnabled();
   await expect(experiment).toBeDisabled();
   await expect(reflection).toBeDisabled();
-  await expect(start).toBeDisabled();
+  await expect(start).toBeHidden();
   await finishAssembly(page);
   await expect(experiment).toHaveAttribute("aria-selected", "true");
   await expect(start).toBeEnabled();
@@ -257,9 +257,9 @@ test("desktop: explore five components, control the camera, observe a real safe 
     // a real briefing destination; all five explored components must survive.
     await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
     await openEraSelection(page);
-    await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click();
+    await page.getByRole("link", { name: "Jelajahi Industri 1.0" }).click();
     await page.getByRole("link", { name: "Mulai Eksplorasi", exact: true }).click();
-    await expect(page.getByText("Eksplorasi selesai · 5/5 komponen", { exact: true })).toBeVisible();
+    await expect(page.getByRole("tab", { name: /Eksplorasi/ })).toBeEnabled();
     await expect(page.getByRole("tab", { name: /Eksperimen/ })).toHaveAttribute("aria-selected", "true");
     await page.getByRole("button", { name: "Nyalakan mesin", exact: true }).click();
     await expect(page.getByRole("button", { name: "Hentikan mesin", exact: true })).toBeVisible();
@@ -305,10 +305,9 @@ test("desktop: explore five components, control the camera, observe a real safe 
         await page.goBack();
         await expect(page).toHaveURL(/\/revo-lab\/industry-1\/briefing$/);
         await expect(dialog).toHaveCount(0);
-        await page.getByRole("link", { name: "Kembali ke Pilih Era", exact: true }).click();
-        await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
+        await page.getByRole("link", { name: "Kembali ke Menu Utama", exact: true }).click();
         await openEraSelection(page);
-        await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click();
+        await page.getByRole("link", { name: "Jelajahi Industri 1.0" }).click();
         await page.getByRole("link", { name: "Mulai Eksplorasi", exact: true }).click();
         await expect(dialog).toBeVisible();
         await expect(dialog.getByText("Pertanyaan 1 dari 3", { exact: true })).toBeVisible();
@@ -323,7 +322,7 @@ test("desktop: explore five components, control the camera, observe a real safe 
     await page.screenshot({ path: path.join(screenshots, "quiz-complete.png") });
     await dialog.getByRole("button", { name: "Kembali ke laboratorium", exact: true }).click();
     await resetLab(page);
-    await expect(page.getByText("0/5 komponen dijelajahi")).toBeVisible();
+    await expect(page.getByText("0/5 komponen dijelajahi", { exact: true })).toBeVisible();
   });
 });
 
@@ -372,7 +371,7 @@ test("resource controls, depleted fuel, and excessive pressure produce honest sa
   await expect(page.getByTestId("pressure")).toHaveText("10/100");
   await expect(fuel).toHaveAttribute("aria-valuenow", "35");
   await expect(water).toHaveAttribute("aria-valuenow", "65");
-  await expect(page.getByText("Eksplorasi selesai · 5/5 komponen", { exact: true })).toBeVisible();
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("revo:industry-1:progress")!).explored.length)).toBe(5);
   await expect(page.getByRole("tab", { name: /Eksperimen/ })).toHaveAttribute("aria-selected", "true");
   await expect(page.getByRole("tab", { name: /Refleksi/ })).toBeDisabled();
   await page.getByRole("button", { name: "Nyalakan mesin", exact: true }).click();
@@ -380,7 +379,7 @@ test("resource controls, depleted fuel, and excessive pressure produce honest sa
   await page.getByRole("button", { name: "Hentikan mesin", exact: true }).click();
   await resetLab(page);
   await expect(page.getByTestId("pressure")).toHaveText("10/100");
-  await expect(page.getByText("0/5 komponen dijelajahi")).toBeVisible();
+  await expect(page.getByText("0/5 komponen dijelajahi", { exact: true })).toBeVisible();
 });
 
 test("mobile: the 390px layout, component inspection, and machine controls remain usable", async ({ page }) => {
@@ -416,9 +415,10 @@ test("fullscreen HUD keeps the scene and learning controls reachable at four vie
   const canvas = page.locator(".revo-scene canvas");
   const lab = page.getByRole("region", { name: "Laboratorium interaktif" });
   await expect(canvas).toBeVisible();
-  await expect(lab.getByTestId("production")).toBeVisible();
+  await expect(lab.getByTestId("production")).toBeHidden();
   await inspectFiveComponents(page);
   await finishAssembly(page);
+  await expect(lab.getByTestId("production")).toBeVisible();
 
   for (const viewport of [
     { name: "desktop", width: 1440, height: 900 },

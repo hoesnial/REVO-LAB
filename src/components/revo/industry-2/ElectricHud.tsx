@@ -26,11 +26,11 @@ export default function ElectricHud({ stage, progress, onDialogOpen }: { stage: 
       const controls = document.getElementById("electric-controls");
       if (controls) { event.preventDefault(); controls.focus(); }
     }}>{stage === "explore" ? "Langsung ke daftar komponen" : "Langsung ke kendali"}</a>
-    <RevoScreenHeader gameplay step={stage === "explore" ? "INDUSTRI 2.0 / EKSPLORASI" : `02 / ${step.label.toUpperCase()}`} back={{ href: REVO_ROUTES.menu, label: "Pilih Era" }} actions={<>
+    <RevoScreenHeader gameplay step={stage === "explore" ? "INDUSTRI 2.0 / EKSPLORASI" : `02 / ${step.label.toUpperCase()}`} back={stage === "explore" ? { href: REVO_ROUTES.menu, label: "Pilih Era" } : undefined} actions={<>
       <Link className="revo-game-action" href={REVO_ROUTES.menu} aria-label="Kembali ke Menu" title="Kembali ke Menu"><House size={17} aria-hidden="true" /><span>Menu Utama</span></Link>
       <button className="revo-game-action" onClick={() => open("objectives")} aria-label="Tujuan Pembelajaran" title="Tujuan Pembelajaran"><BookOpen size={17} aria-hidden="true" /><span>Tujuan Pembelajaran</span></button>
-      {stage === "explore" && <button className="revo-game-action" aria-label="Panduan belajar" onClick={() => open("help")}><CircleHelp size={17} /><span>Bantuan</span></button>}
-      <button className="revo-game-action" onClick={() => open("reset")} aria-label={resetLabel} title="Ulangi seluruh Industry 2.0"><RotateCw size={17} aria-hidden="true" /></button>
+      {stage === "explore" && <button className="revo-game-action" aria-label="Panduan belajar" onClick={() => open("help")}><CircleHelp size={17} /><span>Panduan belajar</span></button>}
+      <button className="revo-game-action" onClick={() => open("reset")} aria-label={resetLabel} title="Ulangi seluruh Industry 2.0"><RotateCw size={17} aria-hidden="true" /><span>Reset</span></button>
     </>} />
     <nav className="revo-stage-track" aria-label="Tahap belajar">
       {LEARNING_STAGES.map(item => {

@@ -1,0 +1,121 @@
+/* REVO-010D.2: align electrical gameplay panels with the shared REVO HUD. */
+.revo-experience .electric-assembly .electric-assembly-panel {
+  color: var(--revo-text-primary);
+  background: var(--revo-surface);
+  border-color: var(--revo-border-default);
+}
+.revo-experience .electric-assembly .electric-assembly-meter {
+  padding: var(--revo-space-4) var(--revo-panel-padding) var(--revo-space-3);
+  background: var(--revo-surface);
+  border-color: var(--revo-border-default);
+  color: var(--revo-text-primary);
+}
+.revo-experience .electric-assembly .electric-assembly-meter .electric-kicker {
+  margin-bottom: var(--revo-space-3);
+  color: var(--revo-action-primary);
+  font-size: var(--revo-type-label);
+}
+.revo-experience .electric-assembly .electric-assembly-meter h2 {
+  margin: 0 0 var(--revo-space-1);
+  color: var(--revo-text-primary);
+  font-size: clamp(22px, 2.5vw, 34px);
+  line-height: 1.12;
+}
+.revo-experience .electric-assembly .electric-assembly-meter .electric-assembly-instruction {
+  margin-bottom: var(--revo-space-3);
+  color: var(--revo-text-secondary);
+}
+.revo-experience .electric-assembly .electric-assembly-meter strong { color: var(--revo-action-primary); }
+.revo-experience .electric-assembly .electric-assembly-meter span { color: var(--revo-text-secondary); }
+.revo-experience .electric-assembly .electric-progress { accent-color: var(--revo-action-primary); }
+.electric-assembly-steps { display: flex; gap: var(--revo-space-1); margin-top: var(--revo-space-3); }
+.revo-experience .electric-assembly-steps button {
+  flex: 1; min-width: 0; min-height: 48px; padding: var(--revo-space-1);
+  border: 1px solid var(--revo-border-default); border-radius: var(--revo-control-radius);
+  color: var(--revo-text-primary); background: var(--revo-surface-elevated);
+  font-size: var(--revo-type-label); font-weight: 800;
+}
+.electric-assembly-steps button span { display: block; font-size: var(--revo-type-caption); font-weight: 600; }
+.revo-experience .electric-assembly-steps button[aria-current="step"] { border-color: var(--revo-action-primary); color: var(--revo-action-primary); }
+.revo-experience .electric-assembly-steps button:disabled { opacity: .55; cursor: not-allowed; }
+.revo-experience .electric-assembly .electric-assembly-body {
+  padding: var(--revo-space-4) var(--revo-panel-padding);
+  color: var(--revo-text-primary);
+  scrollbar-color: var(--revo-border-default) var(--revo-surface);
+}
+.revo-experience .electric-assembly .electric-assembly-body h2 { color: var(--revo-text-primary); font-weight: 800; }
+.revo-experience .electric-assembly :is(.electric-assembly-instruction,.electric-material-note) { color: var(--revo-text-secondary); }
+.revo-experience .electric-assembly .electric-assembly-pickers label { color: var(--revo-text-primary); }
+.revo-experience .electric-assembly .electric-assembly-pickers select {
+  color: var(--revo-text-ink); background: var(--revo-surface-paper);
+  border-color: var(--revo-border-default);
+}
+.revo-experience .electric-assembly .electric-assembly-body details { border-color: var(--revo-border-default); }
+.revo-experience .electric-assembly .electric-assembly-body summary { color: var(--revo-text-primary); }
+.revo-experience .electric-assembly .electric-assembly-ledger li strong { color: var(--revo-action-primary); }
+.revo-experience .electric-assembly .electric-assembly-actions {
+  background: var(--revo-surface); border-color: var(--revo-border-default);
+  padding: var(--revo-space-3) var(--revo-panel-padding);
+}
+.revo-experience .electric-assembly .electric-assembly-actions .electric-primary { flex: 1; justify-content: space-between; font-size: var(--revo-type-body); }
+.revo-experience .electric-assembly .electric-assembly-actions .electric-secondary { color: var(--revo-text-primary); background: var(--revo-surface-elevated); }
+.revo-experience .electric-assembly .electric-assembly-body .electric-secondary { color: var(--revo-text-ink); background: var(--revo-surface-paper); }
+.revo-experience .electric-assembly .electric-assembly-summary { background: var(--revo-surface-elevated); }
+.revo-experience .electric-assembly .electric-assembly-summary .electric-kicker { color: var(--revo-action-primary); }
+.revo-experience .electric-assembly .electric-assembly-feedback { color: var(--revo-text-ink); }
+.revo-experience .electric-experiment .electric-experiment-panel {
+  color: var(--revo-text-primary);
+  background: var(--revo-surface);
+  border-color: var(--revo-border-default);
+}
+.revo-experience .electric-experiment .electric-experiment-meter,
+.revo-experience .electric-experiment .electric-experiment-actions {
+  color: var(--revo-text-primary);
+  background: var(--revo-surface);
+  border-color: var(--revo-border-default);
+}
+.revo-experience .electric-experiment .electric-experiment-meter strong { color: var(--revo-action-primary); }
+.revo-experience .electric-experiment .electric-experiment-meter span { color: var(--revo-text-secondary); }
+.revo-experience .electric-experiment .electric-experiment-body { scrollbar-color: var(--revo-border-default) var(--revo-surface); }
+.revo-experience .electric-experiment .electric-experiment-body h2 { color: var(--revo-text-primary); }
+.revo-experience .electric-experiment .electric-experiment-body .electric-kicker { color: var(--revo-action-primary); }
+.revo-experience .electric-experiment :is(.electric-experiment-cause,.electric-observation-log) {
+  color: var(--revo-text-primary);
+  border-color: var(--revo-border-default);
+}
+.revo-experience .electric-experiment :is(.electric-experiment-cause,.electric-observation-log) p,
+.revo-experience .electric-experiment .electric-observation-log li small,
+.revo-experience .electric-experiment .electric-material-note { color: var(--revo-text-secondary); }
+.revo-experience .electric-experiment .electric-observation-log li { border-color: var(--revo-border-default); }
+.revo-experience .electric-experiment .electric-observation-log li strong { color: var(--revo-text-secondary); }
+@media (max-width: 750px) {
+  .revo-experience .electric-assembly .electric-assembly-meter { padding: var(--revo-space-2) var(--revo-space-3); }
+  .electric-assembly-steps { margin-top: var(--revo-space-1); }
+  .revo-experience .electric-assembly-steps button { min-height: 44px; }
+  .revo-experience .electric-assembly .electric-assembly-body { padding: var(--revo-space-2) var(--revo-space-3); }
+}
+
+/* REVO-010D.3: reserve separate rows for electrical exploration tools and chips. */
+.revo-experience .electric-explore.revo-exploration .electric-workspace { padding-bottom: 85px; }
+.revo-experience .electric-explore.revo-exploration .electric-paths { gap: var(--revo-space-2); }
+.revo-experience .electric-explore.revo-exploration .electric-camera-controls { gap: var(--revo-space-2); }
+.revo-experience .electric-explore.revo-exploration .electric-parts {
+  bottom: var(--revo-space-3);
+  gap: var(--revo-space-2);
+}
+.revo-experience .electric-explore.revo-exploration .revo-explore-completion { margin-top: var(--revo-space-3); }
+@media (max-width: 720px) {
+  .revo-experience .electric-explore.revo-exploration .electric-workspace { padding-bottom: 76px; }
+  .revo-experience .electric-explore.revo-exploration .electric-paths { gap: var(--revo-space-1); }
+  .revo-experience .electric-explore.revo-exploration .electric-camera-controls { gap: 2px; }
+  .revo-experience .electric-explore.revo-exploration .electric-parts { gap: var(--revo-space-1); }
+  .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"] .electric-workspace,
+  .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .electric-workspace {
+    padding-bottom: calc(var(--sheet-space) + 74px);
+  }
+  .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"] .electric-parts,
+  .revo-experience .electric-explore.revo-exploration[data-inspector-open="true"][data-sheet-expanded="true"] .electric-parts {
+    bottom: calc(var(--sheet-space) + 10px);
+  }
+  .revo-experience .electric-explore.revo-exploration .revo-explore-completion { margin-top: 10px; }
+}

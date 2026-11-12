@@ -7,7 +7,7 @@ import type { OrbitControls as Orbit } from "three-stdlib";
 import { OrthographicCamera, Vector3 } from "three";
 
 /** Camera only: resize preserves orbit direction and relative overview zoom. */
-export default function ExplorationCamera({ command }: { command: { kind: string; serial: number } }) {
+export default function ExplorationCamera({ command, compactZoom = 1 }: { command: { kind: string; serial: number }; compactZoom?: number }) {
   const { camera, size, invalidate } = useThree();
   const controls = useRef<Orbit>(null);
   const seen = useRef(-1);
@@ -37,9 +37,10 @@ export default function ExplorationCamera({ command }: { command: { kind: string
     const up = new Vector3(0, 1, 0).applyQuaternion(view.quaternion);
     const span = (v: Vector3) => Math.abs(v.x) * 6 + Math.abs(v.y) * 2.8 + Math.abs(v.z) * 3.65;
     const fit = Math.min(size.width / (2 * span(right)), size.height / (2 * span(up))) * .92;
-    const wanted = fit * scale.current;
-    controls.current.minZoom = fit * .6; controls.current.maxZoom = fit;
-    lastFit.current = fit; lastZoom.current = wanted;
+    const cameraFit = fit * (size.width <= 360 ? compactZoom : 1);
+    const wanted = cameraFit * scale.current;
+    controls.current.minZoom = cameraFit * .6; controls.current.maxZoom = cameraFit;
+    lastFit.current = cameraFit; lastZoom.current = wanted;
     if (Math.abs(view.zoom - wanted) > .01) {
       view.zoom = wanted;
       view.updateProjectionMatrix();

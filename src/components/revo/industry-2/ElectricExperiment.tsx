@@ -50,6 +50,7 @@ function ExperimentWorkspace({ progress }: { progress: ElectricProgress }) {
   const { dispatch, status } = useElectricProgress();
   const [run, setRun] = useState<ElectricRun>(initialElectricRun);
   const [retry, setRetry] = useState(false);
+  const [mobileTaskView, setMobileTaskView] = useState(false);
   const [focus, setFocus] = useState<ElectricPartId | null>(null);
   const [camera, setCamera] = useState(0);
   const [motion, setMotion] = useState(false);
@@ -100,10 +101,14 @@ function ExperimentWorkspace({ progress }: { progress: ElectricProgress }) {
     <p role="status">Skema 2D · WebGL tidak tersedia</p>
   </div>;
 
-  return <main className="electric-shell electric-experiment" lang="id">
+  return <main className="electric-shell electric-experiment" data-mobile-task-view={mobileTaskView} lang="id">
     <ElectricHud stage="experiment" progress={progress} onDialogOpen={stop} />
+    <div className="electric-mobile-view-switch" role="group" aria-label="Tampilan laboratorium">
+      <button type="button" aria-pressed={!mobileTaskView} onClick={() => { setMobileTaskView(false); requestAnimationFrame(() => document.getElementById("electric-model")?.focus()); }}>Fokus model</button>
+      <button type="button" aria-pressed={mobileTaskView} onClick={() => { setMobileTaskView(true); requestAnimationFrame(() => panel.current?.focus()); }}>Baca tugas</button>
+    </div>
     <div className="electric-workspace">
-      <section className="electric-stage electric-experiment-stage" aria-label="Diorama percobaan listrik">
+      <section id="electric-model" tabIndex={-1} className="electric-stage electric-experiment-stage" aria-label="Diorama percobaan listrik">
         <div className="electric-stage-title">
           <p className="electric-kicker">LABORATORIUM INTERAKTIF / 02</p>
           <h1>Uji penggerak konveyor</h1>

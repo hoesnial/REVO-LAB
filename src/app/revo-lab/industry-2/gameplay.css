@@ -1,0 +1,37 @@
+.electric-mobile-view-switch { display: none; }
+.electric-assembly .electric-workspace,
+.electric-experiment .electric-workspace { min-height: 0; overflow: hidden; }
+.electric-assembly .electric-stage,
+.electric-experiment .electric-stage { min-height: 0; }
+.electric-assembly-panel,
+.electric-experiment-panel { min-height: 0; overflow: hidden; }
+.electric-assembly-body,
+.electric-experiment-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.electric-assembly-actions,
+.electric-experiment-actions { position: relative; z-index: 2; }
+@media (max-width: 360px) and (max-height: 650px) {
+  .electric-assembly,
+  .electric-experiment { grid-template-rows: auto auto auto minmax(0, 1fr); }
+  .electric-mobile-view-switch { display: flex; min-height: 38px; border-block: 1px solid var(--electric-line); background: #f6f7ee; }
+  .electric-mobile-view-switch button { flex: 1; min-width: 0; padding: 6px 10px; color: var(--electric-ink); font-weight: 750; font-size: 12px; }
+  .electric-mobile-view-switch button[aria-pressed="true"] { background: var(--electric-signal); }
+  .electric-assembly .electric-workspace,
+  .electric-experiment .electric-workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(140px, 42%) minmax(0, 1fr);
+  }
+  .electric-assembly[data-mobile-task-view="false"] .electric-workspace,
+  .electric-experiment[data-mobile-task-view="false"] .electric-workspace {
+    grid-template-rows: minmax(150px, 50%) minmax(0, 1fr);
+  }
+  .electric-assembly[data-mobile-task-view="true"] .electric-workspace,
+  .electric-experiment[data-mobile-task-view="true"] .electric-workspace {
+    grid-template-rows: minmax(120px, 30%) minmax(0, 1fr);
+  }
+  .electric-assembly .electric-stage,
+  .electric-experiment .electric-stage { min-height: 0; }
+  .electric-assembly-panel,
+  .electric-experiment-panel { min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+  .electric-assembly-body,
+  .electric-experiment-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; flex: 1 1 auto; }
+}

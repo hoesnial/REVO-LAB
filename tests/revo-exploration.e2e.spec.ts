@@ -77,7 +77,8 @@ for (const era of [1, 2]) {
         await expect(card(page).getByRole("heading")).toBeInViewport();
         if (width <= 360 && height <= 620) {
           await expect(canvas(page)).toBeVisible();
-          await expect(async () => expect((await canvas(page).boundingBox())!.height).toBeGreaterThan(100)).toPass();
+          const minimumSceneHeight = era === 2 ? 150 : 110;
+          await expect(async () => expect((await canvas(page).boundingBox())!.height).toBeGreaterThan(minimumSceneHeight)).toPass();
         }
         await page.getByRole("button", { name: "Perluas informasi komponen" }).click();
         await page.getByRole("button", { name: "Ringkas informasi komponen" }).click();
@@ -225,5 +226,28 @@ test.describe("real touch picking", () => {
      await page.touchscreen.tap(box.x+(point.x+1)*box.width/2,box.y+(1-point.y)*box.height/2);
      await expect(card(page).getByRole("heading",{name:"Pasokan listrik"})).toBeVisible({timeout:700});
    }).toPass();
+ });
+});
+test.describe("compact touch picking", () => {
+ test.use({ viewport:{width:320,height:568}, hasTouch:true, isMobile:true });
+ test("listrik: narrow-screen camera framing keeps the supply directly tappable", async ({ page }) => {
+   await enter(page,2);
+   await expect(canvas(page)).toBeVisible();
+   const { OrthographicCamera, Vector3 } = await import("three");
+   await expect(async () => {
+     const box = (await canvas(page).boundingBox())!;
+     const surface = (await page.locator(".electric-canvas").boundingBox())!;
+     expect(Math.abs(surface.width-box.width)+Math.abs(surface.height-box.height)).toBeLessThan(2);
+     const view = new OrthographicCamera(-box.width/2,box.width/2,box.height/2,-box.height/2,.1,70);
+     view.position.set(11,11,14); view.lookAt(0,2,0); view.updateMatrixWorld();
+     const right = new Vector3(1,0,0).applyQuaternion(view.quaternion);
+     const up = new Vector3(0,1,0).applyQuaternion(view.quaternion);
+     const span = (v: InstanceType<typeof Vector3>) => Math.abs(v.x)*6+Math.abs(v.y)*2.8+Math.abs(v.z)*3.65;
+     view.zoom = Math.min(box.width/(2*span(right)),box.height/(2*span(up)))*.92*.94*1.25;
+     view.updateProjectionMatrix();
+     const point = new Vector3(-4.15,.82,-1.55).project(view);
+     await page.touchscreen.tap(box.x+(point.x+1)*box.width/2,box.y+(1-point.y)*box.height/2);
+     await expect(card(page).getByRole("heading",{name:"Pasokan listrik"})).toBeVisible({timeout:700});
+   }).toPass({timeout:10_000});
  });
 });

@@ -17,8 +17,9 @@ const screenshots = "test-results/revo/screenshots";
 
 async function enterLabFromMenu(page: Page) {
   await openEraSelection(page);
-  await expect(page).toHaveURL(/\/revo-lab\/eras$/);
-  await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click();
+  await expect(page).toHaveURL(/\/revo-lab$/);
+  await expect(page.getByRole("heading", { name: "REVO — Jelajah Revolusi Industri" })).toBeVisible();
+  await page.getByRole("link", { name: "Jelajahi Industri 1.0" }).click();
   await expect(page).toHaveURL(/\/revo-lab\/industry-1\/briefing$/);
   await page.getByRole("link", { name: "Mulai Eksplorasi", exact: true }).click();
   await expect(page).toHaveURL(/\/revo-lab\/industry-1$/);
@@ -118,17 +119,17 @@ test("journey navigation pauses the machine and preserves exploration, resources
   expect(await snapshot()).toEqual(paused);
   await assertMenuFits(page);
   await openEraSelection(page);
-  await expect(page).toHaveURL(/\/revo-lab\/eras$/);
+  await expect(page).toHaveURL(/\/revo-lab$/);
   await expect(page.locator("canvas")).toHaveCount(0);
   await page.waitForTimeout(1000);
   expect(await snapshot()).toEqual(paused);
-  await page.getByRole("link", { name: "Jelajahi Era", exact: true }).click();
+  await page.getByRole("link", { name: "Jelajahi Industri 1.0" }).click();
   await expect(page).toHaveURL(/\/revo-lab\/industry-1\/briefing$/);
   await expect(page.locator("canvas")).toHaveCount(0);
   await page.waitForTimeout(1000);
   expect(await snapshot()).toEqual(paused);
   await page.getByRole("link", { name: "Mulai Eksplorasi", exact: true }).click();
-  await expect(page.getByText("Eksplorasi selesai · 5/5 komponen", { exact: true })).toBeVisible();
+  await expect(page.getByRole("tab", { name: /Eksplorasi/ })).toBeEnabled();
   await expect(page.getByRole("tab", { name: /Eksperimen/ })).toHaveAttribute("aria-selected", "true");
   await expect(page.getByRole("heading", { name: "Ketel uap", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Matikan suara", exact: true })).toHaveAttribute("aria-pressed", "true");

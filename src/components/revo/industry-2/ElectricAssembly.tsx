@@ -58,7 +58,9 @@ function AssemblyWorkspace({ progress }: { progress: ElectricProgress }) {
   const [answer, setAnswer] = useState<ConceptAnswerId | null>(null);
   const [wrongAnswer, setWrongAnswer] = useState<ConceptAnswerId | null>(null);
   const [retry, setRetry] = useState(false);
+  const [mobileTaskView, setMobileTaskView] = useState(false);
   const panel = useRef<HTMLDivElement>(null);
+  const ledger = useRef<HTMLDetailsElement>(null);
   const message = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const count = progress.connections.length;
@@ -126,10 +128,14 @@ function AssemblyWorkspace({ progress }: { progress: ElectricProgress }) {
     <p role="status">3D tidak tersedia. Gunakan kontrol sambungan.</p>
   </div>;
 
-  return <main className="electric-shell electric-assembly" lang="id">
+  return <main className="electric-shell electric-assembly" data-mobile-task-view={mobileTaskView} lang="id">
     <ElectricHud stage="assembly" progress={progress} />
+    <div className="electric-mobile-view-switch" role="group" aria-label="Tampilan laboratorium">
+      <button type="button" aria-pressed={!mobileTaskView} onClick={() => { setMobileTaskView(false); requestAnimationFrame(() => document.getElementById("electric-model")?.focus()); }}>Fokus model</button>
+      <button type="button" aria-pressed={mobileTaskView} onClick={() => { setMobileTaskView(true); requestAnimationFrame(() => panel.current?.focus()); }}>Baca tugas</button>
+    </div>
     <div className="electric-workspace">
-      <section className="electric-stage" aria-label="Diorama perakitan">
+      <section id="electric-model" tabIndex={-1} className="electric-stage" aria-label="Diorama perakitan">
         <div className="electric-stage-title">
           <p className="electric-kicker">LABORATORIUM INTERAKTIF / 02</p>
           <h1>Rakit penggerak konveyor</h1>
@@ -145,8 +151,18 @@ function AssemblyWorkspace({ progress }: { progress: ElectricProgress }) {
       </section>
       <section className="electric-assembly-panel" aria-labelledby="electric-assembly-title">
         <div className="electric-assembly-meter">
+          <p className="electric-kicker">PERAKITAN MESIN</p>
+          {!progress.assemblyComplete && <>
+            <h2 ref={!concept ? title : undefined} tabIndex={-1} id={!concept ? "electric-assembly-title" : undefined}>Susun sambungan</h2>
+            <p className="electric-assembly-instruction">Pilih sumber dan tujuan, lalu hubungkan komponen.</p>
+          </>}
           <div><strong role="status">{count}/5 sambungan · {checked}/3 cek konsep</strong><span>Gulir panel ↓</span></div>
           <progress className="electric-progress" max={CONNECTIONS.length + CONCEPTS.length} value={count + checked} aria-label="Progres perakitan" />
+          {!progress.assemblyComplete && <div className="electric-assembly-steps" role="group" aria-label="Langkah perakitan">
+            <button type="button" aria-current={!concept && count < CONNECTIONS.length ? "step" : undefined} onClick={() => panel.current?.scrollTo({ top: 0, behavior: "smooth" })}>01 <span>Sambungan</span></button>
+            <button type="button" onClick={() => { if (ledger.current) { ledger.current.open = true; ledger.current.scrollIntoView({ block: "nearest", behavior: "smooth" }); } }}>02 <span>Alur</span></button>
+            <button type="button" aria-current={concept ? "step" : undefined} disabled={count < CONNECTIONS.length} onClick={() => openQuestion(CONCEPTS.findIndex(check => !progress.conceptAnswers[check.id]))}>03 <span>Cek konsep</span></button>
+          </div>}
         </div>
         <div ref={panel} id="electric-controls" className="electric-assembly-body" tabIndex={0} aria-label="Panel perakitan yang dapat digulir">
           {progress.assemblyComplete ? <div className="electric-assembly-summary" role="status">
@@ -173,8 +189,6 @@ function AssemblyWorkspace({ progress }: { progress: ElectricProgress }) {
               </p>}
             </div>
           </> : <>
-            <h2 ref={title} tabIndex={-1} id="electric-assembly-title">Susun sambungan</h2>
-            <p className="electric-assembly-instruction">Pilih sumber dan tujuan, atau ketuk dua komponen di diorama. Lalu tekan Hubungkan.</p>
             <div className="electric-assembly-pickers">
               <label>Sumber<select value={from ?? ""} onChange={event => selectPart("from", (event.target.value || null) as ElectricPartId | null)}>
                 <option value="">Pilih sumber</option>
@@ -203,7 +217,7 @@ function AssemblyWorkspace({ progress }: { progress: ElectricProgress }) {
             </div>
             <p className="electric-material-note">Stasiun kerja adalah bagian dari aliran barang. Sabuk transmisi memindahkan putaran; sabuk konveyor membawa benda kerja.</p>
           </>}
-          <details className="electric-assembly-ledger" open={progress.assemblyComplete || undefined}>
+          <details ref={ledger} className="electric-assembly-ledger" open={progress.assemblyComplete || undefined}>
             <summary>Sambungan terpasang ({count})</summary>
             {count > 0 ? <ul>{CONNECTIONS.filter(link => progress.connections.includes(link.id)).map(link => <li key={link.id}>
               <strong>{link.id} · {PATHS[link.kind].name}</strong><span>{partName(link.from)} → {targetName(link.to)}</span>

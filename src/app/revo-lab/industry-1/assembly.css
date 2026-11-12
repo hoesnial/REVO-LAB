@@ -11,6 +11,12 @@
 .revo-assembly-scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-color: #8c9c73 #28362d; padding: 16px 22px; }
 .revo-assembly-fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 .revo-assembly-fieldset:disabled { opacity: .55; }
+.revo-assembly-steps { display: flex; gap: 4px; margin-bottom: 10px; overflow-x: auto; scrollbar-width: none; }
+.revo-assembly-steps::-webkit-scrollbar { display: none; }
+.revo-assembly-steps button { flex: 1 0 auto; min-height: 32px; padding: 5px 8px; border: 1px solid #59694d; border-radius: 4px; background: #344436; color: #c7d2bb; font-size: 9px; font-weight: 700; letter-spacing: .04em; }
+.revo-assembly-steps button span { display: block; font-size: 8px; font-weight: 500; letter-spacing: 0; color: #aebba2; }
+.revo-assembly-steps button[data-active] { border-color: #ffe234; color: #ffe234; background: #3d4f3a; }
+.revo-assembly-steps button[data-active] span { color: #e7e2b6; }
 .revo-assembly-panel summary { cursor: pointer; font-size: 11px; font-weight: 700; padding: 6px 0 10px; }
 .revo-assembly-panel summary span { float: right; font-size: 9px; font-weight: 400; color: #c3cdb7; }
 .revo-assembly-parts { display: grid; gap: 5px; margin-bottom: 14px; }
@@ -27,6 +33,9 @@
 .revo-assembly-targets select { width: 100%; min-height: 42px; border: 1px solid #6b7b59; border-radius: 4px; padding: 8px; background: #f5f4e5; color: #293d2e; font-size: 11px; }
 .revo-assembly-targets > button { width: 100%; margin-top: 8px; justify-content: space-between; min-height: 40px; font-size: 11px; }
 .revo-assembly-panel button:disabled { cursor: default; }
+.revo-assembly-actions { flex: none; padding: 10px 22px 12px; border-top: 1px solid #52604a; background: #28362d; }
+.revo-assembly-actions :is(.revo-primary-button, .revo-secondary-button) { width: 100%; justify-content: space-between; min-height: 44px; }
+.revo-assembly-actions .revo-secondary-button { border-color: #ffe234; color: #ffe234; background: transparent; }
 .revo-assembly-targets > button:disabled { opacity: .4; }
 .revo-assembly-check { padding-top: 14px; border-top: 1px solid #59694d; }
 .revo-assembly-check .revo-kicker { color: #d7cd7b; font-size: 8px; }

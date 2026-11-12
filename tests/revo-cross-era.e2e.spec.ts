@@ -76,10 +76,9 @@ test("menu resumes each validated era and resets only the explicitly confirmed e
   const beforeElectric = await saved(page, electricKey);
   await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
   await resume.getByRole("link", { name: "Lanjutkan", exact: true }).click();
-  await expect(page.getByText("1/5 komponen dijelajahi")).toBeVisible();
-  await page.getByRole("link", { name: "Pilih Era", exact: true }).click();
-  await expect(page).toHaveURL(`${menu}/eras`);
+  await expect(page.getByText("1/5 komponen dijelajahi", { exact: true })).toBeVisible();
   await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).click();
+  await expect(page).toHaveURL(menu);
   await resume.getByRole("link", { name: "Lanjutkan", exact: true }).click();
   await page.getByRole("button", { name: "Ulangi seluruh level" }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Ulangi Level", exact: true }).click();
@@ -120,8 +119,8 @@ test("both HUDs expose keyboard objectives, truthful stage status, and safe retu
     const reflection = page.getByRole(assemblyRole, { name: /Refleksi/ });
     await expect(reflection).toBeInViewport({ ratio: 1 });
     expect((await reflection.boundingBox())!.height).toBeGreaterThanOrEqual(44);
-    await page.getByRole("link", { name: "Pilih Era", exact: true }).press("Enter");
-    await expect(page).toHaveURL(`${menu}/eras`);
+    await page.getByRole("link", { name: "Kembali ke Menu", exact: true }).press("Enter");
+    await expect(page).toHaveURL(menu);
     await expect(page.locator("canvas")).toHaveCount(0);
   }
 });
